@@ -71,9 +71,21 @@ Welcome to cube shell (Jim 0.77).
 . cube.clear
 . cube.text -twosides Hello
 . cube.anim cosine 20
+. help
+. help cube.colour
+. loop p 0 8 { cube.clear; cube.panel $p; delay 500 }
 ```
 
+The shell is an embedded
+[Jim Tcl](http://jim.tcl.tk/fossil/doc/trunk/Tcl_shipped.html) interpreter
+which can be used to write programs to control the cube. There are also a
+number of built-in animations which have been ported from 
+[Doug Domke's Cube Application Template](http://d2-webdesign.com/cube)
+
 ### Run the example Super Big Show
+
+This is the Super Big Show from 
+[Doug Domke's Cube Application Template](http://d2-webdesign.com/cube)
 
 ```console
 pi$ cube examples/Super_Big_Show
