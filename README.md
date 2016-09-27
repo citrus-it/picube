@@ -23,7 +23,9 @@ pi$ sudo tar -C / zxf rpi-rtlinux-4.4.22-rt30.tar.gz
 
 Add the following line to `/boot/cmdline.txt`
 
-> sdhci_bcm2708.enable_llm=0
+```
+sdhci_bcm2708.enable_llm=0
+```
 
 ### Allow the pi user to elevate scheduling priority and lock memory.
 
@@ -51,4 +53,27 @@ pi$ make install
 ### Connect the cube to the Pi
 
 ![Pinout](/doc/GPIO.png)
+
+### Run the included `paneltest` program
+
+```console
+pi$ ./cube examples/paneltest 0
+```
+
+### Start the interactive shell and play
+
+```console
+pi$ ./cube
+Welcome to cube shell (Jim 0.77).
+. cube.colour violet
+. cube.fill
+. cube.clear
+. cube.text -twosides Hello
+```
+
+### Run the example Super Big Show
+
+```console
+pi$ ./cube examples/Super_Big_Show
+```
 
