@@ -1,0 +1,9 @@
+NAME		pprint
+SYNTAX		pprint <grid> [filter]
+DESCRIPTION	Display a humax readable representation of a list which
+		represents a list.
+RETURN VALUE	None.
+EXAMPLES	Show the grid representing the letter Q
+			pprint [cube.textchar Q]
+		Show which LEDs are red in layer 3:
+			pprint [cube.plane -layer 3 "63 0 0"]

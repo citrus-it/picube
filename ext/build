@@ -1,0 +1,15 @@
+#!/bin/sh
+
+for f in *.tcl; do
+	[ -f $f ] || continue
+
+	echo "Jim_EvalSource(j, NULL, 1,"
+	cat $f | sed '
+		s/\\/&&/g
+		s/"/\\"/g
+		s/^/"/
+		s/$/\\n"/
+	'
+	echo ");"
+done
+

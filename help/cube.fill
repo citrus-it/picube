@@ -1,0 +1,11 @@
+NAME		cube.fill
+SYNTAX		cube.fill [red green blue]
+DESCRIPTION	Set all LEDs to the same colour. If the optional red, green
+		and blue arguments are provided then that colour is used,
+		otherwise the current working colour is used.
+RETURN VALUE	None
+EXAMPLES	Fill the cube with the current working colour:
+			cube.fill
+		Fill the cube with cool white:
+			cube.fill 63 63 33
+SEE ALSO	cube.colour

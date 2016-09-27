@@ -1,0 +1,11 @@
+NAME		cube.row
+SYNTAX		cube.row <panel> <layer> [red green blue]
+DESCRIPTION	Set all LEDs in a row to the same colour. If the optional
+		red, green and blue arguments are provided then that colour
+		is used, otherwise the current working colour is used.
+RETURN VALUE	None
+EXAMPLES	Fill the row on panel 2, layer 3 with the current colour:
+			cube.row 2 3
+		Fill the row on panel 2, layer 3 with blue:
+			cube.row 2 3 0 0 63
+SEE ALSO	cube.colour, cube.column

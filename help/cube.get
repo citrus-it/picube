@@ -1,0 +1,13 @@
+NAME		cube.get
+SYNTAX		cube.get
+DESCRIPTION	Retrieve the red, blue and green values of all LEDs in the
+		cube at once. The list can be assigned to a variable and then
+		individual LEDs can be looked up.
+RETURN VALUE	A nested list representing all LEDs in the cube. The list is
+		structured so that individual LEDs can be retrieved used
+		lindex <x> <y> <z>.
+EXAMPLES	Store the returned list in a variable called 'cube' then
+		retrieve the red value of the LED at position 3, 4, 5:
+			set cube [cube.get]
+			set red [lindex $cube 3 4 5 0]
+SEE ALSO	cube.led, cube.getled

@@ -1,0 +1,8 @@
+NAME		cube.getled
+SYNTAX		cube.getled <column> <panel> <layer>
+DESCRIPTION	Retrieve the red, blue and green values of a single LED.
+RETURN VALUE	A list containing the red, green and blue components of the
+		LED.
+EXAMPLES	Retrieve the values of the LED at 3, 4, 5:
+			cube.getled 3 4 5
+SEE ALSO	cube.led

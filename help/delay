@@ -1,0 +1,9 @@
+NAME		delay
+SYNTAX		delay <msec>
+DESCRIPTION	Pause for a number of milliseconds. This uses an internal
+		high resolution timer which is as accurate as possible.
+		For short delays, this is better than using the build-in
+		Jim [sleep] command.
+RETURN VALUE	None.
+EXAMPLES	Delay for 100ms
+			delay 100

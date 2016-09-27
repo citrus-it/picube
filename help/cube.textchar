@@ -1,0 +1,12 @@
+NAME		cube.textchar
+SYNTAX		cube.textchar <character> [red green blue]
+DESCRIPTION	Retrieve the representation of a single text character as an
+		8x8x3 grid. If the optional red, green and blue arguments
+		are provided then that colour is used, otherwise the current
+		working colour is used.
+RETURN VALUE	8x8x3 grid representing the selected character.
+EXAMPLES	Show the letter Q on panel 0
+			cube.plane -panel 0 [cube.textchar Q]
+		Show the grid representing the letter Q
+			pprint [cube.textchar Q]
+SEE ALSO	cube.colour, cube.plane, cube.text

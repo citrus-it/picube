@@ -1,0 +1,11 @@
+NAME		cube.column
+SYNTAX		cube.column <panel> <column> [red green blue]
+DESCRIPTION	Set all LEDs in a column to the same colour. If the optional
+		red, green and blue arguments are provided then that colour
+		is used, otherwise the current working colour is used.
+RETURN VALUE	None
+EXAMPLES	Fill column 3 on panel 2 with the current colour:
+			cube.column 2 3
+		Fill column 3 on panel 2 with blue:
+			cube.column 2 3 0 0 63
+SEE ALSO	cube.colour, cube.row

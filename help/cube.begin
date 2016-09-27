@@ -1,0 +1,12 @@
+NAME		cube.begin
+SYNTAX		cube.begin [-copy]
+DESCRIPTION	Start building a cube in a temporary buffer.
+		All cube operations such as setting or clearing LEDs are
+		done against a buffer rather than the real cube. The buffer
+		is copied to the cube in one go when cube.commit is called.
+		If the optional -copy argument is provided, then the buffer
+		will be initially set to the current cube contents, otherwise
+		it will represent an empty cube.
+		An example of usage can be found in examples/cosine
+RETURN VALUE	None
+SEE ALSO	cube.commit

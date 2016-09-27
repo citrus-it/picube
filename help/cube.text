@@ -1,0 +1,14 @@
+NAME		cube.text
+SYNTAX		cube.text [-twosides|-foursides|-x|-y|-z] <text>
+DESCRIPTION	Display text in a variety of ways. The text is displayed in
+		the current working colour.
+			-twosides	Scroll on two sides of the cube.
+			-foursides	Scroll on four sides of the cube.
+			-x		Scroll through the X axis.
+			-y		Scroll through the Y axis.
+			-z		Scroll through the Z axis.
+RETURN VALUE	None.
+EXAMPLES	Scroll TEST on two sides of the cube in green.
+			cube.colour green
+			cube.text -twosides TEST
+SEE ALSO	cube.color

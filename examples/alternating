@@ -1,0 +1,30 @@
+
+# Row of green, blue, green, blue...
+set green_blue_row [lrepeat 4 {0 63 0} {0 0 63}]
+
+# Build a row the other way around:
+set blue_green_row [lreverse $green_blue_row]
+
+# Now create the panels:
+set blue_green_panel [lrepeat 4 $blue_green_row $green_blue_row]
+set green_blue_panel [lrepeat 4 $green_blue_row $blue_green_row]
+
+# Set the cube.
+
+if {!$interactive} {
+
+cube.clear
+
+loop iter 0 8 {
+	loop panel 0 8 2 { cube.plane -panel $panel $blue_green_panel }
+	loop panel 1 8 2 { cube.plane -panel $panel $green_blue_panel }
+	delay 300
+	loop panel 0 8 2 { cube.plane -panel $panel $green_blue_panel }
+	loop panel 1 8 2 { cube.plane -panel $panel $blue_green_panel }
+	delay 300
+}
+
+cube.clear
+
+}
+

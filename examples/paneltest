@@ -1,0 +1,157 @@
+
+
+set coloursequence {{255 0 0} {0 255 0} {0 0 255} {255 255 255}}
+
+proc fast_column_scanner {panel} {
+	puts "Fast column scanner..."
+	foreach colour $::coloursequence {
+		cube.colour {*}$colour
+		loop column 0 8 1 {
+			cube.column $panel $column
+			delay 100
+			cube.column $panel $column 0 0 0
+		}
+		loop column 7 -1 -1 {
+			cube.column $panel $column
+			delay 100
+			cube.column $panel $column 0 0 0
+		}
+	}
+	cube.clear
+}
+
+proc column_by_column {panel} {
+	puts "Column by column..."
+	loop column 0 8 {
+		foreach colour $::coloursequence {
+			cube.column $panel $column {*}$colour
+			delay 500
+		}
+		cube.column $panel $column 0 0 0
+	}
+	cube.clear
+}
+
+proc row_by_row {panel} {
+	puts "Row by row..."
+	loop row 0 8 {
+		foreach colour $::coloursequence {
+			cube.row $panel $row {*}$colour
+			delay 500
+		}
+		cube.row $panel $row 0 0 0
+	}
+	cube.clear
+}
+
+proc snake_one_by_one {panel} {
+	puts "One by one..."
+	foreach colour $::coloursequence {
+		cube.colour {*}$colour
+
+		# Flash first LED
+		loop i 0 3 {
+			cube.led 0 $panel 0
+			delay 100
+			cube.led 0 $panel 0 0 0 0
+			delay 100
+		}
+
+		loop layer 0 8 {
+			if {$layer % 2 == 0} {
+				# Even layer
+				set incr 1
+				set start 0
+				set end 8
+			} else {
+				set incr -1
+				set start 7
+				set end -1
+			}
+			loop column $start $end $incr {
+				cube.led $column $panel $layer
+				delay 100
+				cube.led $column $panel $layer 0 0 0
+			}
+		}
+
+		# Run back down the column.
+		loop layer 6 -1 -1 {
+			cube.led 0 $panel $layer
+			delay 100
+			cube.led 0 $panel $layer 0 0 0
+		}
+	}
+	cube.clear
+}
+
+proc whole_panel {panel} {
+	puts "Whole panel..."
+	foreach colour $::coloursequence {
+		cube.panel $panel {*}$colour
+		sleep 5
+	}
+	cube.clear
+}
+
+proc whole_cube {panel} {
+	puts "Whole cube..."
+	foreach colour $::coloursequence {
+		cube.fill {*}$colour
+		sleep 5
+	}
+	cube.clear
+}
+
+
+proc bam_test {panel} {
+	puts "BAM test..."
+	loop i 0 3 {
+		set colours "0 0 0"
+
+		loop layer 7 -1 -1 {
+			loop column 0 8 {
+				cube.led $column $panel $layer {*}$colours
+				set cur [lindex $colours $i]
+				incr cur
+				lset colours $i $cur
+			}
+		}
+		sleep 5
+	}
+	cube.clear
+}
+
+proc colour_fade {panel} {
+	puts "Colour fade..."
+	loop c 0 190 {
+		cube.colour $c
+		cube.panel $panel
+		delay 100
+	}
+	cube.clear
+}
+
+proc paneltest {panel} {
+	cube.clear
+	bam_test $panel
+	snake_one_by_one $panel
+	fast_column_scanner $panel
+	column_by_column $panel
+	row_by_row $panel
+	whole_panel $panel
+	colour_fade $panel
+	cube.clear
+}
+
+if {!$interactive} {
+	lassign $argv panel
+	if {$panel eq ""} {
+		#error "Specify panel"
+		puts "Syntax: paneltest <panel number, 0-7>"
+		exit
+	}
+	puts "Testing panel $panel"
+	paneltest $panel
+}
+

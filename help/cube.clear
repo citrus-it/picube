@@ -1,0 +1,5 @@
+NAME		cube.clear
+SYNTAX		cube.clear
+DESCRIPTION	Turn all LEDs in the cube off.
+RETURN VALUE	None
+ALIASES		cube.off

@@ -1,0 +1,12 @@
+NAME		cube.translate
+SYNTAX		cube.translate <columns> <panels> <layers>
+DESCRIPTION	Translate (shift) the cube by a number of columns, panels
+		and layers. The parameters can be positive or negative. Any
+		cube content shifted out of the physical cube is lost.
+RETURN VALUE	None
+EXAMPLES	Move the cube contents right by 3 columns.
+			cube.translate 3 0 0
+		Move the cube contents down by 2 layers and forward by
+		1 panel.
+			cube.translate 0 -1 -2
+SEE ALSO	cube.rotate

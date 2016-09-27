@@ -1,0 +1,9 @@
+#!/bin/sh
+
+for f in *.pde; do
+	[ -f $f ] || continue
+	[ "$f" = "common.pde" ] && continue
+
+	echo "#include \"anim/$f\""
+done
+

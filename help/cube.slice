@@ -1,0 +1,13 @@
+NAME		cube.slice
+SYNTAX		cube.slice <slice> [red green blue]
+DESCRIPTION	Set all LEDs in a slice to the same colour. If the optional
+		red, green and blue arguments are provided then that colour
+		is used, otherwise the current working colour is used.
+		A slice is the set of LEDs in a single column across all
+		panels.
+RETURN VALUE	None
+EXAMPLES	Set all LEDs in slice 3 to the current working colour:
+			cube.slice 3
+		Set all LEDs in slice 3 to blue:
+			cube.slice 3 0 0 63
+SEE ALSO	cube.colour, cube.panel, cube.layer

@@ -1,0 +1,14 @@
+NAME		cube.colour
+SYNTAX		cube.colour [<colour number> | <colour name> | <red green blue>
+DESCRIPTION	Set or retrieve the current working colour.
+		Many commands take an optional colour argument and if that
+		argument is omitted then the current working colour is used.
+RETURN VALUE	A list containing the red, green and blue components of the
+		current or new working colour.
+EXAMPLES	Retrieve the current working colour:
+			cube.colour
+		Set the working colour to orange:
+			cube.colour 42 21 0
+			cube.colour orange
+			cube.colour 21
+ALIASES		cube.color

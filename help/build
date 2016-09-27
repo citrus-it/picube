@@ -1,0 +1,31 @@
+#!/bin/sh
+
+cat << EOM
+struct help {
+	char *cmd;
+	char *text;
+} helps[] = {
+EOM
+
+for f in *; do
+	[ -f $f ] || continue
+	grep -qs '^NAME' $f || continue
+
+	echo "{"
+	echo "  .cmd = \"$f\","
+	echo -n "  .text = "
+	cat $f | sed '
+		s/\\/&&/g
+		s/"/\\"/g
+		s/^/"/
+		s/$/\\n"/
+	'
+	echo ","
+	echo "},"
+done
+
+cat << EOM
+{ .cmd = NULL },
+};
+EOM
+

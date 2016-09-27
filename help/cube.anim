@@ -1,0 +1,14 @@
+NAME		cube.anim
+SYNTAX		cube.anim [<anim> [args]]
+DESCRIPTION	Run a built-in animation.
+		Run without arguments to view the list of built-in animations.
+		Some animations take arguments which must be provided along
+		with the animation name.
+RETURN VALUE	None
+EXAMPLES	View the list of built-in animations:
+			cube.anim
+		Run the Cosine animation for 10 iterations
+			cube.anim cosine 10
+		Run the Eyes animation
+			cube.anim eyes
+ALIASES		anim

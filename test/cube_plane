@@ -1,0 +1,87 @@
+
+# Create an 8x8 test pattern.
+
+set red 1
+set grid [lrepeat 8 {}]
+loop x 0 8 {
+	lset grid $x [lrepeat 8 {}]
+	loop y 0 8 {
+		lset grid $x $y [list $red 0 1]
+		incr red
+		if {$red > 63} { set red 0 }
+	}
+}
+
+proc print_grid {grid} {
+	foreach row $grid {
+		foreach led $row {
+			lassign $led r g b
+			puts -nonewline [format "<%2d,%d,%d> " $r $g $b]
+		}
+		puts ""
+	}
+	puts ""
+}
+
+proc compare {tag data} {
+	global grid
+	if {$grid ne $data} {
+		puts "$tag mismatch"
+		print_grid $data
+	} else {
+		puts "$tag test OK"
+	}
+}
+
+
+######################################################################
+# Set layers from the grid.
+
+loop layer 0 8 {
+	cube.clear
+	cube.plane -layer $layer $grid
+
+	set data [lrepeat 8 [lrepeat 8 {}]]
+	set cube [cube.get]
+	loop x 0 8 { loop y 0 8 {
+		lset data $(7 - $y) $x [lindex $cube $x $y $layer]
+	}}
+
+	compare "Layer.a $layer" $data
+	compare "Layer.b $layer" [cube.plane -layer $layer]
+}
+
+######################################################################
+# Set panels from the grid.
+
+loop panel 0 8 {
+	cube.clear
+	cube.plane -panel $panel $grid
+
+	set data [lrepeat 8 [lrepeat 8 {}]]
+	set cube [cube.get]
+	loop x 0 8 { loop z 0 8 {
+		lset data $(7 - $z) $x [lindex $cube $x $panel $z]
+	}}
+
+	compare "Panel.a $panel" $data
+	compare "Panel.b $panel" [cube.plane -panel $panel]
+}
+
+######################################################################
+# Set slices from the grid.
+
+loop slice 0 8 {
+	cube.clear
+	cube.plane -slice $slice $grid
+
+	set data [lrepeat 8 [lrepeat 8 {}]]
+	set cube [cube.get]
+	loop y 0 8 { loop z 0 8 {
+		lset data $(7 - $z) $y [lindex $cube $slice $y $z]
+	}}
+
+	compare "Slice.a $slice" $data
+	compare "Slice.b $slice" [cube.plane -slice $slice]
+}
+

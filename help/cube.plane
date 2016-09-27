@@ -1,0 +1,11 @@
+NAME		cube.plane
+SYNTAX		cube.plane <-panel|-layer|-slice> <number> [data]
+DESCRIPTION	Set or retrieve the values of all LEDs within a single
+		plane of the cube. A plane can be a panel, layer or slice.
+		Data is provided as an 8x8x3 list.
+RETURN VALUE	For retrieval operations, an 8x8x3 list containing the current
+		plane data.
+EXAMPLES	Place the letter P on panel 1:
+			cube.plane -panel 1 [cube.textchar P]
+		See examples/alternating for a more complicated example.
+SEE ALSO	cube.textchar

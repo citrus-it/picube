@@ -1,0 +1,8 @@
+NAME		cube.rotate
+SYNTAX		cube.rotate <degrees>
+DESCRIPTION	Rotate the cube content in around the Z axis by a specified
+		number of degrees.
+RETURN VALUE	None
+EXAMPLES	Rotate the cube contents by 45 degrees
+			cube.rotate 45
+SEE ALSO	cube.translate

@@ -1,0 +1,35 @@
+
+# A jim version of the Cosine animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+proc cosine {iter} {
+	loop count 0 $iter {
+		loop i 0 40 {
+			cube.colour $($i * 4)
+			# It can take a while to do all of the calculations
+			# to the point where the cube flickers.
+			# Use a transaction to build the cube in memory
+			# then switch it in all at once.
+			cube.begin
+			loop x 0 8 {
+				loop y 0 8 {
+					set key [expr \
+					    $x / 2.23 + \
+					    $y / 2.23 + \
+					    $i / 6.28]
+					set z [expr 4 + int(4 * cos($key))]
+					if {$z > 7} { set z 7 }
+					cube.led $x $y $z
+				}
+			}
+			delay 10
+			cube.commit
+		}
+	}
+}
+
+if {!$interactive} { cosine 10 }
+

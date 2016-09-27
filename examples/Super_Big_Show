@@ -1,0 +1,66 @@
+
+set interval 1.0
+
+set anims [list \
+	cubeInCube \
+	grower \
+	rollingBall \
+	paddles \
+	diamondWave \
+	saddle2 \
+	Mysterious \
+	saddle \
+	randomFall \
+	miniCubes \
+	helicopter \
+	atom \
+	glitterRibbon \
+	elevators \
+	theOrnament \
+	atomSmasher \
+	hula \
+	dish \
+	sparkle \
+	mazeMice \
+	chaos \
+	swings \
+	multiSwirl \
+	neutrinos \
+	flipAndRoll \
+	colors \
+	flyingBoxes \
+	whatThe \
+	{ pulsingSphere 12 } \
+	angled \
+	{ sinewave 20 } \
+	angled2 \
+	cyclone \
+	bouncer \
+	{ rain 100 } \
+	randomLights \
+	wildMouse \
+	fireworks \
+	{ donut 100 } \
+	tornado \
+	{ rotor 1 12 } \
+	{ fireworks2 15 30 60 } \
+	{ Cosine 10 } \
+	{ randomRotation 15 } \
+	eyes \
+	singleSwirl \
+	basketballDribble \
+	gameOfLife \
+]
+
+while {true} {
+	cube.colour 0 0 63
+	puts "Text banner..."
+	cube.text -twosides "WELCOME TO THE SUPER BIG SHOW."
+	sleep $interval
+	foreach anim $anims {
+		puts "Launching: $anim"
+		cube.anim {*}$anim
+		sleep $interval
+	}
+}
+

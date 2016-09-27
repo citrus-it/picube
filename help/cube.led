@@ -1,0 +1,11 @@
+NAME		cube.led
+SYNTAX		cube.led <column> <panel> <layer> [red green blue]
+DESCRIPTION	Set a single LED colour. If the optional red, green and blue
+		arguments are provided then that colour is used, otherwise
+		the current working colour is used.
+RETURN VALUE	None
+EXAMPLES	Set the LED at 2, 2, 2 to the current working colour:
+			cube.led 2 2 2
+		Set the LED at 2, 2, 2 to blue:
+			cube.led 2 2 2 0 0 63
+SEE ALSO	cube.colour, cube.getled

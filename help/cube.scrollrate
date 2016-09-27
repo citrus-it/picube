@@ -1,0 +1,9 @@
+NAME		cube.scrollrate
+SYNTAX		cube.scrollrate [rate]
+DESCRIPTION	Set or retrieve the current text scrollrate.
+		The default scrollrate value is 800.
+RETURN VALUE	The current scroll rate.
+EXAMPLES	Retrieve the current text scrollrate:
+			cube.scrollrate
+		Set the text scrollrate to 600:
+			cube.scrollrate 600

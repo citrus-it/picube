@@ -1,0 +1,11 @@
+NAME		cube.panel
+SYNTAX		cube.panel <panel> [red green blue]
+DESCRIPTION	Set all LEDs in a panel to the same colour. If the optional
+		red, green and blue arguments are provided then that colour
+		is used, otherwise the current working colour is used.
+RETURN VALUE	None
+EXAMPLES	Set all LEDs in panel 3 to the current working colour:
+			cube.panel 3
+		Set all LEDs in panel 3 to blue:
+			cube.panel 3 0 0 63
+SEE ALSO	cube.colour, cube.layer, cube.slice
