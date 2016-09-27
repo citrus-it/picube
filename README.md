@@ -21,7 +21,7 @@ pi$ sudo tar -C / zxf rpi-rtlinux-4.4.22-rt30.tar.gz
 ```
 
 Alternatively you can compile it yourself. There is a good write-up at
-(http://www.frank-durr.de/?p=203)
+http://www.frank-durr.de/?p=203
 
 ### Disable SD card low-latency-mode (llm)
 
