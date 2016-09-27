@@ -5,7 +5,8 @@ Raspberry Pi Software for the SuperTech-IT 8x8x8 RGB LED Cube
 
 ### Install Vanilla Raspbian on your Raspberry Pi
 
-Download [Raspbian](https://www.raspberrypi.org/downloads/raspbian/) and install it on your SD card.
+Download [Raspbian](https://www.raspberrypi.org/downloads/raspbian/)
+and install it on your SD card. The minimal image is sufficient.
 
 ### Install the real-time linux kernel
 
@@ -57,23 +58,24 @@ pi$ make install
 ### Run the included `paneltest` program
 
 ```console
-pi$ ./cube examples/paneltest 0
+pi$ cube examples/paneltest 5
 ```
 
 ### Start the interactive shell and play
 
 ```console
-pi$ ./cube
+pi$ cube
 Welcome to cube shell (Jim 0.77).
 . cube.colour violet
 . cube.fill
 . cube.clear
 . cube.text -twosides Hello
+. cube.anim cosine 20
 ```
 
 ### Run the example Super Big Show
 
 ```console
-pi$ ./cube examples/Super_Big_Show
+pi$ cube examples/Super_Big_Show
 ```
 
