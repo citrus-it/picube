@@ -8,6 +8,15 @@ Raspberry Pi Software for the SuperTech-IT 8x8x8 RGB LED Cube
 Download [Raspbian](https://www.raspberrypi.org/downloads/raspbian/)
 and install it on your SD card. The minimal image is sufficient.
 
+### (Optionally) update the distribution to the latest version
+
+```console
+pi$ sudo apt-get update
+pi$ sudo apt-get dist-upgrade
+pi$ sudo apt-get clean
+pi$ sudo shutdown -r now
+```
+
 ### Install the real-time linux kernel
 
 A pre-compiled version of the Linux kernel with the
@@ -17,15 +26,15 @@ can be installed as follows.
 
 ```console
 pi$ wget http://picube.uk/files/rpi-rtlinux-4.4.22-rt30.tar.gz
-pi$ sudo tar -C / zxf rpi-rtlinux-4.4.22-rt30.tar.gz
+pi$ sudo tar -C / -zxf rpi-rtlinux-4.4.22-rt30.tar.gz
 ```
 
-Alternatively you can compile it yourself. There is a good write-up at
-http://www.frank-durr.de/?p=203
+(Alternatively you can build it yourself. There is a good write-up at
+http://www.frank-durr.de/?p=203 )
 
 ### Disable SD card low-latency-mode (llm)
 
-Add the following line to `/boot/cmdline.txt`
+Add the following text to the end of the line in `/boot/cmdline.txt`
 
 ```
 sdhci_bcm2708.enable_llm=0
@@ -44,6 +53,12 @@ pi	-	rtprio		99
 
 ```console
 pi$ sudo shutdown -r now
+```
+
+### Install additional software
+
+```console
+pi$ sudo apt-get install git
 ```
 
 ### Clone this repository and build the software

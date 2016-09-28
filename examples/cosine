@@ -5,28 +5,34 @@
 #  * Downloads of this template and upcoming versions, along with detailed
 #  * instructions, are available at: http://d2-webdesign.com/cube
 
+# The calculations take a while so build a lookup table first.
+set tab [lrepeat 40 [lrepeat 8 [lrepeat 8 0]]]
+loop i 0 40 {
+	loop x 0 8 {
+		loop y 0 8 {
+			set key [expr $x / 2.23 + $y / 2.23 + $i / 6.28]
+			set z [expr 4 + int(4 * cos($key))]
+			if {$z > 7} { set z 7 }
+			lset tab $i $x $y $z
+		}
+	}
+}
+
 proc cosine {iter} {
+	global tab
 	loop count 0 $iter {
 		loop i 0 40 {
 			cube.colour $($i * 4)
-			# It can take a while to do all of the calculations
-			# to the point where the cube flickers.
 			# Use a transaction to build the cube in memory
 			# then switch it in all at once.
 			cube.begin
 			loop x 0 8 {
 				loop y 0 8 {
-					set key [expr \
-					    $x / 2.23 + \
-					    $y / 2.23 + \
-					    $i / 6.28]
-					set z [expr 4 + int(4 * cos($key))]
-					if {$z > 7} { set z 7 }
-					cube.led $x $y $z
+					cube.led $x $y [lindex $tab $i $x $y]
 				}
 			}
-			delay 10
 			cube.commit
+			delay 10
 		}
 	}
 }
