@@ -1,0 +1,40 @@
+
+# A jim version of the Colo[u]rs animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+proc Colours {} {
+	set colour_start 0
+
+	loop j 0 25 {
+		set colour $colour_start
+
+		cube.begin
+
+		loop z 0 8 {
+			cube.colour $colour
+			loop x 0 8 {
+				cube.led $x $x $z
+			}
+			incr colour 20
+			if {$colour > 189} { set colour 0 }
+		}
+
+		cube.commit -nocopy
+
+		# Rotate the panel
+		loop deg 0 360 15 {
+			cube.rotate -buffer $deg
+			delay 10
+		}
+
+		# Pick a new starting colour
+		incr colour_start 10
+		if {$colour_start > 189} { set colour_start 0 }
+	}
+}
+
+if {!$interactive} Colours
+
