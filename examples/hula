@@ -1,0 +1,53 @@
+
+# A jim version of the Hula animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+proc Hula {{reps 50}} {
+	set colour 0
+	set angle 10 
+
+	loop rep 0 $reps {
+	    # Start a transaction to build the cube in the buffer.
+	    cube.begin
+
+	    # For each layer.
+	    loop z 0 8 {
+		cube.colour $colour
+		incr colour 3
+		if {$colour > 188} { set colour 0 }
+
+		loop x 0 $($z + 1) {
+		    loop y 0 $($z + 1) {
+			cube.led $x $y $z
+			cube.led $x $y $(7 - $z)
+		    }
+		}
+
+		loop x 1 $z {
+		    loop y 1 $z {
+			cube.led $x $y $z 0 0 0
+			cube.led $x $y $(7 - $z) 0 0 0
+		    }
+		}
+			
+	    }
+
+	    # Finish the cube build but don't copy it over onto the
+	    # real cube. cube.rotate will do that in the next loop.
+	    cube.commit -nocopy
+
+	    # Now that the cube is built, rotate it onto the real cube
+	    loop i 0 9 {
+		cube.rotate -buffer $angle
+		incr angle 10
+		if {$angle > 360} { incr angle -360 }
+	    }
+	}
+	cube.clear
+}
+
+if {!$interactive} { Hula 50 }
+
