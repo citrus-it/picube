@@ -36,19 +36,19 @@ proc Neutrinos {} {
 		} else {
 			incr counter -1
 		}
-		zing 0 5 5 1 1 -1 White
-		zing 0 7 1 1 -1 1 Blue
-		zing 4 7 7 0 -1 -1 Green
-		zing 5 0 6 0 1 -1 Purple
-		zing 0 0 0 1 1 1 Aqua
-		zing 7 1 7 -1 1 -1 White
-		zing 0 5 5 1 1 -1 White
-		zing 2 0 0 1 1 1 Orange
-		zing 2 7 1 1 -1 1 Blue
-		zing 6 7 2 0 -1 1 Purple
-		zing 6 0 6 -1 1 -1 Red
-		zing 2 5 7 1 1 -1 White
-		zing 3 2 7 0 0 -1 Yellow
+		zing 0 5 5  1  1 -1 White
+		zing 0 7 1  1 -1  1 Blue
+		zing 4 7 7  0 -1 -1 Green
+		zing 5 0 6  0  1 -1 Purple
+		zing 0 0 0  1  1  1 Aqua
+		zing 7 1 7 -1  1 -1 White
+		zing 0 5 5  1  1 -1 White
+		zing 2 0 0  1  1  1 Orange
+		zing 2 7 1  1 -1  1 Blue
+		zing 6 7 2  0 -1  1 Purple
+		zing 6 0 6 -1  1 -1 Red
+		zing 2 5 7  1  1 -1 White
+		zing 3 2 7  0  0 -1 Yellow
 	}
 	delay 1000
 	zing 4 7 7 0 -1 -1 White
