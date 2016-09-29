@@ -16,11 +16,15 @@ if {!$interactive} {
 cube.clear
 
 loop iter 0 8 {
+	cube.begin
 	loop panel 0 8 2 { cube.plane -panel $panel $blue_green_panel }
 	loop panel 1 8 2 { cube.plane -panel $panel $green_blue_panel }
+	cube.commit
 	delay 300
+	cube.begin
 	loop panel 0 8 2 { cube.plane -panel $panel $green_blue_panel }
 	loop panel 1 8 2 { cube.plane -panel $panel $blue_green_panel }
+	cube.commit
 	delay 300
 }
 
