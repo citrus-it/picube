@@ -1,5 +1,6 @@
 NAME		cube.colour
-SYNTAX		cube.colour [<colour number> | <colour name> | <red green blue>
+SYNTAX		cube.colour [-intensity n]..
+		            [<colour number> | <colour name> | <red green blue>
 DESCRIPTION	Set or retrieve the current working colour.
 		Many commands take an optional colour argument and if that
 		argument is omitted then the current working colour is used.
@@ -11,4 +12,6 @@ EXAMPLES	Retrieve the current working colour:
 			cube.colour 42 21 0
 			cube.colour orange
 			cube.colour 21
+		Set the working colour to dim orange:
+			cube.colour -intensity 2 orange
 ALIASES		cube.color

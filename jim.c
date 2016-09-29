@@ -192,11 +192,32 @@ static int
 jim_cube_colour(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 {
 	Jim_Obj *colour;
+	long intensity = 4;
+
+	if (argc > 2)
+	{
+		const char *arg = Jim_GetString(argv[1], NULL);
+
+		if (!strncmp(arg, "-int", 4))
+		{
+			Jim_GetLong(j, argv[2], &intensity);
+			argc -= 2, argv += 2;
+		}
+		else
+			// trigger syntax error.
+			argc = 0;
+	}
 
 	if (argc != 1 && argc != 2 && argc != 4)
 	{
-		Jim_WrongNumArgs(j, 1, argv,
+		Jim_WrongNumArgs(j, 1, argv, "[-intensity n] "
 		    "[<colour number> | <colour name> | <red green blue>]");
+		return JIM_ERR;
+	}
+
+	if (intensity < 1 || intensity > 4)
+	{
+		Jim_SetResultString(j, "Bad colour intensity.", -1);
 		return JIM_ERR;
 	}
 
@@ -212,7 +233,7 @@ jim_cube_colour(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 
 		if (!cname)
 		{
-			Jim_WrongNumArgs(j, 1, argv,
+			Jim_WrongNumArgs(j, 1, argv, "[-intensity n] "
 			    "[<colour number> | <colour name> | "
 			    "<red green blue>]");
 			return JIM_ERR;
@@ -246,7 +267,7 @@ jim_cube_colour(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 				return JIM_ERR;
 			}
 		}
-		cube_colour(c, &r, &g, &b, 4);
+		cube_colour(c, &r, &g, &b, intensity);
 		red = r, green = g, blue = b;
 		// The colour will be set as well as returned.
 		argc = 4;
