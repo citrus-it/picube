@@ -1,0 +1,40 @@
+
+# A jim version of the sparkle animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+
+proc randomled {} {
+	return [list [rand 8] [rand 8] [rand 8]]
+}
+
+proc Sparkle {{runs 200}} {
+	cube.colour white
+
+	set led1 {0 0 0}
+	set led2 {0 0 0}
+	set led3 {0 0 0}
+
+	loop j 0 $runs {
+		cube.led {*}$led1 0 0 0
+		set led1 [randomled]
+		cube.led {*}$led1
+		delay 10
+
+		cube.led {*}$led2 0 0 0
+		set led2 [randomled]
+		cube.led {*}$led2
+		delay 10
+
+		cube.led {*}$led3 0 0 0
+		set led3 [randomled]
+		cube.led {*}$led3
+		delay 10
+	}
+	cube.clear
+}
+
+if {!$interactive} { Sparkle 200 }
+
