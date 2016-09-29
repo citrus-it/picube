@@ -304,7 +304,27 @@ jim_cube_begin(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 static int
 jim_cube_commit(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 {
-	NOARGS;
+	const char *arg;
+	int copy = 1;
+
+	if (argc != 1 && argc != 2)
+	{
+		Jim_WrongNumArgs(j, 1, argv, "[-nocopy]");
+		return JIM_ERR;
+	}
+
+	if (argc == 2)
+	{
+		arg = Jim_GetString(argv[1], NULL);
+
+		if (!strcmp(arg, "-nocopy"))
+			copy = 0;
+		else
+		{
+			Jim_WrongNumArgs(j, 1, argv, "[-nocopy]");
+			return JIM_ERR;
+		}
+	}
 
 	if (!transaction)
 	{
@@ -313,7 +333,8 @@ jim_cube_commit(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 		return JIM_ERR;
 	}
 
-	cube_from_buffer();
+	if (copy)
+		cube_from_buffer();
 	transaction = 0;
 
 	return JIM_OK;
@@ -824,18 +845,33 @@ jim_cube_translate(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 static int
 jim_cube_rotate(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 {
+	const char *arg;
 	long degrees;
-	float radians;
+	int buffer = 0;
 
-	if (argc != 4)
+	if (argc != 2 && argc != 3)
 	{
-		Jim_WrongNumArgs(j, 1, argv, "degrees");
+		Jim_WrongNumArgs(j, 1, argv, "[-buffer] <degrees>");
 		return JIM_ERR;
 	}
 
-	Jim_GetLong(j, argv[1], &degrees);
+	if (argc == 3)
+	{
+		arg = Jim_GetString(argv[1], NULL);
 
-	cube_rotate((float)degrees * .0174532, transaction);
+		if (!strncmp(arg, "-buf", 4))
+			buffer = 1;
+		else
+		{
+			Jim_WrongNumArgs(j, 1, argv, "[-buffer] <degrees>");
+			return JIM_ERR;
+		}
+		Jim_GetLong(j, argv[2], &degrees);
+	}
+	else
+		Jim_GetLong(j, argv[1], &degrees);
+
+	cube_rotate((float)degrees * .0174532, buffer);
 
 	return JIM_OK;
 }

@@ -1,8 +1,11 @@
 NAME		cube.rotate
-SYNTAX		cube.rotate <degrees>
+SYNTAX		cube.rotate [-buffer] <degrees>
 DESCRIPTION	Rotate the cube content in around the Z axis by a specified
 		number of degrees.
+		If the optional -buffer parameter is used, then rotate the
+		buffered cube onto the real cube. The buffered cube can
+		be built using cube.begin and cube.commit
 RETURN VALUE	None
 EXAMPLES	Rotate the cube contents by 45 degrees
 			cube.rotate 45
-SEE ALSO	cube.translate
+SEE ALSO	cube.translate, cube.begin, cube.commit

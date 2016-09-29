@@ -1,6 +1,8 @@
 NAME		cube.commit
-SYNTAX		cube.commit
-DESCRIPTION	Finish building a cube in a temporary buffer and copy the
-		buffer across to the main cube in one go.
+SYNTAX		cube.commit [-nocopy]
+DESCRIPTION	Finish building a cube in a temporary buffer.
+		Without the optional -nocopy argument, the buffered cube
+		will be copied across to the real one, otherwise it will
+		stay in the buffer.
 RETURN VALUE	None
 SEE ALSO	cube.begin
