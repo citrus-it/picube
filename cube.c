@@ -580,6 +580,52 @@ cube_refresh(void *x)
 }
 
 void
+cube_load_layer(int layer)
+{
+	unsigned clearbits = PI_BIT(GPIO_CLOCK) |
+	    PI_BIT(GPIO_RED) | PI_BIT(GPIO_GREEN) | PI_BIT(GPIO_BLUE);
+	uint8_t red, green, blue;
+	int col, panel;
+
+	if (cube_running)
+	{
+		fprintf(stderr, "Cube already running.\n");
+		return;
+	}
+	if (!cube_detected)
+	{
+		fprintf(stderr, "No cube detected.\n");
+		return;
+	}
+
+	gpioClearBank0(clearbits);
+	for (col = 0; col < 8; col++)
+	{
+		for (panel = 7; panel >= 0; panel--)
+		{
+			red = xLED(col, panel, layer, RED);
+			green = xLED(col, panel, layer, GREEN);
+			blue = xLED(col, panel, layer, BLUE);
+
+			if (red)
+				gpioWrite(GPIO_RED, HIGH);
+			if (green)
+				gpioWrite(GPIO_GREEN, HIGH);
+			if (blue)
+				gpioWrite(GPIO_BLUE, HIGH);
+			// Clock the bits in.
+			gpioWrite(GPIO_CLOCK, HIGH);
+			// Clear RGB and Clock in one-shot.
+			gpioClearBank0(clearbits);
+		}
+	}
+
+	// Latch the data in.
+	gpioWrite(GPIO_LATCH, HIGH);
+	gpioWrite(GPIO_LATCH, LOW);
+}
+
+void
 cube_stop()
 {
 	const uint8_t true = 1;

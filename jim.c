@@ -983,6 +983,15 @@ jim_cube_hwdebug(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 		printf("Changing layer %d state to %d\n", layer, mode);
 		cube_layer_control(layer, mode);
 	}
+	else if (argc == 3 && !strcmp(cmd, "-loadlayer"))
+	{
+		long layer;
+
+		Jim_GetLong(j, argv[2], &layer);
+
+		printf("Activating columns for layer %d\n", layer);
+		cube_load_layer(layer);
+	}
 	else
 		return JIM_ERR;
 

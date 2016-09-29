@@ -35,6 +35,7 @@ void cube_start(void);
 void cube_stop(void);
 void cube_off(void);
 void cube_layer_control(int, int);
+void cube_load_layer(int);
 void *canary_thread(void *);
 
 extern volatile uint8_t canary;
