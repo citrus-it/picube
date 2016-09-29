@@ -1,0 +1,51 @@
+
+# A jim version of the dish animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+set colour 0
+
+proc build_dish {} {
+	cube.begin
+
+	loop x 0 8 {
+		loop y 0 8 {
+			cube.led $x $y $(($x * $x + $y * $y) / 12)
+		}
+	}
+
+	cube.commit -nocopy
+}
+
+proc bump_colour {} {
+	global colour
+
+	incr colour 30
+	if {$colour > 189} { set colour 0 }
+	cube.colour $colour
+}
+
+proc Dish {} {
+	loop iter 0 25 {
+		bump_colour
+		build_dish
+
+		loop deg 0 $(360 * ([rand 3] + 1)) 15 {
+			cube.rotate -buffer $deg
+			delay 10
+		}
+
+		bump_colour
+		build_dish
+
+		loop deg $(360 * ([rand 3] + 1)) 0 -15 {
+			cube.rotate -buffer $deg
+			delay 10
+		}
+	}
+}
+
+if {!$interactive} Dish
+
