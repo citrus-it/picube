@@ -21,17 +21,17 @@ proc Sparkle {{runs 200}} {
 		cube.led {*}$led1 0 0 0
 		set led1 [randomled]
 		cube.led {*}$led1
-		delay 10
+		delay 5
 
 		cube.led {*}$led2 0 0 0
 		set led2 [randomled]
 		cube.led {*}$led2
-		delay 10
+		delay 5
 
 		cube.led {*}$led3 0 0 0
 		set led3 [randomled]
 		cube.led {*}$led3
-		delay 10
+		delay 5
 	}
 	cube.clear
 }

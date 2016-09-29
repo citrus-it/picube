@@ -34,7 +34,7 @@ proc cosine {iter} {
 				}
 			}
 			cube.commit
-			delay 50
+			delay 20
 		}
 	}
 }
