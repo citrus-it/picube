@@ -1,15 +1,15 @@
 #include <stdio.h>
-#include <unistd.h>
 #include <string.h>
+#include <sys/types.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <pthread.h>
 #include <limits.h>
 #include <signal.h>
 #include <sys/mman.h>
-#include <stdint.h>
 #include "jim.h"
 #include "cube.h"
-
-uint8_t exiting = 0;
 
 #ifdef BENCHMARK
 extern uint16_t cyclems;
@@ -74,10 +74,7 @@ usage(const char *exe)
 int
 main(int argc, char **argv)
 {
-	pthread_t t_refresh, t_canary;
 	Jim_Interp *jim;
-	int cube_ok = 0;
-	uint8_t true = 1;
 
 	if (argc > 1 &&
 	    (!strncmp(argv[1], "-h", 2) || !strncmp(argv[1], "--h", 3)))
@@ -103,9 +100,7 @@ main(int argc, char **argv)
 
 	if (cube_init())
 	{
-		cube_ok = 1;
-		start_thread(80, &t_refresh, refresh_cube);
-		start_thread(99, &t_canary, canary_thread);
+		cube_start();
 #ifdef BENCHMARK
 		pthread_t t_bench;
 		start_thread(10, &t_bench, bench_thread);
@@ -149,19 +144,7 @@ main(int argc, char **argv)
 	}
 
 	printf("Exiting...\n");
-
-	// Tell the refresh thread to exit.
-	__atomic_store(&exiting, &true, __ATOMIC_RELAXED);
-
-	if (cube_ok)
-	{
-		pthread_join(t_refresh, NULL);
-		/* The refresh thread has exited. Turn the cube off and
-		 * wait for the canary. */
-		cube_off();
-		pthread_join(t_canary, NULL);
-	}
-
+	cube_stop();
 	Jim_FreeInterp(jim);
 
 	return 0;

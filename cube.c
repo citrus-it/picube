@@ -24,6 +24,9 @@ static uint8_t layers[] = {
 	GPIO_LAYER4, GPIO_LAYER5, GPIO_LAYER6, GPIO_LAYER7
 };
 
+static pthread_t t_refresh, t_canary;
+static uint8_t cube_detected = 0, cube_running = 0;
+uint8_t exiting = 0;
 #ifdef BENCHMARK
 uint16_t cyclems = 0;
 #endif
@@ -426,6 +429,8 @@ cube_init()
 	if (gpioInitialise())
 		return 0;
 
+	cube_detected = 1;
+
 	// Initialise the cube data.
 	cube_clear(0);
 
@@ -444,9 +449,7 @@ cube_init()
 	gpioSetMode(GPIO_LAYER6, PI_OUTPUT);
 	gpioSetMode(GPIO_LAYER7, PI_OUTPUT);
 
-	// Set all layer pins to high.
-	for (i = 0; i < 8; i++)
-		gpioWrite(layers[i], 1);
+	cube_off();
 
 	return 1;
 }
@@ -459,7 +462,7 @@ cube_off(void)
 
 	// Set all layer pins to high.
 	for (i = 0; i < 8; i++)
-		gpioWrite(layers[i], 1);
+		gpioWrite(layers[i], HIGH);
 }
 
 // The cube refresh thread.
@@ -478,8 +481,8 @@ cube_off(void)
 // time of around 8ms. On newer models this is lower so there is a delay at
 // then end of the pass to wait until 8ms after the pass start. A brighter
 // cube can be obtained on newer models by reducing or removing this delay.
-void *
-refresh_cube(void *x)
+static void *
+cube_refresh(void *x)
 {
 	struct timespec tp, ns;
 	int layer, col, panel, bam;
@@ -498,10 +501,10 @@ refresh_cube(void *x)
 
 		// Check if the program is exiting.
 		__atomic_load(&exiting, &ex, __ATOMIC_RELAXED);
-		if (exiting)
+		if (ex)
 			break;
 		
-		// Tell the canary thread we're still running.
+		// Make the canary sing.
 		__atomic_store(&canary, &true, __ATOMIC_RELAXED);
 		
 		for (bam = 1; bam < 0x40; bam <<= 1)
@@ -574,5 +577,67 @@ refresh_cube(void *x)
 		}
 		clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &tp, NULL);
 	}
+}
+
+void
+cube_stop()
+{
+	const uint8_t true = 1;
+
+	if (!cube_running)
+	{
+		fprintf(stderr, "Cube not running.\n");
+		return;
+	}
+
+	cube_running = 0;
+
+	// Setting the global exiting variable to true will cause the
+	// refresh and canary threads to exit.
+	__atomic_store(&exiting, &true, __ATOMIC_RELAXED);
+
+	pthread_join(t_refresh, NULL);
+
+	// The refresh thread has exited. Turn the cube off and
+	// wait for the canary.
+	cube_off();
+	pthread_join(t_canary, NULL);
+}
+
+void
+cube_start()
+{
+	const uint8_t false = 0;
+
+	if (cube_running)
+	{
+		fprintf(stderr, "Cube already running.\n");
+		return;
+	}
+	if (!cube_detected)
+	{
+		fprintf(stderr, "No cube detected.\n");
+		return;
+	}
+
+	cube_running = 1;
+	__atomic_store(&exiting, &false, __ATOMIC_RELAXED);
+	start_thread(80, &t_refresh, cube_refresh);
+	start_thread(99, &t_canary, canary_thread);
+}
+
+void
+cube_layer_control(int layer, int mode)
+{
+	if (layer < 0 || layer > 7)
+		return;
+
+	if (!cube_detected)
+	{
+		fprintf(stderr, "No cube detected.\n");
+		return;
+	}
+
+	gpioWrite(layers[layer], mode ? LOW : HIGH);
 }
 
