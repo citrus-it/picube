@@ -1,0 +1,130 @@
+
+# A jim version of the mazeMice animation.
+# Loosely derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+# The length of the mouse tail
+set ::mouse::tail 3
+
+set colours {
+	{31 63 0}
+	{0 63 63}
+	{31 0 63}
+	{63 63 0}
+	{63 0 0}
+	{0 63 0}
+	{0 0 63}
+}
+
+# x, y, z are the coordinates of the mouse.
+# dx, dy, dz are the movement of the mouse in each plane.
+class mouse {
+	x		7
+	y		7
+	z		7
+	dx		0
+	dy		0
+	dz		-1
+	colour		{63 0 0}
+	history		{}
+}
+
+mouse method debug {} {
+	puts "{$x $y $z} - {$dx $dy $dz}"
+
+	foreach c $history {
+		lassign $c hx hy hz
+		puts "    {$hx $hy $hz}"
+	}
+
+	puts ""
+}
+
+mouse method draw {} {
+	cube.led $x $y $z {*}$colour
+	# Draw the tail
+	lassign $colour r g b
+	foreach c $history {
+		# Reduce colour brightness
+		set r $($r >> 1)
+		set g $($g >> 1)
+		set b $($b >> 1)
+
+		lassign $c hx hy hz
+		cube.led $hx $hy $hz $r $g $b
+	}
+}
+
+mouse method undraw {} {
+	cube.led $x $y $z 0 0 0
+	foreach c $history {
+		lassign $c hx hy hz
+		cube.led $hx $hy $hz 0 0 0
+	}
+}
+
+mouse method set_history {} {
+	# Truncate history to tail length - 1
+	# and add the current mouse position to the head of the list.
+	set history [linsert [lrange $history 0 $::mouse::tail-2] \
+	    0 [list $x $y $z]]
+}
+
+mouse method move {} {
+	$self undraw
+	$self set_history
+
+	# One in 5 chance of randomly changing direction.
+	if {[rand 5] == 0} {
+		set dx 0
+		set dy 0
+		set dz 0
+		switch -- [rand 6] {
+			0	{ set dx 1 }
+			1	{ set dx -1 }
+			2	{ set dy 1 }
+			3	{ set dy -1 }
+			4	{ set dz 1 }
+			5	{ set dz -1 }
+		}
+	}
+
+	# Change direction if at edge.
+	if {$x >= 7 && $dx == 1} { set dx 0; set dy 1 }
+	if {$y >= 7 && $dy == 1} { set dy 0; set dz 1 }
+	if {$z >= 7 && $dz == 1} { set dz 0; set dx -1 }
+	if {$x <= 0 && $dx == -1} { set dx 0; set dy -1 }
+	if {$y <= 0 && $dy == -1} { set dy 0; set dz -1 }
+	if {$z <= 0 && $dz == -1} { set dz 1 }
+
+	# Move
+	incr x $dx
+	incr y $dy
+	incr z $dz
+
+	$self draw
+}
+
+proc mazeMice {{iter 410} {num 3}} {
+	global colours
+
+	# Create the mice
+	set mice {}
+	loop x 0 $num {
+		lappend mice [mouse new [list colour [lindex $colours $x]]]
+	}
+
+	loop x 0 $iter {
+		foreach m $mice {
+			$m move
+		}
+		#[lindex $mice 0] debug
+		delay 75
+	}
+	cube.clear
+}
+
+if {!$interactive} { mazeMice 100 3 }
+
