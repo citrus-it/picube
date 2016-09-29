@@ -31,8 +31,10 @@ void cube_rotate(float, int);
 void cube_translate(int, int, int);
 
 int cube_init(void);
+void cube_start(void);
+void cube_stop(void);
 void cube_off(void);
-void *refresh_cube(void *);
+void cube_layer_control(int, int);
 void *canary_thread(void *);
 
 extern volatile uint8_t canary;
