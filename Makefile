@@ -51,8 +51,6 @@ jimtcl/libjim.a:
 
 install: cube
 	sudo cp cube /usr/local/bin/cube
-	sudo chown root /usr/local/bin/cube
-	sudo chmod u+s /usr/local/bin/cube
 
 clean:
 	@-touch core
