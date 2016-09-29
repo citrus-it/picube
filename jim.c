@@ -144,7 +144,8 @@ JimSetArgv(Jim_Interp *jim, int argc, char *const argv[])
 static void
 jim_load_colour(Jim_Interp *jim, long *red, long *green, long *blue)
 {
-	Jim_Obj *colours = Jim_GetVariableStr(jim, COLOUR_VARIABLE, JIM_ERRMSG);
+	Jim_Obj *colours = Jim_GetGlobalVariableStr(jim,
+	    COLOUR_VARIABLE, JIM_ERRMSG);
 	Jim_Obj *colour;
 
 	*red = *green = *blue = 0;
@@ -276,7 +277,7 @@ jim_cube_colour(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 	Jim_ListAppendElement(j, colour, Jim_NewIntObj(j, blue));
 
 	if (argc == 4)
-		Jim_SetVariableStr(j, COLOUR_VARIABLE, colour);
+		Jim_SetGlobalVariableStr(j, COLOUR_VARIABLE, colour);
 	
 	Jim_SetResult(j, colour);
 	return JIM_OK;
