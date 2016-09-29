@@ -1,0 +1,60 @@
+
+# A jim version of the neutrinos animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+
+set counter 0
+
+proc zing {x y z xm ym zm colour} {
+	global counter
+
+	cube.colour $colour
+
+	loop p 0 8 {
+		cube.led $x $y $z
+		delay 25
+		cube.led $x $y $z 0 0 0
+		incr x $xm
+		incr y $ym
+		incr z $zm
+	}
+
+	delay [rand $(2000 / ($counter * 3 + 1))]
+}
+
+proc Neutrinos {} {
+	global counter
+
+	zing 4 7 7 0 -1 -1 White
+	delay 1000
+	loop q 0 25 {
+		if {$q < 13} {
+			incr counter
+		} else {
+			incr counter -1
+		}
+		zing 0 5 5 1 1 -1 White
+		zing 0 7 1 1 -1 1 Blue
+		zing 4 7 7 0 -1 -1 Green
+		zing 5 0 6 0 1 -1 Purple
+		zing 0 0 0 1 1 1 Aqua
+		zing 7 1 7 -1 1 -1 White
+		zing 0 5 5 1 1 -1 White
+		zing 2 0 0 1 1 1 Orange
+		zing 2 7 1 1 -1 1 Blue
+		zing 6 7 2 0 -1 1 Purple
+		zing 6 0 6 -1 1 -1 Red
+		zing 2 5 7 1 1 -1 White
+		zing 3 2 7 0 0 -1 Yellow
+	}
+	delay 1000
+	zing 4 7 7 0 -1 -1 White
+	delay 1000
+	cube.clear
+}
+
+if {!$interactive} { Neutrinos }
+
