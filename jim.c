@@ -835,7 +835,7 @@ jim_cube_rotate(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 
 	Jim_GetLong(j, argv[1], &degrees);
 
-	cube_rotate((float)degrees * .0174532, 0);
+	cube_rotate((float)degrees * .0174532, transaction);
 
 	return JIM_OK;
 }
