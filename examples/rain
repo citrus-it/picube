@@ -18,8 +18,15 @@ proc Rain {{times 100}} {
 	loop iter 0 $times {
 		# Light 5 random LEDs in the top layer.
 		loop x 0 5 lightone
+		# Wait 0.1 seconds
 		delay 100
+		# Shift the cube contents down (will clear the top layer)
 		cube.translate 0 0 -1
+	}
+	# Let the rain finish falling.
+	loop x 0 6 {
+		cube.translate 0 0 -1
+		delay 100
 	}
 	cube.clear
 }
