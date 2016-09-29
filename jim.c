@@ -897,9 +897,44 @@ jim_cube_text(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 }
 
 static int
+jim_cube_hwdebug(Jim_Interp *j, int argc, Jim_Obj *const *argv)
+{
+	const char *cmd;
+
+	if (argc < 2)
+		return JIM_ERR;
+
+	cmd = Jim_GetString(argv[1], NULL);
+
+	if (argc == 2 && !strcmp(cmd, "-stop"))
+	{
+		printf("Stopping cube...\n");
+		cube_stop();
+	}
+	else if (argc == 2 && !strcmp(cmd, "-start"))
+	{
+		printf("Starting cube...\n");
+		cube_start();
+	}
+	else if (argc == 4 && !strcmp(cmd, "-layer"))
+	{
+		long layer, mode;
+
+		Jim_GetLong(j, argv[2], &layer);
+		Jim_GetLong(j, argv[3], &mode);
+
+		printf("Changing layer %d state to %d\n", layer, mode);
+		cube_layer_control(layer, mode);
+	}
+	else
+		return JIM_ERR;
+
+	return JIM_OK;
+}
+
+static int
 jim_cube_help(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 {
-
 	if (argc != 1 && argc != 2)
 	{
 		Jim_WrongNumArgs(j, 1, argv, "[command]");
@@ -1002,6 +1037,7 @@ jim_init()
 	Jim_CreateCommand(j, "cube.textchar", jim_cube_textchar, NULL, NULL);
 	Jim_CreateCommand(j, "cube.translate", jim_cube_translate, NULL, NULL);
 	Jim_CreateCommand(j, "cube.rotate", jim_cube_rotate, NULL, NULL);
+	Jim_CreateCommand(j, "cube.hw.debug", jim_cube_hwdebug, NULL, NULL);
 	Jim_EvalSource(j, NULL, 1, "\n"
 		"signal handle SIGINT\n"
 	);
