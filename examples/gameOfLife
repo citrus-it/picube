@@ -1,0 +1,111 @@
+
+# A jim version of the Game-of-life animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+
+# The number of generations per second
+set speed 10
+
+proc seed_cube {} {
+	# Generate a random start pattern of living cells
+	loop z 2 8 {
+	  loop x 2 6 {
+	    loop y 2 6 {
+		if {[rand 2] != 0} continue
+		cube.led $x $y $z 33 0 63
+	    }
+	  }
+	}
+}
+
+proc run_generation {} {
+	# Maintain a count of living cells.
+	set living 0
+
+	# Begin building the new cube in an empty buffer.
+	cube.begin
+
+	# For each cell in the cube
+	loop x 0 8 { loop y 0 8 { loop z 0 8 {
+		# Find the number of live neighbours for each cell.
+		set count 0
+		loop i -1 2 { loop j -1 2 { loop k -1 2 {
+			lassign [cube.getled \
+			    $($x + $i) $($y + $j) $($z + $k)] r g b
+			if {$b} { incr count }
+		}}}
+
+		# If this cell is alive, don't count it as a neighbour
+		lassign [cube.getled $x $y $z] r g b
+		if {$b} { incr count -1 }
+
+		if {$count == 4} {
+			# four neighbours, this one is alive
+			if {!$b} {
+				# newly born (not blue last time)
+				cube.led $x $y $z 33 0 63
+			} else {
+				# survivor
+				cube.led $x $y $z 0 0 63
+			}
+			incr living
+		} else {
+			# kill this cell.
+			if {$b} {
+				# If it was alive make it dim red.
+				cube.led $x $y $z 3 0 0
+			} else {
+				# otherwise it's just off.
+				cube.led $x $y $z 0 0 0
+			}
+		}
+	}}}
+
+	# Transfer the next generation to the cube.
+	cube.commit
+
+	return $living
+}
+
+proc run_GameOfLife {} {
+	global speed
+
+	# Seed the initial cube
+	seed_cube
+
+	# Pause to show the initial birth pattern.
+	delay $(3000 / $speed)
+
+	# Iterate through 150 generations
+	loop gen 0 150 {
+		set living [run_generation]
+
+		# If there are no living cells left
+		if {!$living} {
+			delay $(10000 / $speed)
+			cube.clear
+			# no more generations
+			puts "All dead at $gen"
+			break
+		}
+
+		# Pause between generations
+		delay $(1000 / $speed)
+		# On to next generation
+	}
+}
+
+proc GameOfLife {{runs 5}} {
+	global speed
+
+	loop runs 0 $runs {
+		run_GameOfLife
+		delay $(10000 / $speed)
+	}
+}
+
+if {!$interactive} { GameOfLife 5 }
+
