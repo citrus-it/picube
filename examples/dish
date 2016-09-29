@@ -17,12 +17,6 @@ proc build_dish {} {
 	cube.commit -nocopy
 }
 
-proc bump_colour {{bump 30}} {{colour 0}} {
-	incr colour $bump
-	if {$colour > 189} { incr colour -190 }
-	cube.colour $colour
-}
-
 proc Dish {} {
 	loop iter 0 25 {
 		bump_colour
