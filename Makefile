@@ -43,7 +43,7 @@ cube: jimtcl/libjim.a ${OBJS}
 
 jimtcl/libjim.a:
 	cd jimtcl; \
-	./configure \
+	CFLAGS=-DPICUBE ./configure \
 		--math \
 		--disable-docs \
 		--with-ext="oo tree"; \

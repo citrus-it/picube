@@ -94,11 +94,11 @@ int Jim_InteractivePrompt(Jim_Interp *interp)
     }
 #endif
 
-#if 0
-    printf("Welcome to Jim version %d.%d\n",
+#ifdef PICUBE
+    printf("Welcome to cube shell (Jim %d.%d).\n",
         JIM_VERSION / 100, JIM_VERSION % 100);
 #else
-    printf("Welcome to cube shell (Jim %d.%d).\n",
+    printf("Welcome to Jim version %d.%d\n",
         JIM_VERSION / 100, JIM_VERSION % 100);
 #endif
     Jim_SetVariableStrWithStr(interp, JIM_INTERACTIVE, "1");
@@ -161,6 +161,9 @@ int Jim_InteractivePrompt(Jim_Interp *interp)
         if (history_file) {
             Jim_HistorySave(history_file);
         }
+#endif
+#ifdef PICUBE
+	interp->sigmask = 0;
 #endif
         retcode = Jim_EvalObj(interp, scriptObjPtr);
         Jim_DecrRefCount(interp, scriptObjPtr);
