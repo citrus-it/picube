@@ -1,0 +1,50 @@
+
+# A jim version of the mysterious animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+proc bump_colour {{bump 30}} {{colour 0}} {
+	incr colour $bump
+	if {$colour > 189} { incr colour -190 }
+	if {$colour < 0} { incr colour 189 }
+	cube.colour $colour
+}
+
+proc Mysterious {} {
+	set x 3
+	set y 3
+
+	loop j 0 400 {
+		switch -- [rand 8] {
+			0	{ incr x }
+			1	{ incr x -1 }
+			2	{ incr y }
+			3	{ incr y -1 }
+		}
+
+		if {$x < 0} { set x 1 }
+		if {$x > 6} { set x 6 }
+		if {$y < 0} { set y 1 }
+		if {$y > 6} { set y 5 }
+
+		bump_colour -3
+
+		# Build top layer
+		cube.led $x		$y		7
+		cube.led $($x + 1)	$y		7
+		cube.led $x		$($y + 1)	7
+		cube.led $($x + 1)	$($y + 1)	7
+
+		delay 50
+
+		# Shift cube down. This will automatically clear any LEDs
+		# set in the top layer.
+		cube.translate 0 0 -1
+	}
+	cube.clear
+}
+
+if {!$interactive} Mysterious
+
