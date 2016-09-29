@@ -203,9 +203,6 @@ jim_cube_colour(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 			Jim_GetLong(j, argv[2], &intensity);
 			argc -= 2, argv += 2;
 		}
-		else
-			// trigger syntax error.
-			argc = 0;
 	}
 
 	if (argc != 1 && argc != 2 && argc != 4)
