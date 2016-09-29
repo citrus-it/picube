@@ -5,6 +5,11 @@
 #  * Downloads of this template and upcoming versions, along with detailed
 #  * instructions, are available at: http://d2-webdesign.com/cube
 
+<<<<<<< HEAD
+=======
+set colour 0
+
+>>>>>>> 7c93bc0e10709551b0b30ffc312597d322a3be69
 proc build_dish {} {
 	cube.begin
 
@@ -17,9 +22,17 @@ proc build_dish {} {
 	cube.commit -nocopy
 }
 
+<<<<<<< HEAD
 proc bump_colour {{bump 30}} {{colour 0}} {
 	incr colour $bump
 	if {$colour > 189} { incr colour -190 }
+=======
+proc bump_colour {} {
+	global colour
+
+	incr colour 30
+	if {$colour > 189} { set colour 0 }
+>>>>>>> 7c93bc0e10709551b0b30ffc312597d322a3be69
 	cube.colour $colour
 }
 
