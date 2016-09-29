@@ -9,7 +9,7 @@ volatile uint8_t canary = 0;
 void *
 canary_thread(void *arg)
 {
-	uint8_t running = 0;
+	uint8_t x = 0;
 
 	sleep(5);
 
@@ -17,21 +17,21 @@ canary_thread(void *arg)
 	{
 		delay(500);
 
-		__atomic_load(&exiting, &running, __ATOMIC_RELAXED);
-		if (running)
+		__atomic_load(&exiting, &x, __ATOMIC_RELAXED);
+		if (x)
 			break;
 
-		__atomic_load(&canary, &running, __ATOMIC_RELAXED);
+		__atomic_load(&canary, &x, __ATOMIC_RELAXED);
 
-		if (!running)
+		if (!x)
 		{
 			printf("Canary not singing!\n");
 			cube_off();
 			exit(0);
 		}
 
-		running = 0;
-		__atomic_store(&canary, &running, __ATOMIC_RELAXED);
+		x = 0;
+		__atomic_store(&canary, &x, __ATOMIC_RELAXED);
 	}
 }
 
