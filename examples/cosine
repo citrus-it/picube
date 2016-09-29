@@ -6,6 +6,8 @@
 #  * instructions, are available at: http://d2-webdesign.com/cube
 
 # The calculations take a while so build a lookup table first.
+# Preparing the table also makes the animation run at the same speed on
+# different models of Pi.
 set tab [lrepeat 40 [lrepeat 8 [lrepeat 8 0]]]
 loop i 0 40 {
 	loop x 0 8 {
