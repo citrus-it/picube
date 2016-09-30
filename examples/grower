@@ -1,0 +1,71 @@
+
+# A jim version of the grower animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+
+set growtable {
+	{3 4 0 0}
+	{2 5 3 4}
+	{1 6 2 5}
+	{0 7 1 6}
+}
+
+proc grow {sz time} {
+	global growtable
+
+	lassign [lindex $growtable $sz] a b c d
+
+	incr b
+	loop x $a $b { loop y $a $b { loop z $a $b {
+		cube.led $x $y $z
+	}}}
+
+	if {$sz > 0} {
+		incr d
+		loop x $c $d { loop y $c $d { loop z $c $d {
+			cube.led $x $y $z 0 0 0
+		}}}
+	}
+	delay $time
+}
+
+proc Grower {} {
+	loop q 0 15 {
+		bump_colour 10
+		loop x 0 4 { grow $x 100 }
+		delay 100
+		bump_colour 10
+		loop 2 -1 -1 { grow $x 100 }
+		delay 100
+		if {$q % 2} { cube.clear }
+	}
+	loop q 0 15 {
+		if {$q % 2} {
+			cube.colour 85
+		} else {
+			cube.colour 0
+		}
+		loop x 0 4 { grow $x 100 }
+		delay 100
+		loop 2 -1 -1 { grow $x 100 }
+		delay 100
+		if {$q % 2} { cube.clear }
+	}
+	loop q 0 15 {
+		cube.colour white
+		loop x 0 4 { grow $x 100 }
+		cube.clear
+		grow 2 50
+		cube.clear
+		grow 1 50
+		cube.clear
+	}
+	cube.clear
+}
+
+
+if {!$interactive} Grower
+
