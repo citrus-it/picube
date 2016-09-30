@@ -1,0 +1,7 @@
+NAME		cube.lookup
+SYNTAX		cube.lookup [-distance|-angle|-diagonal] <x> <y>
+DESCRIPTION	Look up a value in a predefined table.
+		-distance: The LEDs distance from the centre of the cube.
+		-angle: Angle in radians to each LED from the cube centre.
+		-diagonal: Coordinates which help in a smooth diagonal move.
+RETURN VALUE	A single floating point value.
