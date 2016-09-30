@@ -1,6 +1,5 @@
 
 typedef struct sprite {
-	int lock;
 	byte buffer[6][6][6];
 	byte description[6][6][6];
 

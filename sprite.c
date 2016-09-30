@@ -204,166 +204,352 @@ sprite_copyBack(sprite s)
 void
 sprite_rollX(sprite s, int dir)
 {
-      s->lock = 0;
-      if (dir== 0){
-        if (s->motion[0] == 0 && s->motion[1] == 0 && s->motion[2] == -1) {
-          s->lock= 1;
-          if (s->place[2]<1){s->motion[0] = 0; s->motion[1] = -1; s->motion[2] = 0;}
-        }
-        if (s->motion[0] == 0 && s->motion[1] == -1 && s->motion[2] == 0) {
-          s->lock= 1;
-          if (s->place[1]<1){s->motion[0] = 0; s->motion[1] = 0; s->motion[2] = 1;}
-        }
-        if (s->motion[0] == 0 && s->motion[1] == 0 && s->motion[2] == 1) {
-          s->lock= 1;
-          if (s->place[2]>7-s->myZ){s->motion[0] = 0; s->motion[1] = 1; s->motion[2] = 0;}
-        }
-        if (s->motion[0] == 0 && s->motion[1] == 1 && s->motion[2] == 0) {
-          s->lock= 1;
-          if (s->place[1]>7-s->myY){s->motion[0] = 0; s->motion[1] = 0; s->motion[2] = -1;}
-        }
-        if (s->lock<1 && s->place[0]<7-s->myZ) {
-          s->motion[0] = 0; s->motion[1] = 0; s->motion[2] = -1;
-        }
-        if (s->lock<1 && s->place[0]==7-s->myZ) {
-          s->motion[0] = 0; s->motion[1] = -1; s->motion[2] = 0;
-        }
-      }
-      else {
-        if (s->motion[0] == 0 && s->motion[1] == 0 && s->motion[2] == 1) {
-          s->lock= 1;
-          if (s->place[2]>7-s->myZ){s->motion[0] = 0; s->motion[1] = -1; s->motion[2] = 0;}
-        }
-        if (s->motion[0] == 0 && s->motion[1] == 1 && s->motion[2] == 0) {
-          s->lock= 1;
-          if (s->place[1]>7-s->myY){s->motion[0] = 0; s->motion[1] = 0; s->motion[2] = 1;}
-        }
-        if (s->motion[0] == 0 && s->motion[1] == 0 && s->motion[2] == -1) {
-          s->lock= 1;
-          if (s->place[2]<1){s->motion[0] = 0; s->motion[1] = 1; s->motion[2] = 0;}
-        }
-        if (s->motion[0] == 0 && s->motion[1] == -1 && s->motion[2] == 0) {
-          s->lock= 1;
-          if (s->place[1]<1){s->motion[0] = 0; s->motion[1] = 0; s->motion[2] = -1;}
-        }
-        if (s->lock<1 && s->place[2]<7-s->myZ) {
-          s->motion[0] = 0; s->motion[1] = 0; s->motion[2] = 1;
-        }
-        if (s->lock<1 && s->place[2]==7-s->myZ) {
-          s->motion[0] = 0; s->motion[1] = 1; s->motion[2] = 0;
-        }
-      }
-      sprite_moveIt(s);
+	int lock = 0;
+	if (dir == 0)
+	{
+		if (s->motion[0] == 0 && s->motion[1] == 0 && s->motion[2] == -1)
+		{
+			lock = 1;
+			if (s->place[2] < 1)
+			{
+				s->motion[0] = 0;
+				s->motion[1] = -1;
+				s->motion[2] = 0;
+			}
+		}
+		if (s->motion[0] == 0 && s->motion[1] == -1 && s->motion[2] == 0)
+		{
+			lock = 1;
+			if (s->place[1] < 1)
+			{
+				s->motion[0] = 0;
+				s->motion[1] = 0;
+				s->motion[2] = 1;
+			}
+		}
+		if (s->motion[0] == 0 && s->motion[1] == 0 && s->motion[2] == 1)
+		{
+			lock = 1;
+			if (s->place[2] > 7 - s->myZ)
+			{
+				s->motion[0] = 0;
+				s->motion[1] = 1;
+				s->motion[2] = 0;
+			}
+		}
+		if (s->motion[0] == 0 && s->motion[1] == 1 && s->motion[2] == 0)
+		{
+			lock = 1;
+			if (s->place[1] > 7 - s->myY)
+			{
+				s->motion[0] = 0;
+				s->motion[1] = 0;
+				s->motion[2] = -1;
+			}
+		}
+		if (lock < 1 && s->place[0] < 7 - s->myZ)
+		{
+			s->motion[0] = 0;
+			s->motion[1] = 0;
+			s->motion[2] = -1;
+		}
+		if (lock < 1 && s->place[0] == 7 - s->myZ)
+		{
+			s->motion[0] = 0;
+			s->motion[1] = -1;
+			s->motion[2] = 0;
+		}
+	}
+	else
+	{
+		if (s->motion[0] == 0 && s->motion[1] == 0 && s->motion[2] == 1)
+		{
+			lock = 1;
+			if (s->place[2] > 7 - s->myZ)
+			{
+				s->motion[0] = 0;
+				s->motion[1] = -1;
+				s->motion[2] = 0;
+			}
+		}
+		if (s->motion[0] == 0 && s->motion[1] == 1 && s->motion[2] == 0)
+		{
+			lock = 1;
+			if (s->place[1] > 7 - s->myY)
+			{
+				s->motion[0] = 0;
+				s->motion[1] = 0;
+				s->motion[2] = 1;
+			}
+		}
+		if (s->motion[0] == 0 && s->motion[1] == 0 && s->motion[2] == -1)
+		{
+			lock = 1;
+			if (s->place[2] < 1)
+			{
+				s->motion[0] = 0;
+				s->motion[1] = 1;
+				s->motion[2] = 0;
+			}
+		}
+		if (s->motion[0] == 0 && s->motion[1] == -1 && s->motion[2] == 0)
+		{
+			lock = 1;
+			if (s->place[1] < 1)
+			{
+				s->motion[0] = 0;
+				s->motion[1] = 0;
+				s->motion[2] = -1;
+			}
+		}
+		if (lock < 1 && s->place[2] < 7 - s->myZ)
+		{
+			s->motion[0] = 0;
+			s->motion[1] = 0;
+			s->motion[2] = 1;
+		}
+		if (lock < 1 && s->place[2] == 7 - s->myZ)
+		{
+			s->motion[0] = 0;
+			s->motion[1] = 1;
+			s->motion[2] = 0;
+		}
+	}
+	sprite_moveIt(s);
 }
 
 void
 sprite_rollY(sprite s, int dir)
 {
-      s->lock = 0;
-      if (dir== 0){
-        if (s->motion[0] == 1 && s->motion[1] == 0 && s->motion[2] == 0) {
-          s->lock= 1;
-          if (s->place[0]>7-s->myX){s->motion[0] = 0; s->motion[1] = 0; s->motion[2] = -1;}
-        }
-        if (s->motion[0] == 0 && s->motion[1] == 0 && s->motion[2] == 1) {
-          s->lock= 1;
-          if (s->place[2]>7-s->myZ){s->motion[0] = 1; s->motion[1] = 0; s->motion[2] = 0;}
-        }
-        if (s->motion[0] == -1 && s->motion[1] == 0 && s->motion[2] == 0) {
-          s->lock= 1;
-          if (s->place[0]<1){s->motion[0] = 0; s->motion[1] = 0; s->motion[2] = 1;}
-        }
-        if (s->motion[0] == 0 && s->motion[1] == 0 && s->motion[2] == -1) {
-          s->lock= 1;
-          if (s->place[2]<1){s->motion[0] = -1; s->motion[1] = 0; s->motion[2] = 0;}
-        }
-        if (s->lock<1 && s->place[0]<7-s->myX) { // used to be >1 which I think is a mistake  Changed to be consistent
-          s->motion[0] = -1; s->motion[1] = 0; s->motion[2] = 0;
-        }
-        if (s->lock<1 && s->place[0]==7-s->myX) { // used to be ==0
-          s->motion[0] = 0; s->motion[1] = 0; s->motion[2] = -1;
-        }
-      }
-      else {
-        if (s->motion[0] == 1 && s->motion[1] == 0 && s->motion[2] == 0) {
-          s->lock= 1;
-          if (s->place[0]>7-s->myX){s->motion[0] = 0; s->motion[1] = 0; s->motion[2] = 1;}
-        }
-        if (s->motion[0] == 0 && s->motion[1] == 0 && s->motion[2] == 1) {
-          s->lock= 1;
-          if (s->place[2]>7-s->myZ){s->motion[0] = -1; s->motion[1] = 0; s->motion[2] = 0;}
-        }
-        if (s->motion[0] == -1 && s->motion[1] == 0 && s->motion[2] == 0) {
-          s->lock= 1;
-          if (s->place[0]<1){s->motion[0] = 0; s->motion[1] = 0; s->motion[2] = -1;}
-        }
-        if (s->motion[0] == 0 && s->motion[1] == 0 && s->motion[2] == -1) {
-          s->lock= 1;
-          if (s->place[2]<1){s->motion[0] = 1; s->motion[1] = 0; s->motion[2] = 0;}
-        }
-        if (s->lock<1 && s->place[0]<7-s->myX) {
-          s->motion[0] = 1; s->motion[1] = 0; s->motion[2] = 0;
-        }
-        if (s->lock<1 && s->place[0]==7-s->myX) {
-          s->motion[0] = 0; s->motion[1] = 0; s->motion[2] = 1;
-        }
-      }
-      sprite_moveIt(s);
+	int lock = 0;
+	if (dir == 0)
+	{
+		if (s->motion[0] == 1 && s->motion[1] == 0 && s->motion[2] == 0)
+		{
+			lock = 1;
+			if (s->place[0] > 7 - s->myX)
+			{
+				s->motion[0] = 0;
+				s->motion[1] = 0;
+				s->motion[2] = -1;
+			}
+		}
+		if (s->motion[0] == 0 && s->motion[1] == 0 && s->motion[2] == 1)
+		{
+			lock = 1;
+			if (s->place[2] > 7 - s->myZ)
+			{
+				s->motion[0] = 1;
+				s->motion[1] = 0;
+				s->motion[2] = 0;
+			}
+		}
+		if (s->motion[0] == -1 && s->motion[1] == 0 && s->motion[2] == 0)
+		{
+			lock = 1;
+			if (s->place[0] < 1)
+			{
+				s->motion[0] = 0;
+				s->motion[1] = 0;
+				s->motion[2] = 1;
+			}
+		}
+		if (s->motion[0] == 0 && s->motion[1] == 0 && s->motion[2] == -1)
+		{
+			lock = 1;
+			if (s->place[2] < 1)
+			{
+				s->motion[0] = -1;
+				s->motion[1] = 0;
+				s->motion[2] = 0;
+			}
+		}
+		if (lock < 1 && s->place[0] < 7 - s->myX)
+		{		// used to be >1 which I think is a mistake  Changed to be consistent
+			s->motion[0] = -1;
+			s->motion[1] = 0;
+			s->motion[2] = 0;
+		}
+		if (lock < 1 && s->place[0] == 7 - s->myX)
+		{		// used to be ==0
+			s->motion[0] = 0;
+			s->motion[1] = 0;
+			s->motion[2] = -1;
+		}
+	}
+	else
+	{
+		if (s->motion[0] == 1 && s->motion[1] == 0 && s->motion[2] == 0)
+		{
+			lock = 1;
+			if (s->place[0] > 7 - s->myX)
+			{
+				s->motion[0] = 0;
+				s->motion[1] = 0;
+				s->motion[2] = 1;
+			}
+		}
+		if (s->motion[0] == 0 && s->motion[1] == 0 && s->motion[2] == 1)
+		{
+			lock = 1;
+			if (s->place[2] > 7 - s->myZ)
+			{
+				s->motion[0] = -1;
+				s->motion[1] = 0;
+				s->motion[2] = 0;
+			}
+		}
+		if (s->motion[0] == -1 && s->motion[1] == 0 && s->motion[2] == 0)
+		{
+			lock = 1;
+			if (s->place[0] < 1)
+			{
+				s->motion[0] = 0;
+				s->motion[1] = 0;
+				s->motion[2] = -1;
+			}
+		}
+		if (s->motion[0] == 0 && s->motion[1] == 0 && s->motion[2] == -1)
+		{
+			lock = 1;
+			if (s->place[2] < 1)
+			{
+				s->motion[0] = 1;
+				s->motion[1] = 0;
+				s->motion[2] = 0;
+			}
+		}
+		if (lock < 1 && s->place[0] < 7 - s->myX)
+		{
+			s->motion[0] = 1;
+			s->motion[1] = 0;
+			s->motion[2] = 0;
+		}
+		if (lock < 1 && s->place[0] == 7 - s->myX)
+		{
+			s->motion[0] = 0;
+			s->motion[1] = 0;
+			s->motion[2] = 1;
+		}
+	}
+	sprite_moveIt(s);
 }
 
 void
 sprite_rollZ(sprite s, int dir)
 {
-      s->lock = 0;
-      if (dir== 0){
-        if (s->motion[0] == 1 && s->motion[1] == 0 && s->motion[2] == 0) {
-          s->lock= 1;
-          if (s->place[0]>7-s->myX){s->motion[0] = 0; s->motion[1] = -1; s->motion[2] = 0;}
-        }
-        if (s->motion[0] == 0 && s->motion[1] == 1 && s->motion[2] == 0) {
-          s->lock= 1;
-          if (s->place[1]>7-s->myY){s->motion[0] = 1; s->motion[1] = 0; s->motion[2] = 0;}
-        }
-        if (s->motion[0] == -1 && s->motion[1] == 0 && s->motion[2] == 0) {
-          s->lock= 1;
-          if (s->place[0]<1){s->motion[0] = 0; s->motion[1] = 1; s->motion[2] = 0;}
-        }
-        if (s->motion[0] == 0 && s->motion[1] == -1 && s->motion[2] == 0) {
-          s->lock= 1;
-          if (s->place[1]<1){s->motion[0] = -1; s->motion[1] = 0; s->motion[2] = 0;}
-        }
-        if (s->lock<1 && s->place[0]<7-s->myX) {
-          s->motion[0] = 1; s->motion[1] = 0; s->motion[2] = 0;
-        }
-        if (s->lock<1 && s->place[0]==7-s->myX) {
-          s->motion[0] = 0; s->motion[1] = 1; s->motion[2] = 0;
-        }
-      }
-      else {
-         if (s->motion[0] == -1 && s->motion[1] == 0 && s->motion[2] == 0) {
-          s->lock= 1;
-          if (s->place[0]<1){s->motion[0] = 0; s->motion[1] = -1; s->motion[2] = 0;}
-        }
-        if (s->motion[0] == 0 && s->motion[1] == -1 && s->motion[2] == 0) {
-          s->lock= 1;
-          if (s->place[1]<1){s->motion[0] = 1; s->motion[1] = 0; s->motion[2] = 0;}
-        }
-        if (s->motion[0] == 1 && s->motion[1] == 0 && s->motion[2] == 0) {
-          s->lock= 1;
-          if (s->place[0]>7-s->myX){s->motion[0] = 0; s->motion[1] = 1; s->motion[2] = 0;}
-        }
-        if (s->motion[0] == 0 && s->motion[1] == 1 && s->motion[2] == 0) {
-          s->lock= 1;
-          if (s->place[1]>7-s->myY){s->motion[0] = -1; s->motion[1] = 0; s->motion[2] = 0;}
-        }
-        if (s->lock<1 && s->place[0]<7-s->myX) {
-          s->motion[0] = -1; s->motion[1] = 0; s->motion[2] = 0;
-        }
-        if (s->lock<1 && s->place[0]==7-s->myX) {
-          s->motion[0] = 0; s->motion[1] = -1; s->motion[2] = 0;
-        }
-      }
-      sprite_moveIt(s);
+	int lock = 0;
+	if (dir == 0)
+	{
+		if (s->motion[0] == 1 && s->motion[1] == 0 && s->motion[2] == 0)
+		{
+			lock = 1;
+			if (s->place[0] > 7 - s->myX)
+			{
+				s->motion[0] = 0;
+				s->motion[1] = -1;
+				s->motion[2] = 0;
+			}
+		}
+		if (s->motion[0] == 0 && s->motion[1] == 1 && s->motion[2] == 0)
+		{
+			lock = 1;
+			if (s->place[1] > 7 - s->myY)
+			{
+				s->motion[0] = 1;
+				s->motion[1] = 0;
+				s->motion[2] = 0;
+			}
+		}
+		if (s->motion[0] == -1 && s->motion[1] == 0 && s->motion[2] == 0)
+		{
+			lock = 1;
+			if (s->place[0] < 1)
+			{
+				s->motion[0] = 0;
+				s->motion[1] = 1;
+				s->motion[2] = 0;
+			}
+		}
+		if (s->motion[0] == 0 && s->motion[1] == -1 && s->motion[2] == 0)
+		{
+			lock = 1;
+			if (s->place[1] < 1)
+			{
+				s->motion[0] = -1;
+				s->motion[1] = 0;
+				s->motion[2] = 0;
+			}
+		}
+		if (lock < 1 && s->place[0] < 7 - s->myX)
+		{
+			s->motion[0] = 1;
+			s->motion[1] = 0;
+			s->motion[2] = 0;
+		}
+		if (lock < 1 && s->place[0] == 7 - s->myX)
+		{
+			s->motion[0] = 0;
+			s->motion[1] = 1;
+			s->motion[2] = 0;
+		}
+	}
+	else
+	{
+		if (s->motion[0] == -1 && s->motion[1] == 0 && s->motion[2] == 0)
+		{
+			lock = 1;
+			if (s->place[0] < 1)
+			{
+				s->motion[0] = 0;
+				s->motion[1] = -1;
+				s->motion[2] = 0;
+			}
+		}
+		if (s->motion[0] == 0 && s->motion[1] == -1 && s->motion[2] == 0)
+		{
+			lock = 1;
+			if (s->place[1] < 1)
+			{
+				s->motion[0] = 1;
+				s->motion[1] = 0;
+				s->motion[2] = 0;
+			}
+		}
+		if (s->motion[0] == 1 && s->motion[1] == 0 && s->motion[2] == 0)
+		{
+			lock = 1;
+			if (s->place[0] > 7 - s->myX)
+			{
+				s->motion[0] = 0;
+				s->motion[1] = 1;
+				s->motion[2] = 0;
+			}
+		}
+		if (s->motion[0] == 0 && s->motion[1] == 1 && s->motion[2] == 0)
+		{
+			lock = 1;
+			if (s->place[1] > 7 - s->myY)
+			{
+				s->motion[0] = -1;
+				s->motion[1] = 0;
+				s->motion[2] = 0;
+			}
+		}
+		if (lock < 1 && s->place[0] < 7 - s->myX)
+		{
+			s->motion[0] = -1;
+			s->motion[1] = 0;
+			s->motion[2] = 0;
+		}
+		if (lock < 1 && s->place[0] == 7 - s->myX)
+		{
+			s->motion[0] = 0;
+			s->motion[1] = -1;
+			s->motion[2] = 0;
+		}
+	}
+	sprite_moveIt(s);
 }
 
 void
