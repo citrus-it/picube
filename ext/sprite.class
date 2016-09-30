@@ -1,0 +1,171 @@
+
+# A sprite class used by animations.
+
+# px, py, pz	- position of bottom left corner.
+# dx, dy, dz	- direction of motion.
+# lx, ly, lz	- dimensions of sprite.
+# data		- data for each sprite plane.
+
+class sprite {
+	px -1 py -1 pz -1
+	dx  0 dy  0 dz  0
+	lx  3 ly  3 lz  3
+	intensity	5
+	data		{}
+}
+
+proc {sprite create} {lx ly lz} {
+	set data [lrepeat $lx [lrepeat $ly [lrepeat $lz 0]]]
+	set s [sprite new [list lx $lx ly $ly lz $lz data $data]]
+}
+
+sprite method place {args} { lassign $args px py pz }
+sprite method motion {args} { lassign $args dx dy dz }
+
+sprite method fill {colour} {
+	set c [cube.colour $colour]
+	loop x 0 $lx { loop y 0 $ly { loop z 0 $lz {
+		lset data $x $y $z $c
+	}}}
+}
+
+sprite method draw {} {
+	loop x 0 $lx { loop y 0 $ly { loop z 0 $lz {
+		set c [lindex $data $x $y $z]
+		cube.led $($px + $x) $($py + $y) $($px + $z) {*}$c
+	}}}
+}
+
+sprite method hide {} {
+	loop x 0 $lx { loop y 0 $ly { loop z 0 $lz {
+		cube.led $($px + $x) $($py + $y) $($px + $z) 0 0 0
+	}}}
+}
+
+sprite method move {} {
+	$self hide
+	incr px $dx
+	incr py $dy
+	incr pz $dz
+	$self draw
+}
+
+sprite method bounce {} {
+	$self move
+	if {$px <= 0 && $dx < 0} { set dx $(-$dx) }
+	if {$py <= 0 && $dy < 0} { set dy $(-$dy) }
+	if {$pz <= 0 && $dz < 0} { set dz $(-$dz) }
+	if {$px + $lx >= 7 && $dx > 0} { set dx $(-$dx) }
+	if {$py + $ly >= 7 && $dy > 0} { set dy $(-$dy) }
+	if {$pz + $lz >= 7 && $dz > 0} { set dz $(-$dz) }
+}
+
+# Test whether the next movement will put the sprite outside of a cube
+# boundary.
+sprite method test_move {} {
+	set x $($px + $dx)
+	set y $($py + $dy)
+	set z $($pz + $dz)
+
+	set r {}
+
+	if {$x < 0} { lappend r lx }
+	if {$y < 0} { lappend r ly }
+	if {$z < 0} { lappend r lz }
+	if {$x + $lx > 7} { lappend r ux }
+	if {$y + $ly > 7} { lappend r uy }
+	if {$z + $lz > 7} { lappend r uz }
+
+	return $r
+}
+
+# A table containing the new motion to use if a sprite is about to go outside
+# of the cube during a roll. Table is indexed by the axis and direction
+# of rotation (0 clockwise, 1 anti-clockwise).
+# This is derived from the original sprite class in Doug's code but allows
+# for a much more concise implementation.
+set ::sprite::rolltable {
+	x {
+	    0 {
+		ly {  0  0  1 }
+		uy {  0  0 -1 }
+		lz {  0 -1  0 }
+		uz {  0  1  0 }
+	    }
+	    1 {
+		ly {  0  0 -1 }
+		uy {  0  0  1 }
+		lz {  0  1  0 }
+		uz {  0 -1  0 }
+	    }
+	}
+	y {
+	    0 {
+		lx {  0  0  1 }
+		ux {  0  0 -1 }
+		lz { -1  0  0 }
+		uz {  1  0  0 }
+	    }
+	    1 {
+		lx {  0  0 -1 }
+		ux {  0  0  1 }
+		lz {  1  0  0 }
+		uz { -1  0  0 }
+	    }
+	}
+	z {
+	    0 {
+		lx {  0  1  0 }
+		ux {  0 -1  0 }
+		ly { -1  0  0 }
+		uy {  1  0  0 }
+	    }
+	    1 {
+		lx {  0 -1  0 }
+		ux {  0  1  0 }
+		ly {  1  0  0 }
+		uy { -1  0  0 }
+	    }
+	}
+}
+
+sprite method roll {axis dir} {
+	# Simple case
+
+	set rdata [lindex $::sprite::rolltable($axis) $dir]
+
+	#puts -nonewline "$px $py $pz ($dx $dy $dz) -> "
+
+	set flag 1
+	while {$flag && [llength [set collisions [$self test_move]]] > 0} {
+		foreach dimension $collisions {
+			if {[dict exists $rdata $dimension]} {
+				#puts -nonewline " (COLL $axis $dimension) "
+				set cur "$dx $dy $dz"
+				$self motion {*}$rdata($dimension)
+				set now "$dx $dy $dz"
+				#puts " ($dx $dy $dz) "
+				if {$cur == $now} { set flag 0 }
+				break
+			} else {
+				#puts -nonewline " (OOB $axis $dimension) "
+				set motion "$dx $dy $dz"
+				switch $dimension {
+				    lx { lset motion 0 $px }
+				    ly { lset motion 1 $py }
+				    lz { lset motion 2 $pz }
+				    ux { lset motion 0 $(7 - $px - $lx) }
+				    uy { lset motion 1 $(7 - $py - $ly) }
+				    uz { lset motion 2 $(7 - $pz - $lz) }
+				}
+				$self motion {*}$motion
+				break
+			}
+		}
+	}
+
+	#puts "$px $py $pz ($dx $dy $dz)"
+
+	$self move
+}
+

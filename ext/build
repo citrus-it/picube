@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for f in *.tcl; do
+for f in *.tcl *.class; do
 	[ -f $f ] || continue
 
 	echo "Jim_EvalSource(j, NULL, 1,"
