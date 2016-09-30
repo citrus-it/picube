@@ -1,0 +1,38 @@
+
+# A jim version of the RollingBall animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+# Example showing the use of the Jim sprite class
+
+proc rollingBall {} {
+	set ball [sprite create 6 6 6]
+	$ball place 0 1 1
+
+	loop x 0 95 {
+		$ball sphere [bump_colour 2]
+		$ball roll x 0
+		delay 100
+
+		# Move along the X axis.
+		switch $x {
+		    15	{ cube.clear
+			  $ball place 1 [$ball get py] [$ball get pz] }
+		    30	{ cube.clear
+			  $ball place 2 [$ball get py] [$ball get pz] }
+		    45	{ cube.clear
+			  $ball place 1 [$ball get py] [$ball get pz] }
+		    60	{ cube.clear
+			  $ball place 0 [$ball get py] [$ball get pz] }
+		    75	{ cube.clear
+			  $ball place 1 [$ball get py] [$ball get pz] }
+		}
+	}
+
+	cube.clear
+}
+
+if {!$interactive} rollingBall
+
