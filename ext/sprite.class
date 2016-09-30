@@ -42,12 +42,33 @@ sprite method hide {} {
 	}}}
 }
 
-sprite method move {} {
-	$self hide
+sprite method sphere {colour} {
+	set c [cube.colour {*}$colour]
+
+	set radiusx $($dx / 2)
+	set radiusy $($dy / 2)
+	set radiusz $($dz / 2)
+
+	loop x 0 $lx { loop y 0 $ly { loop z 0 $lz {
+		set polar $(sqrt(
+			pow($x - $radiusx, 2) +
+			pow($y - $radiusy, 2) +
+			pow($z - $radiusz, 2)
+		))
+		if {$polar < $radiusx} {
+			lset data $x $y $z $c
+		} else {
+			lset data $x $y $z {0 0 0}
+		}
+	}}}
+}
+
+sprite method move {{visible 1}} {
+	if {$visible} { $self hide }
 	incr px $dx
 	incr py $dy
 	incr pz $dz
-	$self draw
+	if {$visible} { $self draw }
 }
 
 sprite method bounce {} {
