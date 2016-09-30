@@ -1,0 +1,40 @@
+
+# A jim version of the FlyingBoxes animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+# Example showing the use of the Jim sprite class
+
+proc flyingBoxes {} {
+
+	set s1 [sprite create 3 3 3]
+	$s1 fill Green
+	$s1 place 3 4 3
+	$s1 motion 2 1 1
+	$s1 draw
+
+	set s2 [sprite create 3 3 3]
+	$s2 fill Red
+	$s2 place 0 3 2
+	$s2 motion 2 1 1
+	$s2 draw
+
+	set s3 [sprite create 3 3 3]
+	$s3 fill Blue
+	$s3 place 4 2 4
+	$s3 motion 2 1 1
+	$s3 draw
+
+	loop i 0 250 {
+		$s1 roll x 1
+		$s2 roll z 1
+		$s3 roll y -1
+		delay 100
+	}
+	cube.clear
+}
+
+if {!$interactive} flyingBoxes
+
