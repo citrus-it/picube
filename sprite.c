@@ -20,7 +20,7 @@
 #include "sprite.h"
 
 extern uint8_t myred, mygreen, myblue;
-#define getColor(c, i) cube_colour((c), &myred, &mygreen, &myblue, (i))
+#define getColor(c, i) cube_colour((c), &myred, &mygreen, &myblue, (i) + 1)
 
 void
 sprite_colorIt(sprite s, int colour)

@@ -193,7 +193,7 @@ static int
 jim_cube_colour(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 {
 	Jim_Obj *colour;
-	long intensity = 4;
+	long intensity = 5;
 
 	if (argc > 2)
 	{
@@ -213,7 +213,7 @@ jim_cube_colour(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 		return JIM_ERR;
 	}
 
-	if (intensity < 1 || intensity > 4)
+	if (intensity < 1 || intensity > 5)
 	{
 		Jim_SetResultString(j, "Bad colour intensity.", -1);
 		return JIM_ERR;
@@ -269,6 +269,12 @@ jim_cube_colour(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 		red = r, green = g, blue = b;
 		// The colour will be set as well as returned.
 		argc = 4;
+	}
+	else while (intensity++ < 5)
+	{
+		red >>= 1;
+		green >>= 1;
+		blue >>= 1;
 	}
 
 	colour = Jim_NewListObj(j, NULL, 0);

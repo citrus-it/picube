@@ -26,9 +26,10 @@ uint8_t myred, myblue, mygreen, mycolor;
 
 /*
  * ChipKit code compatible version of cube_colour (complete with US spelling)
- *  that uses global variables for the result.
+ * that uses global variables for the result.
+ * Convert intensities 0-4 to 0-5
  */
-#define getColor(c, i) cube_colour((c), &myred, &mygreen, &myblue, (i))
+#define getColor(c, i) cube_colour((c), &myred, &mygreen, &myblue, (i) + 1)
 
 #define clearCube() cube_clear(0)
 #define fillCube() cube_fill(0)

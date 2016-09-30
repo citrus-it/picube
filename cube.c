@@ -211,7 +211,7 @@ cube_colour(int colour, uint8_t *r, uint8_t *g, uint8_t *b, int intensity)
 	else
 		*r = *g = *b = 0;
 
-	while (intensity++ < 4)
+	while (intensity++ < 5)
 	{
 		*r >>= 1;
 		*g >>= 1;

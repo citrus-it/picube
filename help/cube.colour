@@ -4,6 +4,8 @@ SYNTAX		cube.colour [-intensity n]..
 DESCRIPTION	Set or retrieve the current working colour.
 		Many commands take an optional colour argument and if that
 		argument is omitted then the current working colour is used.
+		The intensity option takes a number from 1 to 5 with 5 being
+		full brightness.
 RETURN VALUE	A list containing the red, green and blue components of the
 		current or new working colour.
 EXAMPLES	Retrieve the current working colour:
@@ -14,4 +16,6 @@ EXAMPLES	Retrieve the current working colour:
 			cube.colour 21
 		Set the working colour to dim orange:
 			cube.colour -intensity 2 orange
+NOTES		The current working colour is stored in a global variable
+		named cube.pencolour
 ALIASES		cube.color
