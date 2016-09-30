@@ -46,11 +46,11 @@ mouse method draw {} {
 	cube.led $x $y $z {*}$colour
 	# Draw the tail
 	lassign $colour r g b
+	set intensity 3
 	foreach c $history {
-		# Reduce colour brightness
-		set r $($r >> 1)
-		set g $($g >> 1)
-		set b $($b >> 1)
+		# Reduce colour brightness of each tail segment.
+		cube.colour -intensity $intensity {*}$colour
+		incr intensity -1
 
 		lassign $c hx hy hz
 		cube.led $hx $hy $hz $r $g $b
@@ -73,8 +73,52 @@ mouse method set_history {} {
 }
 
 mouse method move {} {
+
+	# Change direction if an edge has been reached.
+	# Set new direction to be towards the middle of the cube. Amongst
+	# other things this stops a mouse getting stuck in a corner.
+	# Don't move this time to give the appearance of thinking before
+	# turning.
+	if {$x >= 7 && $dx == 1} {
+		set dx 0
+		set dy $($y > 3 ? -1 : 1)
+		return
+	}
+	if {$y >= 7 && $dy == 1} {
+		set dy 0
+		set dz $($z > 3 ? -1 : 1)
+		return
+	}
+	if {$z >= 7 && $dz == 1} {
+		set dz 0
+		set dx $($x > 3 ? -1 : 1)
+		return
+	}
+	if {$x <= 0 && $dx == -1} {
+		set dx 0
+		set dz $($z > 3 ? -1 : 1)
+		return
+	}
+	if {$y <= 0 && $dy == -1} {
+		set dy 0
+		set dz $($z > 3 ? -1 : 1)
+		return
+	}
+	if {$z <= 0 && $dz == -1} {
+		set dz 0
+		set dx $($x > 3 ? -1 : 1)
+		return
+	}
+
 	$self undraw
 	$self set_history
+
+	# Move
+	incr x $dx
+	incr y $dy
+	incr z $dz
+
+	$self draw
 
 	# One in 5 chance of randomly changing direction.
 	if {[rand 5] == 0} {
@@ -90,21 +134,6 @@ mouse method move {} {
 			5	{ set dz -1 }
 		}
 	}
-
-	# Change direction if at edge.
-	if {$x >= 7 && $dx == 1} { set dx 0; set dy 1 }
-	if {$y >= 7 && $dy == 1} { set dy 0; set dz 1 }
-	if {$z >= 7 && $dz == 1} { set dz 0; set dx -1 }
-	if {$x <= 0 && $dx == -1} { set dx 0; set dy -1 }
-	if {$y <= 0 && $dy == -1} { set dy 0; set dz -1 }
-	if {$z <= 0 && $dz == -1} { set dz 1 }
-
-	# Move
-	incr x $dx
-	incr y $dy
-	incr z $dz
-
-	$self draw
 }
 
 proc mazeMice {{iter 410} {num 3}} {
