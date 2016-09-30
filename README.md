@@ -100,7 +100,12 @@ which can be used to write programs to control the cube. There are also a
 number of built-in animations which have been ported from 
 [Doug Domke's Cube Application Template](http://d2-webdesign.com/cube)
 
-### Run the example Super Big Show
+### Run some example animation scripts
+
+```console
+pi$ cube examples/rain
+pi$ cube examples/grower
+```
 
 This is the Super Big Show from 
 [Doug Domke's Cube Application Template](http://d2-webdesign.com/cube)
