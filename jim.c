@@ -190,15 +190,25 @@ jim_load_colour(Jim_Interp *jim, long *red, long *green, long *blue)
 	} \
     } while (0)
 
+
+#undef SYNTAX
+#define SYNTAX "[-get] [-intensity n] [<colour number> | <colour name> | <red green blue>]"
 static int
 jim_cube_colour(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 {
 	Jim_Obj *colour;
 	long intensity = 5;
+	int set = 1;
 
 	if (argc > 2)
 	{
 		const char *arg = Jim_GetString(argv[1], NULL);
+
+		if (!strcmp(arg, "-get"))
+		{
+			set = 0;
+			argc -= 2, argv += 2;
+		}
 
 		if (!strncmp(arg, "-int", 4))
 		{
@@ -209,8 +219,7 @@ jim_cube_colour(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 
 	if (argc != 1 && argc != 2 && argc != 4)
 	{
-		Jim_WrongNumArgs(j, 1, argv, "[-intensity n] "
-		    "[<colour number> | <colour name> | <red green blue>]");
+		Jim_WrongNumArgs(j, 1, argv, SYNTAX);
 		return JIM_ERR;
 	}
 
@@ -232,9 +241,7 @@ jim_cube_colour(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 
 		if (!cname)
 		{
-			Jim_WrongNumArgs(j, 1, argv, "[-intensity n] "
-			    "[<colour number> | <colour name> | "
-			    "<red green blue>]");
+			Jim_WrongNumArgs(j, 1, argv, SYNTAX);
 			return JIM_ERR;
 		}
 
@@ -283,7 +290,7 @@ jim_cube_colour(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 	Jim_ListAppendElement(j, colour, Jim_NewIntObj(j, green));
 	Jim_ListAppendElement(j, colour, Jim_NewIntObj(j, blue));
 
-	if (argc == 4)
+	if (set && argc == 4)
 		Jim_SetGlobalVariableStr(j, COLOUR_VARIABLE, colour);
 	
 	Jim_SetResult(j, colour);

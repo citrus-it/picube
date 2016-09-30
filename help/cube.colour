@@ -1,11 +1,14 @@
 NAME		cube.colour
-SYNTAX		cube.colour [-intensity n]..
+SYNTAX		cube.colour [-get] [-intensity n]..
 		            [<colour number> | <colour name> | <red green blue>
 DESCRIPTION	Set or retrieve the current working colour.
 		Many commands take an optional colour argument and if that
 		argument is omitted then the current working colour is used.
+		If the -get option is provided then the resulting colour is
+		returned without changing the default pen colour.
 		The intensity option takes a number from 1 to 5 with 5 being
-		full brightness.
+		full brightness. If this option is not provided, the default
+		intensity is 5.
 RETURN VALUE	A list containing the red, green and blue components of the
 		current or new working colour.
 EXAMPLES	Retrieve the current working colour:
