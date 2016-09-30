@@ -8,14 +8,14 @@
 # The calculations take a while so build a lookup table first.
 # Preparing the table also makes the animation run at the same speed on
 # different models of Pi.
-set tab [lrepeat 40 [lrepeat 8 [lrepeat 8 0]]]
+set ::gr::tab [lrepeat 40 [lrepeat 8 [lrepeat 8 0]]]
 loop i 0 40 {
 	loop x 0 8 {
 		loop y 0 8 {
 			set key [expr $x / 7.23 + $y / 12.23 + $i / 6.28]
 			set z [expr 4 + int(4 * cos($key))]
 			if {$z > 7} { set z 7 }
-			lset tab $i $x $y $z
+			lset ::gr::tab $i $x $y $z
 		}
 	}
 }
@@ -30,10 +30,12 @@ proc GlitterRibbon {iter} {
 			cube.begin
 			loop x 0 8 { loop y 0 8 {
 				if {[rand 40] == 0} {
-					cube.led $x $y [lindex $tab $i $x $y] \
+					cube.led $x $y \
+					    [lindex $::gr::tab $i $x $y] \
 					    31 63 63
 				} else {
-					cube.led $x $y [lindex $tab $i $x $y]
+					cube.led $x $y \
+					    [lindex $::gr::tab $i $x $y]
 				}
 			}}
 			cube.commit

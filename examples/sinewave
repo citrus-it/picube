@@ -8,24 +8,22 @@
 # The calculations take a while so build a lookup table first.
 # Preparing the table also makes the animation run at the same speed on
 # different models of Pi.
-set tab [lrepeat 80 [lrepeat 4 [lrepeat 4 0]]]
+set ::sine::tab [lrepeat 80 [lrepeat 4 [lrepeat 4 0]]]
 loop i 0 80 { loop x 0 4 { loop y 0 4 {
 	set key $(
 		sqrt(pow(3.5 - $x, 2) + pow(3.5 - $y, 2)) / 1.3 +
 		$i / 12
 	)
-	lset tab $i $x $y $(4 + 4 * sin($key))
+	lset ::sine::tab $i $x $y $(4 + 4 * sin($key))
 }}}
 
 proc sinewave {iter} {
-	global tab
-
 	loop reps 0 $iter {
 		loop i 0 80 {
 			cube.begin
 			cube.colour $($i * 2)
 			loop x 0 4 { loop y 0 4 {
-				set z [lindex $tab $i $x $y]
+				set z [lindex $::sine::tab $i $x $y]
 				cube.led $x		$y		$z
 				cube.led $x		$(7 - $y)	$z
 				cube.led $(7 - $x)	$y		$z
