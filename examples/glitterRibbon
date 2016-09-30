@@ -29,7 +29,6 @@ proc GlitterRibbon {iter} {
 			# then switch it in all at once.
 			cube.begin
 			loop x 0 8 { loop y 0 8 {
-			
 				if {[rand 40] == 0} {
 					cube.led $x $y [lindex $tab $i $x $y] \
 					    31 63 63
