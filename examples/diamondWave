@@ -1,0 +1,40 @@
+
+# A jim version of the DiamondWave animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+proc draw_pyramid {i} {
+	loop x 0 8 { loop y 0 8 {
+		set z $(int($i - 9.5 + [cube.distance $x $y]))
+		set z1 $(int($i - 0.5 + [cube.distance $x $y]))
+		cube.led $x $y $z
+		cube.led $x $y $z1
+	}}
+}
+
+proc DiamondWave {} {
+	loop iter 0 15 {
+		bump_colour 10
+
+		# Up
+		loop i 0 18 {
+			draw_pyramid $i
+			delay 40
+			cube.clear
+		}
+
+		# Down
+		loop i 16 0 -1 {
+			draw_pyramid $i
+			delay 40
+			cube.clear
+		}
+
+	}
+	cube.clear
+}
+
+if {!$interactive} DiamondWave
+
