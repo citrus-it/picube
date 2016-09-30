@@ -6,6 +6,7 @@
 #include "jimtcl/jim.h"
 #include "cube.h"
 #include "text.h"
+#include "tables.h"
 #include "jim.h"
 #include "help.h"
 
@@ -958,6 +959,49 @@ jim_cube_text(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 }
 
 static int
+jim_cube_lookup(Jim_Interp *j, int argc, Jim_Obj *const *argv)
+{
+	const char *table;
+	long x, y;
+	float val = 0;
+
+	if (argc != 4)
+	{
+		Jim_WrongNumArgs(j, 1, argv,
+		    "<-distance|-angle|-diagonal> <x> <y>");
+		return JIM_ERR;
+	}
+
+	table = Jim_GetString(argv[1], NULL);
+	Jim_GetLong(j, argv[2], &x);
+	Jim_GetLong(j, argv[3], &y);
+
+	if (x < 0 || x > 7 || y < 0 || y > 7)
+	{
+		Jim_SetResultString(j, "Index out of range", -1);
+		return JIM_ERR;
+	}
+
+	if (!table)
+		return JIM_ERR;
+	if (!strncmp(table, "-dist", 5))
+		val = distance[x][y];
+	else if (!strncmp(table, "-ang", 4))
+		val = angle[x][y];
+	else if (!strncmp(table, "-diag", 5))
+		val = diagonal[x][y];
+	else
+	{
+		Jim_WrongNumArgs(j, 1, argv,
+		    "<-distance|-angle|-diagonal> <x> <y>");
+		return JIM_ERR;
+	}
+
+	Jim_SetResult(j, Jim_NewDoubleObj(j, val));
+	return JIM_OK;
+}
+
+static int
 jim_cube_hwdebug(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 {
 	const char *cmd;
@@ -1108,6 +1152,7 @@ jim_init()
 	Jim_CreateCommand(j, "cube.translate", jim_cube_translate, NULL, NULL);
 	Jim_CreateCommand(j, "cube.rotate", jim_cube_rotate, NULL, NULL);
 	Jim_CreateCommand(j, "cube.hw.debug", jim_cube_hwdebug, NULL, NULL);
+	Jim_CreateCommand(j, "cube.lookup", jim_cube_lookup, NULL, NULL);
 	Jim_EvalSource(j, NULL, 1, "\n"
 		"signal handle SIGINT\n"
 	);
