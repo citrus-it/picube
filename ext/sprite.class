@@ -132,7 +132,7 @@ set ::sprite::rolltable {
 sprite method roll {axis dir} {
 	# Simple case
 
-	set rdata [lindex $::sprite::rolltable($axis) $dir]
+	set rdata [dict get $::sprite::rolltable($axis) $dir]
 
 	#puts -nonewline "$px $py $pz ($dx $dy $dz) -> "
 
