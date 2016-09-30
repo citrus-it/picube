@@ -15,12 +15,14 @@ class sprite {
 }
 
 proc {sprite create} {lx ly lz} {
-	set data [lrepeat $lx [lrepeat $ly [lrepeat $lz 0]]]
+	set data [lrepeat $lx [lrepeat $ly [lrepeat $lz {0 0 0}]]]
 	set s [sprite new [list lx $lx ly $ly lz $lz data $data]]
 }
 
 sprite method place {args} { lassign $args px py pz }
 sprite method motion {args} { lassign $args dx dy dz }
+
+sprite method data {newdata} { set data $newdata }
 
 sprite method fill {colour} {
 	set c [cube.colour $colour]
@@ -40,6 +42,10 @@ sprite method hide {} {
 	loop x 0 $lx { loop y 0 $ly { loop z 0 $lz {
 		cube.led $($px + $x) $($py + $y) $($px + $z) 0 0 0
 	}}}
+}
+
+sprite method clear {} {
+	set data [lrepeat $lx [lrepeat $ly [lrepeat $lz {0 0 0}]]]
 }
 
 sprite method sphere {colour} {
@@ -188,5 +194,34 @@ sprite method roll {axis dir} {
 	#puts "$px $py $pz ($dx $dy $dz)"
 
 	$self move
+}
+
+sprite method rotate {axis dir} {
+	set old [lrange $data 0 end]
+	$self hide
+	$self clear
+	loop x 0 $lx { loop y 0 $ly { loop z 0 $lz {
+		switch -- "$axis$dir" {
+		    "x0" {
+			lset data $x $($lz - 1 - $z) $y [lindex $old $x $y $z]
+		    }
+		    "x1" {
+			lset data $x $z $($ly - 1 - $y) [lindex $old $x $y $z]
+		    }
+		    "y0" {
+			lset data $($lz - 1 - $z) $y $x [lindex $old $x $y $z]
+		    }
+		    "y1" {
+			lset data $z $y $($lx - 1 - $x) [lindex $old $x $y $z]
+		    }
+		    "z0" {
+			lset data $y $($lx - 1 - $x) $z [lindex $old $x $y $z]
+		    }
+		    "z1" {
+			lset data $($ly - 1 - $y) $x $z [lindex $old $x $y $z]
+		    }
+		}
+	}}}
+	$self draw
 }
 
