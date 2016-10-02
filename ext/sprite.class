@@ -32,16 +32,20 @@ sprite method fill {colour} {
 }
 
 sprite method draw {} {
+	cube.begin -copy
 	loop x 0 $lx { loop y 0 $ly { loop z 0 $lz {
 		set c [lindex $data $x $y $z]
 		cube.led $($px + $x) $($py + $y) $($px + $z) {*}$c
 	}}}
+	cube.commit
 }
 
 sprite method hide {} {
+	cube.begin -copy
 	loop x 0 $lx { loop y 0 $ly { loop z 0 $lz {
 		cube.led $($px + $x) $($py + $y) $($px + $z) 0 0 0
 	}}}
+	cube.commit
 }
 
 sprite method clear {} {
