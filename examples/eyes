@@ -15,8 +15,6 @@ proc Eyes {} {
 	set red [cube.colour -get Red]
 	set blue [cube.colour -get Blue]
 
-	puts $data
-
 	# Set the middle four LEDs on the top and bottom layer to red.
 	loop x 1 3 { loop y 1 3 {
 		lset data $x $y 0 $red
