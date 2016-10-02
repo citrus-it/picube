@@ -207,7 +207,7 @@ jim_cube_colour(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 		if (!strcmp(arg, "-get"))
 		{
 			set = 0;
-			argc -= 2, argv += 2;
+			argc -= 1, argv += 1;
 		}
 
 		if (!strncmp(arg, "-int", 4))
