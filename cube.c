@@ -449,6 +449,9 @@ cube_init()
 	gpioSetMode(GPIO_LAYER6, PI_OUTPUT);
 	gpioSetMode(GPIO_LAYER7, PI_OUTPUT);
 
+	gpioWrite(GPIO_LATCH, LOW);
+	gpioWrite(GPIO_CLOCK, LOW);
+
 	cube_off();
 
 	return 1;
@@ -488,12 +491,8 @@ cube_refresh(void *x)
 	int layer, col, panel, bam;
 	uint8_t red, green, blue;
 	const uint8_t true = 1;
-	unsigned clearbits;
 	uint8_t ex;
 	uint16_t elapsedms;
-
-	clearbits = PI_BIT(GPIO_CLOCK) |
-	    PI_BIT(GPIO_RED) | PI_BIT(GPIO_GREEN) | PI_BIT(GPIO_BLUE);
 
 	for (;;)
 	{
@@ -509,9 +508,6 @@ cube_refresh(void *x)
 		
 		for (bam = 1; bam < 0x40; bam <<= 1)
 		{
-			gpioWrite(GPIO_LATCH, LOW);
-			// Clear RGB and Clock in one-shot.
-			gpioClearBank0(clearbits);
 			for (layer = 0; layer < 8; layer++)
 			{
 			    for (col = 0; col < 8; col++)
@@ -522,17 +518,18 @@ cube_refresh(void *x)
 					green = xLED(col, panel, layer, GREEN);
 					blue = xLED(col, panel, layer, BLUE);
 
-					if (red & bam)
-						gpioWrite(GPIO_RED, HIGH);
-					if (green & bam)
-						gpioWrite(GPIO_GREEN, HIGH);
-					if (blue & bam)
-						gpioWrite(GPIO_BLUE, HIGH);
+					gpioWrite(GPIO_RED,
+					    (red & bam) ? HIGH : LOW);
+					gpioWrite(GPIO_GREEN,
+					    (green & bam) ? HIGH : LOW);
+					gpioWrite(GPIO_BLUE,
+					    (blue & bam) ? HIGH : LOW);
 					// Clock the bits in.
 					gpioWrite(GPIO_CLOCK, HIGH);
-					//asm volatile("nop");
-					// Clear RGB and Clock in one-shot.
-					gpioClearBank0(clearbits);
+					asm volatile("nop");
+					asm volatile("nop");
+					asm volatile("nop");
+					gpioWrite(GPIO_CLOCK, LOW);
 				}
 			    }
 
@@ -582,8 +579,6 @@ cube_refresh(void *x)
 void
 cube_load_layer(int layer)
 {
-	unsigned clearbits = PI_BIT(GPIO_CLOCK) |
-	    PI_BIT(GPIO_RED) | PI_BIT(GPIO_GREEN) | PI_BIT(GPIO_BLUE);
 	uint8_t red, green, blue;
 	int col, panel;
 
@@ -598,7 +593,6 @@ cube_load_layer(int layer)
 		return;
 	}
 
-	gpioClearBank0(clearbits);
 	for (col = 0; col < 8; col++)
 	{
 		for (panel = 7; panel >= 0; panel--)
@@ -607,16 +601,12 @@ cube_load_layer(int layer)
 			green = xLED(col, panel, layer, GREEN);
 			blue = xLED(col, panel, layer, BLUE);
 
-			if (red)
-				gpioWrite(GPIO_RED, HIGH);
-			if (green)
-				gpioWrite(GPIO_GREEN, HIGH);
-			if (blue)
-				gpioWrite(GPIO_BLUE, HIGH);
+			gpioWrite(GPIO_RED, red ? HIGH : LOW);
+			gpioWrite(GPIO_GREEN, green ? HIGH : LOW);
+			gpioWrite(GPIO_BLUE, blue ? HIGH : LOW);
 			// Clock the bits in.
 			gpioWrite(GPIO_CLOCK, HIGH);
-			// Clear RGB and Clock in one-shot.
-			gpioClearBank0(clearbits);
+			gpioWrite(GPIO_CLOCK, LOW);
 		}
 	}
 
