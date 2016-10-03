@@ -39,6 +39,7 @@ extern unsigned piModel, piRev;
 
 int gpioInitialise(void);
 void gpioSetMode(unsigned, unsigned);
+inline void gpioToggleHigh(unsigned);
 inline void gpioWrite(unsigned, unsigned);
 inline void gpioClearBank0(unsigned bits);
 inline void gpioSetBank0(unsigned bits);

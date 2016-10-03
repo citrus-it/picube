@@ -525,18 +525,12 @@ cube_refresh(void *x)
 					gpioWrite(GPIO_BLUE,
 					    (blue & bam) ? HIGH : LOW);
 					// Clock the bits in.
-					gpioWrite(GPIO_CLOCK, HIGH);
-					asm volatile("nop");
-					asm volatile("nop");
-					asm volatile("nop");
-					gpioWrite(GPIO_CLOCK, LOW);
+					gpioToggleHigh(GPIO_CLOCK);
 				}
 			    }
 
 			    // Latch the data in.
-			    gpioWrite(GPIO_LATCH, HIGH);
-			    //asm volatile("nop");
-			    gpioWrite(GPIO_LATCH, LOW);
+			    gpioToggleHigh(GPIO_LATCH);
 
 			    // Turn the layer on for the BAM interval.
 			    // Starts at 10us and ends at 320us.

@@ -33,6 +33,13 @@ gpioWrite(unsigned gpio, unsigned level)
 }
 
 inline void
+gpioToggleHigh(unsigned gpio)
+{
+		*(gpioReg + GPSET0 + PI_BANK(gpio)) = PI_BIT(gpio);
+		*(gpioReg + GPCLR0 + PI_BANK(gpio)) = PI_BIT(gpio);
+}
+
+inline void
 gpioClearBank0(unsigned bits)
 {
 	*(gpioReg + GPCLR0) = bits;
