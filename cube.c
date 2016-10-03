@@ -390,7 +390,7 @@ cube_rotate_layer(float a, int layer)
 		int anglelookup, newcolumn, newpanel;
 
 		if (newangle > 6.28318)
-			newangle = -6.28318;
+			newangle -= 6.28318;
 
 		anglelookup = newangle * 20 + .5;
 		newcolumn = 4 + sin_cos[anglelookup][0] * d;
