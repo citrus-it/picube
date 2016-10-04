@@ -1,0 +1,64 @@
+
+# A jim version of the RandomFall animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+
+proc ::randomfall::descend {x y} {
+	bump_colour 0 16
+	loop z 7 0 -1 {
+		cube.led $x $y $z 0 0 0
+		cube.led $x $y $($z - 1)
+		bump_colour 15
+		delay $($z * 10)
+	}
+}
+
+proc ::randomfall::ascend {x y} {
+	bump_colour 0 91
+	loop z 0 7 {
+		cube.led $x $y $z 0 0 0
+		cube.led $x $y $($z + 1)
+		bump_colour -15
+		delay 10
+	}
+}
+
+proc RandomFall {} {
+	set state [lrepeat 8 [lrepeat 8 0]]
+	cube.layer 7 63 0 0
+
+	delay 500
+
+	# Going down...
+
+	set c 0
+	while {$c < 64} {
+		set x [rand 8]
+		set y [rand 8]
+		if {[lindex $state $x $y]} continue
+		::randomfall::descend $x $y
+		lset state $x $y 1
+		incr c
+	}
+
+	# and back up.
+
+	set c 0
+	while {$c < 64} {
+		set x [rand 8]
+		set y [rand 8]
+		if {![lindex $state $x $y]} continue
+		::randomfall::ascend $x $y
+		lset state $x $y 0
+		incr c
+	}
+
+	delay 400
+	cube.clear
+}
+
+if {!$interactive} { RandomFall }
+

@@ -1,0 +1,60 @@
+
+# A jim version of the Saddle animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+# Build a lookup table
+set ::saddle::tab [lrepeat 8 [lrepeat 8 {}]]
+loop x 0 8 { loop y 0 8 {
+	lset ::saddle::tab $x $y $(pow($x - 3.5, 2) - pow($y - 3.5, 2))
+}}
+
+proc draw_saddle {j clear} {
+	if {$clear} {
+		cube.begin
+	} else {
+		cube.begin -preserve
+	}
+	loop x 0 8 { loop y 0 8 {
+		set z $(int(3.5 + [lindex $::saddle::tab $x $y] / (3 + $j)))
+		cube.led $x $y $z
+	}}
+	cube.commit -nocopy
+}
+
+proc Saddle {{clearafter 0}} {
+	loop j 0 5 {
+		bump_colour 10
+		draw_saddle $j $clearafter
+		loop d 0 360 10 {
+			cube.rotate -buffer $d
+			delay 10
+		}
+	}
+
+	loop j 5 -1 -1 {
+		bump_colour 10
+		draw_saddle $j $clearafter
+		loop d 360 -1 -10 {
+			cube.rotate -buffer $d
+			delay 10
+		}
+	}
+
+	loop j 0 5 {
+		bump_colour 10
+		draw_saddle $j $clearafter
+		loop d 0 360 10 {
+			cube.rotate -buffer $d
+			delay 10
+		}
+	}
+	cube.clear
+}
+
+proc Saddle2 {} { Saddle 1 }
+
+if {!$interactive} { Saddle }
+
