@@ -31,6 +31,9 @@ void RandomRotation(int myspeed) {
       if (myangle>6.28318) { // and make sure it doesn't overflow
         myangle=myangle-6.28318;
       }
+#ifdef PICUBE
+      delay(10);
+#endif
     }
     if (colorCount > 20){  // after a while change color
       getColor(Violet, 4); 

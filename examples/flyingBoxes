@@ -7,7 +7,7 @@
 
 # Example showing the use of the Jim sprite class
 
-proc flyingBoxes {} {
+proc FlyingBoxes {} {
 
 	set s1 [sprite create 3 3 3]
 	$s1 fill Green
@@ -36,5 +36,5 @@ proc flyingBoxes {} {
 	cube.clear
 }
 
-if {!$interactive} flyingBoxes
+if {!$interactive} FlyingBoxes
 

@@ -47,11 +47,11 @@ proc Clock {} {
 		set secs [clock format $now -format %S]
 		while {[clock format [clock seconds] -format %S] >= $secs} {
 			# Flash colon
-			cube.led 7 2 0 0 0 63
-			cube.led 7 4 0 0 0 63
+			cube.led 7 0 3 0 0 63
+			cube.led 7 0 5 0 0 63
 			delay 100
-			cube.led 7 2 0 0 0 0
-			cube.led 7 4 0 0 0 0
+			cube.led 7 0 3 0 0 0
+			cube.led 7 0 5 0 0 0
 			delay 900
 		}
 	}

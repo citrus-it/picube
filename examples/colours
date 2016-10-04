@@ -27,7 +27,7 @@ proc Colours {} {
 		# Rotate the panel
 		loop deg 0 360 15 {
 			cube.rotate -buffer $deg
-			delay 10
+			delay 40
 		}
 
 		# Pick a new starting colour

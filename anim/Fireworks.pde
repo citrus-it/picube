@@ -18,6 +18,7 @@ void shiftDown(){
 	    xLED(x, y, z, RED) >> 1,
 	    xLED(x, y, z, GREEN) >> 1,
 	    xLED(x, y, z, BLUE) >> 1);
+	LED(x, y, z, 0, 0, 0);
 #else
         for (int c=0;c<3;c++){
           cube [x][y][z-1][c] = (cube [x][y][z][c]) >> 1;  // the divide by 2  causes it 

@@ -46,6 +46,8 @@ void Pulsing_Sphere(int mycount){
   }
 #ifndef PICUBE
   delay(1000);
+#else
+  clearCube();
 #endif
 }
 

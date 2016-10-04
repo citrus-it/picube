@@ -14,6 +14,9 @@
 void saddle2(){
   float myZ; 
   int z; 
+#ifdef PICUBE
+    clearBufferCube();
+#endif
   manage_color();
   for (byte x=0; x<8; x++){  // scan thru each x
       for (byte y=0; y<8; y++){  // scan thru every y

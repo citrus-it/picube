@@ -38,7 +38,7 @@ proc Grower {} {
 		loop x 0 4 { grow $x 100 }
 		delay 100
 		bump_colour 10
-		loop 2 -1 -1 { grow $x 100 }
+		loop x 2 -1 -1 { grow $x 100 }
 		delay 100
 		if {$q % 2} { cube.clear }
 	}
@@ -50,7 +50,7 @@ proc Grower {} {
 		}
 		loop x 0 4 { grow $x 100 }
 		delay 100
-		loop 2 -1 -1 { grow $x 100 }
+		loop x 2 -1 -1 { grow $x 100 }
 		delay 100
 		if {$q % 2} { cube.clear }
 	}

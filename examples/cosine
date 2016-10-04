@@ -37,6 +37,7 @@ proc cosine {iter} {
 			delay 20
 		}
 	}
+	cube.clear
 }
 
 if {!$interactive} { cosine 10 }
