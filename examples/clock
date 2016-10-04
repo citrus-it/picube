@@ -1,0 +1,61 @@
+
+set ::Clock::Digits {
+	0 { 1 1 1 1 0 1 1 0 1 1 0 1 1 1 1 }
+	1 { 0 1 0 1 1 0 0 1 0 0 1 0 1 1 1 }
+	2 { 1 1 1 0 0 1 1 1 1 1 0 0 1 1 1 }
+	3 { 1 1 1 1 0 0 1 1 1 1 0 0 1 1 1 }
+	4 { 1 0 1 1 0 1 1 1 1 0 0 1 0 0 1 }
+	5 { 1 1 1 1 0 0 1 1 1 0 0 1 1 1 1 }
+	6 { 1 1 1 1 0 0 1 1 1 1 0 1 1 1 1 }
+	7 { 1 1 1 0 0 1 0 0 1 0 0 1 0 0 1 }
+	8 { 1 1 1 1 0 1 1 1 1 1 0 1 1 1 1 }
+	9 { 1 1 1 1 0 1 1 1 1 0 0 1 0 0 1 }
+
+}
+
+proc ::Clock::Digit {digit xx yy} {
+	loop x 0 3 { loop y 0 5 {
+		set key $((4 - $y) * 3 + $x)
+		if {[lindex $::Clock::Digits($digit) $key]} {
+			lset ::Clock::Data $($yy + 4 - $y) $($xx + $x) {63 0 0}
+		}
+	}}
+}
+
+proc Clock {} {
+	while {1} {
+		set now [clock seconds]
+		set hour [clock format $now -format %H]
+		set min [clock format $now -format %M]
+		puts "$hour:$min"
+
+		cube.clear
+
+		set ::Clock::Data [cube.plane -panel 0]
+
+		# Add hour digits
+		::Clock::Digit [string index $hour 0] 0 1
+		::Clock::Digit [string index $hour 1] 4 1
+		cube.plane -panel 0 $::Clock::Data
+
+		# Add minute digits
+		set ::Clock::Data [cube.plane -slice 7]
+		::Clock::Digit [string index $min 0] 1 1
+		::Clock::Digit [string index $min 1] 5 1
+		cube.plane -slice 7 $::Clock::Data
+
+		set secs [clock format $now -format %S]
+		while {[clock format [clock seconds] -format %S] >= $secs} {
+			# Flash colon
+			cube.led 7 2 0 0 0 63
+			cube.led 7 4 0 0 0 63
+			delay 100
+			cube.led 7 2 0 0 0 0
+			cube.led 7 4 0 0 0 0
+			delay 900
+		}
+	}
+}
+
+if {!$interactive} { Clock }
+
