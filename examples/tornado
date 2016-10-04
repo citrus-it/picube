@@ -63,7 +63,7 @@ proc Tornado {} {
 		}
 
 		cube.rotate -buffer $angle
-		delay 10
+		delay 30
 	}
 	cube.clear
 }
