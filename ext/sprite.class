@@ -31,6 +31,14 @@ sprite method fill {colour} {
 	}}}
 }
 
+sprite method outline {colour} {
+	$self fill black
+	set c [cube.colour $colour]
+	loop x 0 $lx $($lx-1) { loop y 0 $ly $($ly-1) { loop z 0 $lz $($lz-1) {
+		lset data $x $y $z $c
+	}}}
+}
+
 sprite method draw {} {
 	cube.begin -copy
 	loop x 0 $lx { loop y 0 $ly { loop z 0 $lz {
