@@ -1,0 +1,66 @@
+
+# A jim version of the angled animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+proc ::Angled::Rotate {times} {
+	loop d 0 $($times * 360) 5 {
+		cube.rotate -buffer $d
+		delay 10
+	}
+}
+
+proc Angled {} {
+
+	# Build the first plane
+	cube.colour blue
+	cube.begin
+	loop x 0 8 { loop y 0 8 { loop z 0 8 {
+		if {$x + $y == 2 * $z} {
+			cube.led $x $y $z
+		}
+	}}}
+
+	cube.commit -nocopy
+	::Angled::Rotate 5
+
+	set colour 0
+	set clear 1
+	loop j 0 25 {
+		incr colour 5
+		bump_colour $colour
+		if {$clear} cube.begin else { cube.begin -preserve }
+		loop x 0 8 { loop y 0 8 { loop z 0 8 {
+			if {$x + $y == 2 * $z} {
+				cube.led $x $y $z
+			}
+		}}}
+
+		if {$j < 5 || $j > 14} {
+			bump_colour 0 $($colour + 85)
+		} else {
+			bump_colour 0 $colour
+		}
+
+		loop x 0 8 { loop y 0 8 { loop z 0 8 {
+			if {$x + $y == 2 * $z} {
+				if {$j < 10 || $j > 20} {
+					cube.led $x $(7 - $y) $z
+				}
+				if {$j > 9} {
+					cube.led $(7 - $x) $(7 - $y) $z
+				}
+			}
+		}}}
+
+		cube.commit -nocopy
+		::Angled::Rotate 1
+		if {$j < 20} { set clear 1 } else { set clear 0 }
+	}
+	cube.clear
+}
+
+if {!$interactive} { Angled }
+
