@@ -70,9 +70,9 @@ sprite method clear {} {
 sprite method sphere {colour} {
 	set c [cube.colour -get {*}$colour]
 
-	set radiusx $($dx / 2)
-	set radiusy $($dy / 2)
-	set radiusz $($dz / 2)
+	set radiusx $($lx / 2)
+	set radiusy $($ly / 2)
+	set radiusz $($lz / 2)
 
 	loop x 0 $lx { loop y 0 $ly { loop z 0 $lz {
 		set polar $(sqrt(
