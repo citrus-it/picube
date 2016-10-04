@@ -305,7 +305,7 @@ jim_cube_begin(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 
 	if (argc > 2)
 	{
-		Jim_WrongNumArgs(j, 1, argv, "[-copy]");
+		Jim_WrongNumArgs(j, 1, argv, "[-copy|-preserve]");
 		return JIM_ERR;
 	}
 
@@ -323,9 +323,11 @@ jim_cube_begin(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 		arg = Jim_GetString(argv[1], NULL);
 		if (!strcmp(arg, "-copy"))
 			cube_buffer();
+		else if (!strcmp(arg, "-preserve"))
+			;
 		else
 		{
-			Jim_WrongNumArgs(j, 1, argv, "[-copy]");
+			Jim_WrongNumArgs(j, 1, argv, "[-copy|-preserve]");
 			return JIM_ERR;
 		}
 	}
