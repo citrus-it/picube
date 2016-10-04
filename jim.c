@@ -198,18 +198,24 @@ static int
 jim_cube_colour(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 {
 	Jim_Obj *colour;
+	const char *arg;
 	long intensity = 5;
 	int set = 1;
 
 	if (argc > 2)
 	{
-		const char *arg = Jim_GetString(argv[1], NULL);
+		arg = Jim_GetString(argv[1], NULL);
 
 		if (!strcmp(arg, "-get"))
 		{
 			set = 0;
 			argc -= 1, argv += 1;
 		}
+	}
+
+	if (argc > 3)
+	{
+		arg = Jim_GetString(argv[1], NULL);
 
 		if (!strncmp(arg, "-int", 4))
 		{
