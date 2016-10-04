@@ -1,0 +1,39 @@
+
+# A jim version of the MiniCubes animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+
+set ::MiniCubes::Colours { red yellow green blue purple violet orange aqua }
+
+proc MiniCubes {} {
+	set c1 [sprite create 2 2 2]
+	set c2 [sprite create 3 3 3]
+	set c3 [sprite create 2 2 2]
+
+	loop j 0 50 {
+		$c1 outline [lindex $::MiniCubes::Colours [rand 8]]
+		$c1 place [rand 7] [rand 7] [rand 7]
+		$c1 draw
+		delay $(200 - $j * 3)
+
+		$c2 outline [lindex $::MiniCubes::Colours [rand 8]]
+		$c2 place [rand 6] [rand 6] [rand 6]
+		$c2 draw
+		delay $(200 - $j * 3)
+
+		$c3 outline [lindex $::MiniCubes::Colours [rand 8]]
+		$c3 place [rand 7] [rand 7] [rand 7]
+		$c3 draw
+		delay $(200 - $j * 3)
+
+		$c1 hide
+		$c2 hide
+		$c3 hide
+	}
+}
+
+if {!$interactive} { MiniCubes }
+
