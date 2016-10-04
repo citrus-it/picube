@@ -67,7 +67,7 @@ pi_hardware_revision(void)
 	}
 
 	// Remove any over-volt flag
-	pi_revision &= ~10000000;
+	pi_revision &= ~0x10000000;
 
 	if (!pi_revision)
 	{
