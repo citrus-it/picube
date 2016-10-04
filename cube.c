@@ -508,6 +508,9 @@ cube_refresh(void *x)
 		
 		for (bam = 1; bam < 0x40; bam <<= 1)
 		{
+			gpio_write(GPIO_CLOCK, LOW);
+			gpio_write(GPIO_LATCH, LOW);
+
 			for (layer = 0; layer < 8; layer++)
 			{
 			    for (col = 0; col < 8; col++)
@@ -525,12 +528,16 @@ cube_refresh(void *x)
 					gpio_write(GPIO_BLUE,
 					    (blue & bam) ? HIGH : LOW);
 					// Clock the bits in.
-					gpio_toggle_high(GPIO_CLOCK);
+					gpio_write(GPIO_CLOCK, LOW);
+					gpio_write(GPIO_CLOCK, HIGH);
+					//gpio_toggle_high(GPIO_CLOCK);
 				}
 			    }
 
 			    // Latch the data in.
-			    gpio_toggle_high(GPIO_LATCH);
+			    gpio_write(GPIO_LATCH, LOW);
+			    gpio_write(GPIO_LATCH, HIGH);
+			    //gpio_toggle_high(GPIO_LATCH);
 
 			    // Turn the layer on for the BAM interval.
 			    // Starts at 10us and ends at 320us.
