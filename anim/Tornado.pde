@@ -50,6 +50,9 @@ void Tornado(){
       buffer_LED(3,3,3,31,0,0);
     }
     rotateAll(myangle);  // the actual rotation of the animation
+#ifdef PICUBE
+    delay(30);
+#endif
     myangle = myangle + rotation; // increment the angle
     if (myangle>6.28318) { // and make sure it doesn't overflow
       myangle=myangle-6.28318;
