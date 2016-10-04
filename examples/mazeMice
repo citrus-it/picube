@@ -45,15 +45,12 @@ mouse method debug {} {
 mouse method draw {} {
 	cube.led $x $y $z {*}$colour
 	# Draw the tail
-	lassign $colour r g b
 	set intensity 3
 	foreach c $history {
 		# Reduce colour brightness of each tail segment.
 		cube.colour -intensity $intensity {*}$colour
 		incr intensity -1
-
-		lassign $c hx hy hz
-		cube.led $hx $hy $hz $r $g $b
+		cube.led {*}$c
 	}
 }
 
