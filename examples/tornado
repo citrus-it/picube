@@ -1,0 +1,72 @@
+
+# A jim version of the tornado animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+
+proc Tornado {} {
+
+	set angle 12
+
+	# Set up the initial pattern
+	cube.begin
+
+	cube.colour blue
+	cube.led 1 1 7
+	cube.led 0 4 6
+	cube.led 2 5 5
+	cube.led 3 6 4
+	cube.led 5 5 3
+	cube.led 5 4 2
+	cube.led 4 4 1
+	cube.led 4 3 0
+
+	cube.colour green
+	cube.led 6 6 7
+	cube.led 7 4 6
+	cube.led 5 2 5
+	cube.led 4 2 4
+	cube.led 2 2 3
+	cube.led 2 4 2
+	cube.led 3 3 1
+	cube.led 3 4 0
+
+	cube.commit -nocopy
+
+	loop x 0 400 {
+		if {$x == 100} {
+			# Speed up
+			set angle 23
+		} elseif {$x == 200} {
+			set angle 30
+			# Add yellow debris
+			cube.begin -preserve
+			cube.colour 31 63 0
+			cube.led 4 2 6
+			cube.led 2 2 5
+			cube.led 3 3 4
+			cube.led 4 4 3
+			cube.commit -nocopy
+		} elseif {$x == 300} {
+			set angle 37
+			# Add red debris
+			cube.begin -preserve
+			cube.colour 31 0 0
+			cube.led 5 3 7
+			cube.led 4 3 6
+			cube.led 3 2 5
+			cube.led 4 4 4
+			cube.led 3 3 3
+			cube.commit -nocopy
+		}
+
+		cube.rotate -buffer $angle
+		delay 10
+	}
+	cube.clear
+}
+
+if {!$interactive} { Tornado }
+
