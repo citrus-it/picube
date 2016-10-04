@@ -66,6 +66,9 @@ pi_hardware_revision(void)
 		fclose(fp);
 	}
 
+	// Remove any over-volt flag
+	pi_revision &= ~10000000;
+
 	if (!pi_revision)
 	{
 		pi_modelname = "Unknown";
