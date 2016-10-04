@@ -25,7 +25,7 @@ sprite method motion {args} { lassign $args dx dy dz }
 sprite method data {newdata} { set data $newdata }
 
 sprite method fill {colour} {
-	set c [cube.colour $colour]
+	set c [cube.colour -get {*}$colour]
 	loop x 0 $lx { loop y 0 $ly { loop z 0 $lz {
 		lset data $x $y $z $c
 	}}}
@@ -33,7 +33,7 @@ sprite method fill {colour} {
 
 sprite method outline {colour} {
 	$self fill black
-	set c [cube.colour $colour]
+	set c [cube.colour -get {*}$colour]
 	loop x 0 $lx $($lx-1) { loop y 0 $ly $($ly-1) { loop z 0 $lz $($lz-1) {
 		lset data $x $y $z $c
 	}}}
@@ -61,7 +61,7 @@ sprite method clear {} {
 }
 
 sprite method sphere {colour} {
-	set c [cube.colour {*}$colour]
+	set c [cube.colour -get {*}$colour]
 
 	set radiusx $($dx / 2)
 	set radiusy $($dy / 2)
