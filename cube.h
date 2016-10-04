@@ -58,7 +58,7 @@ typedef uint8_t byte;
 #define GPIO_LAYER6		8
 #define GPIO_LAYER7		7
 
-#define GPIO_GREEN (piRev < 4 ? GPIO_GREEN1 : GPIO_GREEN2)
+#define GPIO_GREEN (pi_revision < 4 ? GPIO_GREEN1 : GPIO_GREEN2)
 
 #define Black	191
 #define Red	0

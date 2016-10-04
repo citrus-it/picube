@@ -95,8 +95,8 @@ main(int argc, char **argv)
 	 */
 	catch_signal(SIGBUS);
 	catch_signal(SIGSEGV);
-	/* Also when the user terminates the program with ^C or kill */
-	//catch_signal(SIGINT);
+
+	pi_hardware_revision();
 
 	if (cube_init())
 	{

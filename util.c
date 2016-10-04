@@ -15,6 +15,129 @@
 #include <errno.h>
 #include "util.h"
 
+unsigned pi_model, pi_revision;
+char *pi_modelname, *pi_modelcode;
+
+void
+pi_hardware_revision(void)
+{
+	FILE *fp;
+	char buf[512];
+	char term;
+	int chars = 4;
+
+	pi_model = 0;
+	pi_revision = 0;
+
+	if ((fp = fopen ("/proc/cpuinfo", "r")) != NULL)
+	{
+		while (fgets(buf, sizeof(buf), fp) != NULL)
+		{
+			if (pi_model == 0)
+			{
+				if (!strncasecmp("model name", buf, 10))
+				{
+					if (strstr(buf, "ARMv6") != NULL)
+					{
+						pi_model = 1;
+						chars = 4;
+					}
+					else if (strstr(buf, "ARMv7") != NULL)
+					{
+						pi_model = 2;
+						chars = 6;
+					}
+					else if (strstr(buf, "ARMv8") != NULL)
+					{
+						pi_model = 2;
+						chars = 6;
+					}
+				}
+			}
+
+			if (!strncasecmp("revision", buf, 8))
+			{
+				if (sscanf(buf + strlen(buf) - chars - 1,
+				    "%x%c", &pi_revision, &term) == 2)
+					if (term != '\n')
+						pi_revision = 0;
+			}
+		}
+		fclose(fp);
+	}
+
+	if (!pi_revision)
+	{
+		pi_modelname = "Unknown";
+		pi_modelcode = "U";
+	}
+	else if (pi_revision < 4)
+	{
+		pi_modelname = "Pi 1 Model B Revision 1, 256MiB";
+		pi_modelcode = "1B1";
+	}
+	else if (pi_revision < 7)
+	{
+		pi_modelname = "Pi 1 Model B Revision 2, 256MiB";
+		pi_modelcode = "1B2";
+	}
+	else if (pi_revision < 0xd)
+	{
+		pi_modelname = "Pi 1 Model A, 256MiB";
+		pi_modelcode = "1A";
+	}
+	else if (pi_revision < 0x10)
+	{
+		pi_modelname = "Pi 1 Model B Revision 2, 512MiB";
+		pi_modelcode = "1B2";
+	}
+	else if (pi_revision < 0x11)
+	{
+		pi_modelname = "Pi Compute Module, 512MiB";
+		pi_modelcode = "1C";
+	}
+	else if (pi_revision < 0x13)
+	{
+		pi_modelname = "Pi 1 Model A+, 256MB";
+		pi_modelcode = "1A+";
+	}
+	else if (pi_revision < 0x14)
+	{
+		pi_modelname = "Pi 1 Model B+, 256MB";
+		pi_modelcode = "1B+";
+	}
+	else if (pi_revision < 0x15)
+	{
+		pi_modelname = "Pi Compute Module, 512MiB";
+		pi_modelcode = "1C";
+	}
+	else if (pi_revision < 0x16)
+	{
+		pi_modelname = "Pi 1 Model A+, 512MiB";
+		pi_modelcode = "1A+";
+	}
+	else if (pi_revision < 0x900093)
+	{
+		pi_modelname = "Pi Zero, 512MiB";
+		pi_modelcode = "Z";
+	}
+	else if (pi_revision < 0xa22043)
+	{
+		pi_modelname = "Pi 2 Model B, 1GiB";
+		pi_modelcode = "2B";
+	}
+	else if (pi_revision < 0xa22083)
+	{
+		pi_modelname = "Pi 3 Model B, 1GiB";
+		pi_modelcode = "3B";
+	}
+	else
+	{
+		pi_modelname = "Unknown";
+		pi_modelcode = "U";
+	}
+}
+
 void
 delay(int msecs)
 {

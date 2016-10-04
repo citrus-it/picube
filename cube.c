@@ -426,7 +426,7 @@ cube_init()
 {
 	int i;
 
-	if (gpioInitialise())
+	if (gpio_init())
 		return 0;
 
 	cube_detected = 1;
@@ -435,22 +435,22 @@ cube_init()
 	cube_clear(0);
 
 	// Set PIN modes.
-	gpioSetMode(GPIO_CLOCK,  PI_OUTPUT);
-	gpioSetMode(GPIO_LATCH,  PI_OUTPUT);
-	gpioSetMode(GPIO_RED,    PI_OUTPUT);
-	gpioSetMode(GPIO_GREEN,  PI_OUTPUT);
-	gpioSetMode(GPIO_BLUE,   PI_OUTPUT);
-	gpioSetMode(GPIO_LAYER0, PI_OUTPUT);
-	gpioSetMode(GPIO_LAYER1, PI_OUTPUT);
-	gpioSetMode(GPIO_LAYER2, PI_OUTPUT);
-	gpioSetMode(GPIO_LAYER3, PI_OUTPUT);
-	gpioSetMode(GPIO_LAYER4, PI_OUTPUT);
-	gpioSetMode(GPIO_LAYER5, PI_OUTPUT);
-	gpioSetMode(GPIO_LAYER6, PI_OUTPUT);
-	gpioSetMode(GPIO_LAYER7, PI_OUTPUT);
+	gpio_set_mode(GPIO_CLOCK,  PI_OUTPUT);
+	gpio_set_mode(GPIO_LATCH,  PI_OUTPUT);
+	gpio_set_mode(GPIO_RED,    PI_OUTPUT);
+	gpio_set_mode(GPIO_GREEN,  PI_OUTPUT);
+	gpio_set_mode(GPIO_BLUE,   PI_OUTPUT);
+	gpio_set_mode(GPIO_LAYER0, PI_OUTPUT);
+	gpio_set_mode(GPIO_LAYER1, PI_OUTPUT);
+	gpio_set_mode(GPIO_LAYER2, PI_OUTPUT);
+	gpio_set_mode(GPIO_LAYER3, PI_OUTPUT);
+	gpio_set_mode(GPIO_LAYER4, PI_OUTPUT);
+	gpio_set_mode(GPIO_LAYER5, PI_OUTPUT);
+	gpio_set_mode(GPIO_LAYER6, PI_OUTPUT);
+	gpio_set_mode(GPIO_LAYER7, PI_OUTPUT);
 
-	gpioWrite(GPIO_LATCH, LOW);
-	gpioWrite(GPIO_CLOCK, LOW);
+	gpio_write(GPIO_LATCH, LOW);
+	gpio_write(GPIO_CLOCK, LOW);
 
 	cube_off();
 
@@ -465,7 +465,7 @@ cube_off(void)
 
 	// Set all layer pins to high.
 	for (i = 0; i < 8; i++)
-		gpioWrite(layers[i], HIGH);
+		gpio_write(layers[i], HIGH);
 }
 
 // The cube refresh thread.
@@ -518,23 +518,23 @@ cube_refresh(void *x)
 					green = xLED(col, panel, layer, GREEN);
 					blue = xLED(col, panel, layer, BLUE);
 
-					gpioWrite(GPIO_RED,
+					gpio_write(GPIO_RED,
 					    (red & bam) ? HIGH : LOW);
-					gpioWrite(GPIO_GREEN,
+					gpio_write(GPIO_GREEN,
 					    (green & bam) ? HIGH : LOW);
-					gpioWrite(GPIO_BLUE,
+					gpio_write(GPIO_BLUE,
 					    (blue & bam) ? HIGH : LOW);
 					// Clock the bits in.
-					gpioToggleHigh(GPIO_CLOCK);
+					gpio_toggle_high(GPIO_CLOCK);
 				}
 			    }
 
 			    // Latch the data in.
-			    gpioToggleHigh(GPIO_LATCH);
+			    gpio_toggle_high(GPIO_LATCH);
 
 			    // Turn the layer on for the BAM interval.
 			    // Starts at 10us and ends at 320us.
-			    gpioWrite(layers[layer], LOW);
+			    gpio_write(layers[layer], LOW);
 
 			    clock_gettime(CLOCK_REALTIME, &ns);
 			    ns.tv_nsec += bam * 10 * 1000;
@@ -546,7 +546,7 @@ cube_refresh(void *x)
 			    clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME,
 				&ns, NULL);
 
-			    gpioWrite(layers[layer], HIGH);
+			    gpio_write(layers[layer], HIGH);
 			}
 		}
 
@@ -595,18 +595,16 @@ cube_load_layer(int layer)
 			green = xLED(col, panel, layer, GREEN);
 			blue = xLED(col, panel, layer, BLUE);
 
-			gpioWrite(GPIO_RED, red ? HIGH : LOW);
-			gpioWrite(GPIO_GREEN, green ? HIGH : LOW);
-			gpioWrite(GPIO_BLUE, blue ? HIGH : LOW);
+			gpio_write(GPIO_RED, red ? HIGH : LOW);
+			gpio_write(GPIO_GREEN, green ? HIGH : LOW);
+			gpio_write(GPIO_BLUE, blue ? HIGH : LOW);
 			// Clock the bits in.
-			gpioWrite(GPIO_CLOCK, HIGH);
-			gpioWrite(GPIO_CLOCK, LOW);
+			gpio_toggle_high(GPIO_CLOCK);
 		}
 	}
 
 	// Latch the data in.
-	gpioWrite(GPIO_LATCH, HIGH);
-	gpioWrite(GPIO_LATCH, LOW);
+	gpio_toggle_high(GPIO_LATCH);
 }
 
 void
@@ -668,6 +666,6 @@ cube_layer_control(int layer, int mode)
 		return;
 	}
 
-	gpioWrite(layers[layer], mode ? LOW : HIGH);
+	gpio_write(layers[layer], mode ? LOW : HIGH);
 }
 

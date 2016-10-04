@@ -35,12 +35,10 @@
 #define PI_PUD_DOWN 1
 #define PI_PUD_UP   2
 
-extern unsigned piModel, piRev;
-
-int gpioInitialise(void);
-void gpioSetMode(unsigned, unsigned);
-inline void gpioToggleHigh(unsigned);
-inline void gpioWrite(unsigned, unsigned);
-inline void gpioClearBank0(unsigned bits);
-inline void gpioSetBank0(unsigned bits);
+int gpio_init(void);
+void gpio_set_mode(unsigned, unsigned);
+inline void gpio_toggle_high(unsigned);
+inline void gpio_write(unsigned, unsigned);
+inline void gpio_clear_bank0(unsigned bits);
+inline void gpio_set_bank0(unsigned bits);
 
