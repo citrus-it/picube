@@ -35,12 +35,13 @@ proc Tornado {} {
 
 	cube.commit -nocopy
 
+	set angle 0
 	loop x 0 400 {
 		if {$x == 100} {
 			# Speed up
-			set angle 23
+			set dangle 23
 		} elseif {$x == 200} {
-			set angle 30
+			set dangle 30
 			# Add yellow debris
 			cube.begin -preserve
 			cube.colour 31 63 0
@@ -50,7 +51,7 @@ proc Tornado {} {
 			cube.led 4 4 3
 			cube.commit -nocopy
 		} elseif {$x == 300} {
-			set angle 37
+			set dangle 37
 			# Add red debris
 			cube.begin -preserve
 			cube.colour 31 0 0
@@ -63,6 +64,10 @@ proc Tornado {} {
 		}
 
 		cube.rotate -buffer $angle
+		incr angle $dangle
+		if {$angle > 360} {
+			incr angle -360
+		}
 		delay 30
 	}
 	cube.clear
