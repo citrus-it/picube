@@ -45,6 +45,9 @@ signal_handler(int sig)
 		    sys_siglist[sig], strlen(sys_siglist[sig]));
 		write(STDERR_FILENO, "\n", 1);
 
+		__atomic_store(&exiting, &true, __ATOMIC_RELAXED);
+		cube_off();
+		sleep(1);
 		cube_off();
 		abort();
 	}
@@ -95,6 +98,7 @@ main(int argc, char **argv)
 	 */
 	catch_signal(SIGBUS);
 	catch_signal(SIGSEGV);
+	catch_signal(SIGQUIT);
 
 	pi_hardware_revision();
 
