@@ -8,6 +8,7 @@
 #include "text.h"
 #include "tables.h"
 #include "jim.h"
+#include "util.h"
 #include "help.h"
 
 #define COLOUR_VARIABLE "cube.pencolour"
@@ -1120,6 +1121,12 @@ jim_cube_help(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 	return JIM_OK;
 }
 
+static void
+Jim_SetGlobalVariableStrWithStr(Jim_Interp *j, char *var, char *val)
+{
+	Jim_SetGlobalVariableStr(j, var, Jim_NewStringObj(j, val, -1));
+}
+
 
 // Initialise the Jim interpreter.
 Jim_Interp *
@@ -1132,7 +1139,11 @@ jim_init()
 	Jim_InitStaticExtensions(j);
 
 	// Register Jim variables.
-	Jim_SetVariableStrWithStr(j, COLOUR_VARIABLE, "63 0 0");
+	Jim_SetGlobalVariableStrWithStr(j, COLOUR_VARIABLE, "63 0 0");
+	Jim_SetGlobalVariableStrWithStr(j, "pi.model", pi_modelname);
+	Jim_SetGlobalVariableStrWithStr(j, "pi.code", pi_modelcode);
+	Jim_SetGlobalVariableStr(j, "pi.revision",
+	    Jim_NewIntObj(j, pi_revision));
 
 	// Register Jim commands.
 	//     cmd, function, privdata, delProc
