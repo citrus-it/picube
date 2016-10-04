@@ -166,7 +166,7 @@ static void
 rotateCube(int times, int stepAngle)
 {
 	float rotation = stepAngle * .0174532; // convert to radians
-	int steps = ((6.28318/abs(rotation))*times)+1;
+	int steps = abs(6.28318/rotation) * times + 1;
 	float myangle = 0;
 	int x;
 
@@ -179,6 +179,7 @@ rotateCube(int times, int stepAngle)
 		if (rotation < 0 && myangle <= 0)
 			myangle = 6.28318;
 		cube_rotate(myangle, 1);
+		delay(40);
 	}
 	cube_clear(0);
 }
