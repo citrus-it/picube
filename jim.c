@@ -202,6 +202,12 @@ jim_cube_colour(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 	long intensity = 5;
 	int set = 1;
 
+	if (argc == 2 && Jim_CompareStringImmediate(j, argv[1], "-commands"))
+	{
+		Jim_SetResultString(j, "-get -intensity", -1);
+		return JIM_OK;
+	}
+
 	if (argc > 2)
 	{
 		arg = Jim_GetString(argv[1], NULL);
@@ -309,6 +315,12 @@ jim_cube_begin(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 {
 	const char *arg;
 
+	if (argc == 2 && Jim_CompareStringImmediate(j, argv[1], "-commands"))
+	{
+		Jim_SetResultString(j, "-copy -preserve", -1);
+		return JIM_OK;
+	}
+
 	if (argc > 2)
 	{
 		Jim_WrongNumArgs(j, 1, argv, "[-copy|-preserve]");
@@ -348,6 +360,12 @@ jim_cube_commit(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 {
 	const char *arg;
 	int copy = 1;
+
+	if (argc == 2 && Jim_CompareStringImmediate(j, argv[1], "-commands"))
+	{
+		Jim_SetResultString(j, "-nocopy", -1);
+		return JIM_OK;
+	}
 
 	if (argc != 1 && argc != 2)
 	{
@@ -667,6 +685,12 @@ jim_cube_plane(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 	int x, y, z;
 	const char *cmd;
 
+	if (argc == 2 && Jim_CompareStringImmediate(j, argv[1], "-commands"))
+	{
+		Jim_SetResultString(j, "-layer -panel -slice", -1);
+		return JIM_OK;
+	}
+
 	if (argc != 3 && argc != 4)
 	{
 		Jim_WrongNumArgs(j, 1, argv,
@@ -926,6 +950,12 @@ jim_cube_text(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 	char buf[0x100];
 	const char *cmd;
 
+	if (argc == 2 && Jim_CompareStringImmediate(j, argv[1], "-commands"))
+	{
+		Jim_SetResultString(j, "-foursides -twosides -x -y -z", -1);
+		return JIM_OK;
+	}
+
 	if (argc < 2)
 	{
 		Jim_WrongNumArgs(j, 1, argv,
@@ -980,6 +1010,12 @@ jim_cube_lookup(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 	const char *table;
 	long x, y;
 	float val = 0;
+
+	if (argc == 2 && Jim_CompareStringImmediate(j, argv[1], "-commands"))
+	{
+		Jim_SetResultString(j, "-angle -diagonal -distance", -1);
+		return JIM_OK;
+	}
 
 	if (argc != 4)
 	{
