@@ -44,6 +44,7 @@ proc Hula {{reps 50}} {
 		cube.rotate -buffer $angle
 		incr angle 10
 		if {$angle > 360} { incr angle -360 }
+		delay 10
 	    }
 	}
 	cube.clear

@@ -27,9 +27,9 @@ sprite_colorIt(sprite s, int colour)
 {
 	int x, y, z;
 
-	for (x = 0; x < 6; x++)
-	  for (y = 0; y < 6; y++)
-	    for (z = 0; z < 6; z++)
+	for (x = 0; x < s->myX; x++)
+	  for (y = 0; y < s->myY; y++)
+	    for (z = 0; z < s->myZ; z++)
 		s->description[x][y][z] = colour;
 }
 
@@ -40,10 +40,14 @@ sprite_outline(sprite s, int colour)
 
 	sprite_colorIt(s, Black);
 
-	for (x = 0; x < s->myX; x += s->myX - 1)
-	  for (y = 0; y < s->myY; y += s->myY - 1)
-	    for (z = 0; z < s->myZ; z += s->myZ - 1)
-		s->description[x][y][z] = colour;
+	for (x = 0; x < s->myX; x++)
+	  for (y = 0; y < s->myY; y++)
+	    for (z = 0; z < s->myZ; z++)
+	    {
+		if (x == 0 || x == s->myX-1 || y == 0 || y == s->myY-1 ||
+		    z == 0 || z == s->myZ-1)
+			s->description[x][y][z] = colour;
+	    }
 }
 
 void

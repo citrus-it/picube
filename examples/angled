@@ -6,9 +6,11 @@
 #  * instructions, are available at: http://d2-webdesign.com/cube
 
 proc ::Angled::Rotate {times} {
-	loop d 0 $($times * 360) 5 {
-		cube.rotate -buffer $d
-		delay 10
+	loop iter 0 $times {
+		loop d 0 360 5 {
+			cube.rotate -buffer $d
+			delay 10
+		}
 	}
 }
 

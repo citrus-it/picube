@@ -8,8 +8,9 @@
 proc draw_pyramid {i} {
 	cube.begin
 	loop x 0 8 { loop y 0 8 {
-		set z $(int($i - 9.5 + [cube.distance $x $y]))
-		set z1 $(int($i - 0.5 + [cube.distance $x $y]))
+		set d [cube.distance $x $y]
+		set z $(int($i - 9.5 + $d))
+		set z1 $(int($i - 0.5 - $d))
 		cube.led $x $y $z
 		cube.led $x $y $z1
 	}}
@@ -23,13 +24,13 @@ proc DiamondWave {} {
 		# Up
 		loop i 0 18 {
 			draw_pyramid $i
-			delay 40
+			delay 15
 		}
 
 		# Down
 		loop i 16 0 -1 {
 			draw_pyramid $i
-			delay 40
+			delay 15
 		}
 
 	}

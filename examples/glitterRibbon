@@ -39,9 +39,10 @@ proc GlitterRibbon {iter} {
 				}
 			}}
 			cube.commit
-			delay 30
+			delay 20
 		}
 	}
+	cube.clear
 }
 
 if {!$interactive} { GlitterRibbon 15 }

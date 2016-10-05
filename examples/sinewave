@@ -14,7 +14,7 @@ loop i 0 80 { loop x 0 4 { loop y 0 4 {
 		sqrt(pow(3.5 - $x, 2) + pow(3.5 - $y, 2)) / 1.3 +
 		$i / 12
 	)
-	lset ::sine::tab $i $x $y $(4 + 4 * sin($key))
+	lset ::sine::tab $i $x $y $(int(4 + 4 * sin($key)))
 }}}
 
 proc sinewave {iter} {
@@ -30,7 +30,7 @@ proc sinewave {iter} {
 				cube.led $(7 - $x)	$(7 - $y)	$z
 			}}
 			cube.commit
-			delay 8
+			delay 3
 		}
 	}
 	cube.clear

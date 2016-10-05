@@ -25,6 +25,9 @@ void Rotor(int reps, int myspeed) {
     if (myangle>6.28318) { // and make sure it doesn't overflow
       myangle=0;
     }
+#ifdef PICUBE
+    delay(10);
+#endif
   }
   clearBufferCube();
   for (byte layer=0; layer<8; layer++){  // create the second pattern
@@ -39,6 +42,9 @@ void Rotor(int reps, int myspeed) {
     if (myangle>6.28318) { // and make sure it doesn't overflow
       myangle=0;
     }
+#ifdef PICUBE
+    delay(10);
+#endif
   }
   clearBufferCube();
   for (byte layer=0; layer<8; layer++){  // create the third pattern
@@ -53,6 +59,9 @@ void Rotor(int reps, int myspeed) {
     if (myangle>6.28318) { // and make sure it doesn't overflow
       myangle=0;
     }
+#ifdef PICUBE
+    delay(10);
+#endif
   }
   rotation = -rotation;
   for (int count=0; count<90; count++){  // now rotate the third pattern  backward
@@ -61,6 +70,9 @@ void Rotor(int reps, int myspeed) {
     if (myangle<=0) {  // don't let angle overflow
       myangle=6.28318;
     }
+#ifdef PICUBE
+    delay(10);
+#endif
   }
   clearBufferCube(); // reload the 2nd pattern
   for (byte layer=0; layer<8; layer++){
@@ -75,6 +87,9 @@ void Rotor(int reps, int myspeed) {
     if (myangle<=0) {  // don't let angle overflow
       myangle=6.28318;
     }
+#ifdef PICUBE
+    delay(10);
+#endif
   }
   clearBufferCube();
    for (byte layer=0; layer<8; layer++){  // reload the first pattern
@@ -89,6 +104,9 @@ void Rotor(int reps, int myspeed) {
     if (myangle<=0) {  // don't let angle overflow
       myangle=6.28318;
     }
+#ifdef PICUBE
+    delay(10);
+#endif
   }
   for (byte layer=0; layer<8; layer++){  // now add a reversed version of the  first pattern
     buffer_LED(7,layer,layer, 63,63,0);  // we didn't clear the buffer so both  patterns are there together
@@ -102,6 +120,9 @@ void Rotor(int reps, int myspeed) {
     if (myangle<=0) {  // don't let angle overflow
       myangle=6.28318;
     }
+#ifdef PICUBE
+    delay(10);
+#endif
   }
   rotation = -rotation;
   for (int count=0; count<90; count++){  // and rotate it backwards
@@ -110,6 +131,9 @@ void Rotor(int reps, int myspeed) {
     if (myangle>6.28318) { // and make sure it doesn't overflow
       myangle=0;
     }
+#ifdef PICUBE
+    delay(10);
+#endif
   }
   }
   clearBufferCube();

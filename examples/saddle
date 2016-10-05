@@ -30,7 +30,7 @@ proc Saddle {{clearafter 0}} {
 		draw_saddle $j $clearafter
 		loop d 0 360 10 {
 			cube.rotate -buffer $d
-			delay 10
+			delay 30
 		}
 	}
 
@@ -39,7 +39,7 @@ proc Saddle {{clearafter 0}} {
 		draw_saddle $j $clearafter
 		loop d 360 -1 -10 {
 			cube.rotate -buffer $d
-			delay 10
+			delay 30
 		}
 	}
 
@@ -48,7 +48,7 @@ proc Saddle {{clearafter 0}} {
 		draw_saddle $j $clearafter
 		loop d 0 360 10 {
 			cube.rotate -buffer $d
-			delay 10
+			delay 30
 		}
 	}
 	cube.clear

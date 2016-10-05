@@ -34,13 +34,20 @@ sprite method fill {colour} {
 sprite method outline {colour} {
 	$self fill black
 	set c [cube.colour -get {*}$colour]
-	loop x 0 $lx $($lx-1) { loop y 0 $ly $($ly-1) { loop z 0 $lz $($lz-1) {
-		lset data $x $y $z $c
+	loop x 0 $lx { loop y 0 $ly { loop z 0 $lz {
+		if {$x == 0 || $y == 0 || $z == 0 ||
+		    $x == $lx - 1 || $y == $ly - 1 || $z == $lz - 1} {
+			lset data $x $y $z $c
+		}
 	}}}
 }
 
-sprite method draw {} {
-	cube.begin -copy
+sprite method draw {args} {
+	if {"-blank" in $args} {
+		cube.begin
+	} else {
+		cube.begin -copy
+	}
 	loop x 0 $lx { loop y 0 $ly { loop z 0 $lz {
 		set c [lindex $data $x $y $z]
 		cube.led $($px + $x) $($py + $y) $($px + $z) {*}$c
@@ -63,9 +70,9 @@ sprite method clear {} {
 sprite method sphere {colour} {
 	set c [cube.colour -get {*}$colour]
 
-	set radiusx $($dx / 2)
-	set radiusy $($dy / 2)
-	set radiusz $($dz / 2)
+	set radiusx $($lx / 2)
+	set radiusy $($ly / 2)
+	set radiusz $($lz / 2)
 
 	loop x 0 $lx { loop y 0 $ly { loop z 0 $lz {
 		set polar $(sqrt(

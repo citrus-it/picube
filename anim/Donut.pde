@@ -38,6 +38,9 @@ void Donut(int mycount) {
       if (myangle>6.28318) { // and make sure it doesn't overflow
         myangle=myangle-6.28318;  //subtract 2 pi radians
       }
+#ifdef PICUBE
+      delay(10);
+#endif
     }
   }
   clearBufferCube();

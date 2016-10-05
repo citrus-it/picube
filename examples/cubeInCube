@@ -6,13 +6,12 @@
 #  * instructions, are available at: http://d2-webdesign.com/cube
 
 
-proc displayCube {side x y z {colour 0}} {
+proc displayCube {side x y z {colour 0} {delay 10}} {
 	set s [sprite create $side $side $side]
 	$s outline $(127 + $colour)
 	$s place $x $y $z
-	$s draw
-	delay 50
-	$s hide
+	$s draw -blank
+	delay $delay
 }
 
 proc CubeInCube {} {
@@ -21,56 +20,44 @@ proc CubeInCube {} {
 		displayCube 5 1 1 1 5
 		displayCube 4 1 1 1 10
 		displayCube 3 1 1 1 15
-		displayCube 2 1 1 1 20
-		displayCube 2 1 1 1 20
-		displayCube 2 1 1 1 20
+		displayCube 2 1 1 1 20 22
 		displayCube 3 1 1 1 15
 		displayCube 4 1 1 1 10
 		displayCube 5 1 1 1 5
-		displayCube 6 1 1 1 
-		displayCube 6 1 1 1 
+		displayCube 6 1 1 1 0 12
 	}
 	loop i 0 4 {
 		displayCube 6 1 1 1 
 		displayCube 5 2 2 1 -15
 		displayCube 4 3 3 1 -30
 		displayCube 3 4 4 1 -45
-		displayCube 2 5 5 1 -60
-		displayCube 2 5 5 1 -60
-		displayCube 2 5 5 1 -60
+		displayCube 2 5 5 1 -60 22
 		displayCube 3 4 4 1 -45
 		displayCube 4 3 3 1 -30
 		displayCube 5 2 2 1 -15
-		displayCube 6 1 1 1 
-		displayCube 6 1 1 1 
+		displayCube 6 1 1 1 0 12
 	}
 	loop i 0 4 {
 		displayCube 6 1 1 1
 		displayCube 5 2 1 2 15
 		displayCube 4 3 1 3 30
 		displayCube 3 4 1 4 45
-		displayCube 2 5 1 5 60
-		displayCube 2 5 1 5 60
-		displayCube 2 5 1 5 60
+		displayCube 2 5 1 5 60 22
 		displayCube 3 4 1 4 45
 		displayCube 4 3 1 3 30
 		displayCube 5 2 1 2 15
-		displayCube 6 1 1 1
-		displayCube 6 1 1 1
+		displayCube 6 1 1 1 0 12
 	}
 	loop i 0 4 {
 		displayCube 6 1 1 1
 		displayCube 5 1 2 2 -20
 		displayCube 4 1 3 3 -40
 		displayCube 3 1 4 4 -60
-		displayCube 2 1 5 5 -80
-		displayCube 2 1 5 5 -80
-		displayCube 2 1 5 5 -80
+		displayCube 2 1 5 5 -80 22
 		displayCube 3 1 4 4 -60
 		displayCube 4 1 3 3 -40
 		displayCube 5 1 2 2 -20
-		displayCube 6 1 1 1
-		displayCube 6 1 1 1
+		displayCube 6 1 1 1 0 12
 	}
 
 	cube.clear

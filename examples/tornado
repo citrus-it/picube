@@ -8,8 +8,6 @@
 
 proc Tornado {} {
 
-	set angle 12
-
 	# Set up the initial pattern
 	cube.begin
 
@@ -36,6 +34,7 @@ proc Tornado {} {
 	cube.commit -nocopy
 
 	set angle 0
+	set dangle 12
 	loop x 0 400 {
 		if {$x == 100} {
 			# Speed up
