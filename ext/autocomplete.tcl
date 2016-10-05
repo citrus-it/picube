@@ -1,14 +1,17 @@
 
+set tcl::autocomplete_commands {info tcl::prefix socket namespace array clock file package string dict signal history cube.colour cube.begin cube.commit cube.plane cube.text}
+
 proc tcl::autocomplete {prefix} {
 	if {[string match "* " $prefix]} {
 		set cmd [string range $prefix 0 end-1]
-		if {$cmd in {info tcl::prefix socket namespace array clock file package string dict signal history cube.colour cube.begin cube.commit cube.plane cube.text} || [info channel $cmd] ne ""} {
+		if {$cmd in $::tcl::autocomplete_commands || [info channel $cmd] ne ""} {
 			# Add any results from -commands
 			return [lmap p [$cmd -commands] {
 				function "$cmd $p"
 			}]
 		}
 	}
+	# Find matching files.
 	if {[string match "source *" $prefix]} {
 		set path [string range $prefix 7 end]
 		return [lmap p [glob -nocomplain "${path}*"] {
