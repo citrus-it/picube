@@ -43,7 +43,7 @@ static int Jim_TclPrefixCoreCommand(Jim_Interp *interp, int argc, Jim_Obj *const
         return JIM_ERR;
     }
     if (Jim_GetEnum(interp, argv[1], options, &option, NULL, JIM_ERRMSG | JIM_ENUM_ABBREV) != JIM_OK)
-        return JIM_ERR;
+        return Jim_CheckShowCommands(interp, argv[1], options);
 
     switch (option) {
         case OPT_MATCH:{
@@ -128,7 +128,6 @@ static int Jim_TclPrefixCoreCommand(Jim_Interp *interp, int argc, Jim_Obj *const
             }
             return JIM_ERR;
         }
-        break;
 
         case OPT_ALL:
             if (argc != 4) {
@@ -184,7 +183,7 @@ static int Jim_TclPrefixCoreCommand(Jim_Interp *interp, int argc, Jim_Obj *const
                 return JIM_OK;
             }
     }
-    return JIM_ERR;
+    return JIM_ERR; /* Cannot ever get here */
 }
 
 int Jim_tclprefixInit(Jim_Interp *interp)

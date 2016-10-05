@@ -57,7 +57,7 @@ clean:
 	rm -f cube core tags ${OBJS} help.h ext.h anim.h
 
 distclean: clean
-	cd jimtcl; make distclean
+	cd jimtcl; make clean distclean
 
 tags:
 	@-ctags *.[ch] 2>> /dev/null

@@ -19,3 +19,6 @@ libjim.a
 configure.gnu
 jimsh0
 build-jim-ext
+jim-interactive.c.dist
+jim-interactive.patch
+

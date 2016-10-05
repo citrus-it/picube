@@ -87,27 +87,6 @@ proc {info nameofexecutable} {} {
 	}
 }
 
-# Script-based implementation of 'dict with'
-proc {dict with} {&dictVar {args key} script} {
-	set keys {}
-	foreach {n v} [dict get $dictVar {*}$key] {
-		upvar $n var_$n
-		set var_$n $v
-		lappend keys $n
-	}
-	catch {uplevel 1 $script} msg opts
-	if {[info exists dictVar] && ([llength $key] == 0 || [dict exists $dictVar {*}$key])} {
-		foreach n $keys {
-			if {[info exists var_$n]} {
-				dict set dictVar {*}$key $n [set var_$n]
-			} else {
-				dict unset dictVar {*}$key $n
-			}
-		}
-	}
-	return {*}$opts $msg
-}
-
 # Script-based implementation of 'dict update'
 proc {dict update} {&varName args script} {
 	set keys {}
@@ -128,19 +107,6 @@ proc {dict update} {&varName args script} {
 		}
 	}
 	return {*}$opts $msg
-}
-
-# Script-based implementation of 'dict merge'
-# This won't get called in the trivial case of no args
-proc {dict merge} {dict args} {
-	foreach d $args {
-		# Check for a valid dict
-		dict size $d
-		foreach {k v} $d {
-			dict set dict $k $v
-		}
-	}
-	return $dict
 }
 
 proc {dict replace} {dictionary {args {key value}}} {

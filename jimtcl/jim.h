@@ -805,6 +805,7 @@ JIM_EXPORT int Jim_DictKeys(Jim_Interp *interp, Jim_Obj *objPtr, Jim_Obj *patter
 JIM_EXPORT int Jim_DictValues(Jim_Interp *interp, Jim_Obj *dictObjPtr, Jim_Obj *patternObjPtr);
 JIM_EXPORT int Jim_DictSize(Jim_Interp *interp, Jim_Obj *objPtr);
 JIM_EXPORT int Jim_DictInfo(Jim_Interp *interp, Jim_Obj *objPtr);
+JIM_EXPORT Jim_Obj *Jim_DictMerge(Jim_Interp *interp, int objc, Jim_Obj *const *objv);
 
 /* return code object */
 JIM_EXPORT int Jim_GetReturnCode (Jim_Interp *interp, Jim_Obj *objPtr,
@@ -841,6 +842,8 @@ JIM_EXPORT void Jim_WrongNumArgs (Jim_Interp *interp, int argc,
         Jim_Obj *const *argv, const char *msg);
 JIM_EXPORT int Jim_GetEnum (Jim_Interp *interp, Jim_Obj *objPtr,
         const char * const *tablePtr, int *indexPtr, const char *name, int flags);
+JIM_EXPORT int Jim_CheckShowCommands(Jim_Interp *interp, Jim_Obj *objPtr,
+        const char *const *tablePtr);
 JIM_EXPORT int Jim_ScriptIsComplete(Jim_Interp *interp,
         Jim_Obj *scriptObj, char *stateCharPtr);
 

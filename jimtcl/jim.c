@@ -7247,8 +7247,10 @@ int Jim_DictKey(Jim_Interp *interp, Jim_Obj *dictPtr, Jim_Obj *keyPtr,
         }
         return JIM_ERR;
     }
-    *objPtrPtr = he->u.val;
-    return JIM_OK;
+    else {
+        *objPtrPtr = Jim_GetHashEntryVal(he);
+        return JIM_OK;
+    }
 }
 
 /* Return an allocated array of key/value pairs for the dictionary. Stores the length in *len */
@@ -12877,7 +12879,7 @@ static int Jim_DebugCoreCommand(Jim_Interp *interp, int argc, Jim_Obj *const *ar
         return JIM_ERR;
     }
     if (Jim_GetEnum(interp, argv[1], options, &option, "subcommand", JIM_ERRMSG) != JIM_OK)
-        return JIM_ERR;
+        return Jim_CheckShowCommands(interp, argv[1], options);
     if (option == OPT_REFCOUNT) {
         if (argc != 3) {
             Jim_WrongNumArgs(interp, 2, argv, "object");
@@ -13629,7 +13631,7 @@ static int Jim_StringCoreCommand(Jim_Interp *interp, int argc, Jim_Obj *const *a
     }
     if (Jim_GetEnum(interp, argv[1], options, &option, NULL,
             JIM_ERRMSG | JIM_ENUM_ABBREV) != JIM_OK)
-        return JIM_ERR;
+        return Jim_CheckShowCommands(interp, argv[1], options);
 
     switch (option) {
         case OPT_LENGTH:
@@ -14329,6 +14331,37 @@ int Jim_DictSize(Jim_Interp *interp, Jim_Obj *objPtr)
     return ((Jim_HashTable *)objPtr->internalRep.ptr)->used;
 }
 
+/**
+ * Must be called with at least one object.
+ * Returns the new dictionary, or NULL on error.
+ */
+Jim_Obj *Jim_DictMerge(Jim_Interp *interp, int objc, Jim_Obj *const *objv)
+{
+    Jim_Obj *objPtr = Jim_NewDictObj(interp, NULL, 0);
+    int i;
+
+    JimPanic((objc == 0, "Jim_DictMerge called with objc=0"));
+
+    /* Note that we don't optimise the trivial case of a single argument */
+
+    for (i = 0; i < objc; i++) {
+        Jim_HashTable *ht;
+        Jim_HashTableIterator htiter;
+        Jim_HashEntry *he;
+
+        if (SetDictFromAny(interp, objv[i]) != JIM_OK) {
+            Jim_FreeNewObj(interp, objPtr);
+            return NULL;
+        }
+        ht = objv[i]->internalRep.ptr;
+        JimInitHashTableIterator(ht, &htiter);
+        while ((he = Jim_NextHashEntry(&htiter)) != NULL) {
+            Jim_ReplaceHashEntry(objPtr->internalRep.ptr, Jim_GetHashEntryKey(he), Jim_GetHashEntryVal(he));
+        }
+    }
+    return objPtr;
+}
+
 int Jim_DictInfo(Jim_Interp *interp, Jim_Obj *objPtr)
 {
     Jim_HashTable *ht;
@@ -14369,6 +14402,61 @@ static int Jim_EvalEnsemble(Jim_Interp *interp, const char *basecmd, const char 
     return Jim_EvalObjPrefix(interp, prefixObj, argc, argv);
 }
 
+/**
+ * Implements the [dict with] command
+ */
+static int JimDictWith(Jim_Interp *interp, Jim_Obj *dictVarName, Jim_Obj *const *keyv, int keyc, Jim_Obj *scriptObj)
+{
+    int i;
+    Jim_Obj *objPtr;
+    Jim_Obj *dictObj;
+    Jim_Obj **dictValues;
+    int len;
+    int ret = JIM_OK;
+
+    /* Open up the appropriate level of the dictionary */
+    dictObj = Jim_GetVariable(interp, dictVarName, JIM_ERRMSG);
+    if (dictObj == NULL || Jim_DictKeysVector(interp, dictObj, keyv, keyc, &objPtr, JIM_ERRMSG) != JIM_OK) {
+        return JIM_ERR;
+    }
+    /* Set the local variables */
+    if (Jim_DictPairs(interp, objPtr, &dictValues, &len) == JIM_ERR) {
+        return JIM_ERR;
+    }
+    for (i = 0; i < len; i += 2) {
+        if (Jim_SetVariable(interp, dictValues[i], dictValues[i + 1]) == JIM_ERR) {
+            Jim_Free(dictValues);
+            return JIM_ERR;
+        }
+    }
+
+    /* As an optimisation, if the script is empty, no need to evaluate it or update the dict */
+    if (Jim_Length(scriptObj)) {
+        ret = Jim_EvalObj(interp, scriptObj);
+
+        /* Now if the dictionary still exists, update it based on the local variables */
+        if (ret == JIM_OK && Jim_GetVariable(interp, dictVarName, 0) != NULL) {
+            /* We need a copy of keyv with one extra element at the end for Jim_SetDictKeysVector() */
+            Jim_Obj **newkeyv = Jim_Alloc(sizeof(*newkeyv) * (keyc + 1));
+            for (i = 0; i < keyc; i++) {
+                newkeyv[i] = keyv[i];
+            }
+
+            for (i = 0; i < len; i += 2) {
+                /* This will be NULL if the variable no longer exists, thus deleting the variable */
+                objPtr = Jim_GetVariable(interp, dictValues[i], 0);
+                newkeyv[keyc] = dictValues[i];
+                Jim_SetDictKeysVector(interp, dictVarName, newkeyv, keyc + 1, objPtr, 0);
+            }
+            Jim_Free(newkeyv);
+        }
+    }
+
+    Jim_Free(dictValues);
+
+    return ret;
+}
+
 /* [dict] */
 static int Jim_DictCoreCommand(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
 {
@@ -14392,7 +14480,7 @@ static int Jim_DictCoreCommand(Jim_Interp *interp, int argc, Jim_Obj *const *arg
     }
 
     if (Jim_GetEnum(interp, argv[1], options, &option, "subcommand", JIM_ERRMSG) != JIM_OK) {
-        return JIM_ERR;
+        return Jim_CheckShowCommands(interp, argv[1], options);
     }
 
     switch (option) {
@@ -14461,11 +14549,12 @@ static int Jim_DictCoreCommand(Jim_Interp *interp, int argc, Jim_Obj *const *arg
             if (argc == 2) {
                 return JIM_OK;
             }
-            if (Jim_DictSize(interp, argv[2]) < 0) {
+            objPtr = Jim_DictMerge(interp, argc - 2, argv + 2);
+            if (objPtr == NULL) {
                 return JIM_ERR;
             }
-            /* Handle as ensemble */
-            break;
+            Jim_SetResult(interp, objPtr);
+            return JIM_OK;
 
         case OPT_UPDATE:
             if (argc < 6 || argc % 2) {
@@ -14489,6 +14578,13 @@ static int Jim_DictCoreCommand(Jim_Interp *interp, int argc, Jim_Obj *const *arg
                 return JIM_ERR;
             }
             return Jim_DictInfo(interp, argv[2]);
+
+        case OPT_WITH:
+            if (argc < 4) {
+                Jim_WrongNumArgs(interp, 2, argv, "dictVar ?key ...? script");
+                return JIM_ERR;
+            }
+            return JimDictWith(interp, argv[2], argv + 3, argc - 4, argv[argc - 1]);
     }
     /* Handle command as an ensemble */
     return Jim_EvalEnsemble(interp, "dict", options[option], argc - 2, argv + 2);
@@ -14571,9 +14667,8 @@ static int Jim_InfoCoreCommand(Jim_Interp *interp, int argc, Jim_Obj *const *arg
         Jim_WrongNumArgs(interp, 1, argv, "subcommand ?args ...?");
         return JIM_ERR;
     }
-    if (Jim_GetEnum(interp, argv[1], commands, &cmd, "subcommand", JIM_ERRMSG | JIM_ENUM_ABBREV)
-        != JIM_OK) {
-        return JIM_ERR;
+    if (Jim_GetEnum(interp, argv[1], commands, &cmd, "subcommand", JIM_ERRMSG | JIM_ENUM_ABBREV) != JIM_OK) {
+        return Jim_CheckShowCommands(interp, argv[1], commands);
     }
 
     /* Test for the most common commands first, just in case it makes a difference */
@@ -15448,34 +15543,72 @@ void Jim_MakeErrorMessage(Jim_Interp *interp)
     Jim_EvalObjVector(interp, 2, argv);
 }
 
-static void JimSetFailedEnumResult(Jim_Interp *interp, const char *arg, const char *badtype,
-    const char *prefix, const char *const *tablePtr, const char *name)
+/*
+ * Given a null terminated array of strings, returns an allocated, sorted
+ * copy of the array.
+ */
+static char **JimSortStringTable(const char *const *tablePtr)
 {
     int count;
     char **tablePtrSorted;
-    int i;
 
+    /* Find the size of the table */
     for (count = 0; tablePtr[count]; count++) {
     }
+
+    /* Allocate one extra for the terminating NULL pointer */
+    tablePtrSorted = Jim_Alloc(sizeof(char *) * (count + 1));
+    memcpy(tablePtrSorted, tablePtr, sizeof(char *) * count);
+    qsort(tablePtrSorted, count, sizeof(char *), qsortCompareStringPointers);
+    tablePtrSorted[count] = NULL;
+
+    return tablePtrSorted;
+}
+
+static void JimSetFailedEnumResult(Jim_Interp *interp, const char *arg, const char *badtype,
+    const char *prefix, const char *const *tablePtr, const char *name)
+{
+    char **tablePtrSorted;
+    int i;
 
     if (name == NULL) {
         name = "option";
     }
 
     Jim_SetResultFormatted(interp, "%s%s \"%s\": must be ", badtype, name, arg);
-    tablePtrSorted = Jim_Alloc(sizeof(char *) * count);
-    memcpy(tablePtrSorted, tablePtr, sizeof(char *) * count);
-    qsort(tablePtrSorted, count, sizeof(char *), qsortCompareStringPointers);
-    for (i = 0; i < count; i++) {
-        if (i + 1 == count && count > 1) {
+    tablePtrSorted = JimSortStringTable(tablePtr);
+    for (i = 0; tablePtrSorted[i]; i++) {
+        if (tablePtrSorted[i + 1] == NULL && i > 0) {
             Jim_AppendString(interp, Jim_GetResult(interp), "or ", -1);
         }
         Jim_AppendStrings(interp, Jim_GetResult(interp), prefix, tablePtrSorted[i], NULL);
-        if (i + 1 != count) {
+        if (tablePtrSorted[i + 1]) {
             Jim_AppendString(interp, Jim_GetResult(interp), ", ", -1);
         }
     }
     Jim_Free(tablePtrSorted);
+}
+
+
+/*
+ * If objPtr is "-commands" sets the Jim result as a sorted list of options in the table
+ * and returns JIM_OK.
+ *
+ * Otherwise returns JIM_ERR.
+ */
+int Jim_CheckShowCommands(Jim_Interp *interp, Jim_Obj *objPtr, const char *const *tablePtr)
+{
+    if (Jim_CompareStringImmediate(interp, objPtr, "-commands")) {
+        int i;
+        char **tablePtrSorted = JimSortStringTable(tablePtr);
+        Jim_SetResult(interp, Jim_NewListObj(interp, NULL, 0));
+        for (i = 0; tablePtrSorted[i]; i++) {
+            Jim_ListAppendElement(interp, Jim_GetResult(interp), Jim_NewStringObj(interp, tablePtrSorted[i], -1));
+        }
+        Jim_Free(tablePtrSorted);
+        return JIM_OK;
+    }
+    return JIM_ERR;
 }
 
 int Jim_GetEnum(Jim_Interp *interp, Jim_Obj *objPtr,

@@ -38,7 +38,6 @@ static void signal_handler(int sig)
      * notice this as soon as it can and throw an error
      */
     *sigloc |= sig_to_bit(sig);
-    write(2, "Interrupt...\n", 13);
 }
 
 static void signal_ignorer(int sig)
