@@ -110,8 +110,8 @@ main(int argc, char **argv)
 		start_thread(10, &t_bench, bench_thread);
 #endif
 	}
-	else
-		printf("No cube, demo mode.\n");
+//	else
+//		printf("No cube, demo mode.\n");
 
 	jim = jim_init();
 
