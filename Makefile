@@ -38,7 +38,7 @@ cube: jimtcl/libjim.a ${OBJS}
 		${DEFS} \
 		${CFLAGS} -o $@ \
 		${OBJS} \
-		${LIBS} jimtcl/libjim.a
+		${LIBS} jimtcl/libjim.a jimtcl/initjimsh.o
 	@echo "Done..."
 
 jimtcl/libjim.a:

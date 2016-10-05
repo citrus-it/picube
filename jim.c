@@ -1135,6 +1135,7 @@ Jim_SetGlobalVariableStrWithStr(Jim_Interp *j, char *var, char *val)
 	Jim_SetGlobalVariableStr(j, var, Jim_NewStringObj(j, val, -1));
 }
 
+extern int Jim_initjimshInit(Jim_Interp *interp);
 
 // Initialise the Jim interpreter.
 Jim_Interp *
@@ -1182,6 +1183,8 @@ jim_init()
 	Jim_EvalSource(j, NULL, 1, "\n"
 		"signal handle SIGINT\n"
 	);
+
+	Jim_initjimshInit(j);
 
 	// TBD - need to determine best way to do this.
 	j->signal_level = 99;
