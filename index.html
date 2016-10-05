@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Picube by hummypkg</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Picube</h1>
+      <h2 class="project-tagline">Raspberry Pi Linux Software for the SuperTech-IT 8x8x8 RGB LED Cube</h2>
+      <a href="https://github.com/hummypkg/picube" class="btn">View on GitHub</a>
+      <a href="https://github.com/hummypkg/picube/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/hummypkg/picube/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <p><img src="/doc/piCube.png" alt="piCube"></p>
+
+<p>Raspberry Pi Software for the SuperTech-IT 8x8x8 RGB LED Cube</p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<h3>
+<a id="install-vanilla-raspbian-on-your-raspberry-pi" class="anchor" href="#install-vanilla-raspbian-on-your-raspberry-pi" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install Vanilla Raspbian on your Raspberry Pi</h3>
+
+<p>Download <a href="https://www.raspberrypi.org/downloads/raspbian/">Raspbian</a>
+and install it on your SD card. The minimal image is sufficient.</p>
+
+<h3>
+<a id="optionally-update-the-distribution-to-the-latest-version" class="anchor" href="#optionally-update-the-distribution-to-the-latest-version" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>(Optionally) update the distribution to the latest version</h3>
+
+<div class="highlight highlight-text-shell-session"><pre><span class="pl-mo">pi$ sudo apt-get update</span>
+<span class="pl-mo">pi$ sudo apt-get dist-upgrade</span>
+<span class="pl-mo">pi$ sudo apt-get clean</span>
+<span class="pl-mo">pi$ sudo shutdown -r now</span></pre></div>
+
+<h3>
+<a id="install-the-real-time-linux-kernel" class="anchor" href="#install-the-real-time-linux-kernel" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install the real-time linux kernel</h3>
+
+<p>A pre-compiled version of the Linux kernel with the
+<a href="https://rt.wiki.kernel.org/index.php/Main_Page">RT Preempt</a>
+patch applied is available for all Raspberry Pi models at picube.uk and
+can be installed as follows.</p>
+
+<div class="highlight highlight-text-shell-session"><pre><span class="pl-mo">pi$ wget http://picube.uk/files/rpi-rtlinux-4.4.22-rt30.tar.gz</span>
+<span class="pl-mo">pi$ sudo tar -C / -zxf rpi-rtlinux-4.4.22-rt30.tar.gz</span></pre></div>
+
+<p>(Alternatively you can build it yourself. There is a good write-up at
+<a href="http://www.frank-durr.de/?p=203">http://www.frank-durr.de/?p=203</a> )</p>
+
+<h3>
+<a id="disable-sd-card-low-latency-mode-llm" class="anchor" href="#disable-sd-card-low-latency-mode-llm" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Disable SD card low-latency-mode (llm)</h3>
+
+<p>Add the following text to the end of the line in <code>/boot/cmdline.txt</code></p>
+
+<pre><code>sdhci_bcm2708.enable_llm=0
+</code></pre>
+
+<h3>
+<a id="allow-the-pi-user-to-elevate-scheduling-priority-and-lock-memory" class="anchor" href="#allow-the-pi-user-to-elevate-scheduling-priority-and-lock-memory" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Allow the pi user to elevate scheduling priority and lock memory.</h3>
+
+<p>Add the following lines to <code>/etc/security/limits.conf</code></p>
+
+<pre><code>pi  -   memlock     51200
+pi  -   rtprio      99
+</code></pre>
+
+<h3>
+<a id="reboot-the-pi" class="anchor" href="#reboot-the-pi" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Reboot the Pi</h3>
+
+<div class="highlight highlight-text-shell-session"><pre><span class="pl-mo">pi$ sudo shutdown -r now</span></pre></div>
+
+<h3>
+<a id="install-additional-software" class="anchor" href="#install-additional-software" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install additional software</h3>
+
+<div class="highlight highlight-text-shell-session"><pre><span class="pl-mo">pi$ sudo apt-get install git</span></pre></div>
+
+<h3>
+<a id="clone-this-repository-and-build-the-software" class="anchor" href="#clone-this-repository-and-build-the-software" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Clone this repository and build the software</h3>
+
+<div class="highlight highlight-text-shell-session"><pre><span class="pl-mo">pi$ git clone https://github.com/hummypkg/picube.git</span>
+<span class="pl-mo">pi$ cd picube</span>
+<span class="pl-mo">pi$ make install</span></pre></div>
+
+<h3>
+<a id="connect-the-cube-to-the-pi" class="anchor" href="#connect-the-cube-to-the-pi" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Connect the cube to the Pi</h3>
+
+<p><img src="/doc/GPIO.png" alt="Pinout"></p>
+
+<h3>
+<a id="run-the-included-paneltest-program" class="anchor" href="#run-the-included-paneltest-program" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Run the included <code>paneltest</code> program</h3>
+
+<div class="highlight highlight-text-shell-session"><pre><span class="pl-mo">pi$ cube examples/paneltest 5</span></pre></div>
+
+<h3>
+<a id="start-the-interactive-shell-and-play" class="anchor" href="#start-the-interactive-shell-and-play" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Start the interactive shell and play</h3>
+
+<div class="highlight highlight-text-shell-session"><pre><span class="pl-mo">pi$ cube</span>
+<span class="pl-mo">Welcome to cube shell (Jim 0.77).</span>
+<span class="pl-mo">. cube.colour violet</span>
+<span class="pl-mo">. cube.fill</span>
+<span class="pl-mo">. cube.clear</span>
+<span class="pl-mo">. cube.text -twosides Hello</span>
+<span class="pl-mo">. cube.anim cosine 20</span>
+<span class="pl-mo">. help</span>
+<span class="pl-mo">. help cube.colour</span>
+<span class="pl-mo">. loop p 0 8 { cube.clear; cube.panel $p; delay 500 }</span></pre></div>
+
+<p>The shell is an embedded
+<a href="http://jim.tcl.tk/fossil/doc/trunk/Tcl_shipped.html">Jim Tcl</a> interpreter
+which can be used to write programs to control the cube. There are also a
+number of built-in animations which have been ported from 
+<a href="http://d2-webdesign.com/cube">Doug Domke's Cube Application Template</a></p>
+
+<h3>
+<a id="run-some-example-animation-scripts" class="anchor" href="#run-some-example-animation-scripts" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Run some example animation scripts</h3>
+
+<div class="highlight highlight-text-shell-session"><pre><span class="pl-mo">pi$ cube examples/rain</span>
+<span class="pl-mo">pi$ cube examples/grower</span></pre></div>
+
+<p>This is the Super Big Show from 
+<a href="http://d2-webdesign.com/cube">Doug Domke's Cube Application Template</a></p>
+
+<div class="highlight highlight-text-shell-session"><pre><span class="pl-mo">pi$ cube examples/Super_Big_Show</span></pre></div>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/hummypkg/picube">Picube</a> is maintained by <a href="https://github.com/hummypkg">hummypkg</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
