@@ -2,19 +2,16 @@
 # Create an 8x8 test pattern.
 
 set red 1
-set grid [lrepeat 8 {}]
-loop x 0 8 {
-	lset grid $x [lrepeat 8 {}]
-	loop y 0 8 {
-		lset grid $x $y [list $red 0 1]
-		incr red
-		if {$red > 63} { set red 0 }
-	}
-}
+set grid [lrepeat 8 [lrepeat 8 {}]]
+loop x 0 8 { loop y 0 8 {
+	lset grid $x $y [list $red 0 1]
+	incr red
+	if {$red > 63} { set red 0 }
+}}
 
 proc print_grid {grid} {
-	foreach row $grid {
-		foreach led $row {
+	foreach col $grid {
+		foreach led $col {
 			lassign $led r g b
 			puts -nonewline [format "<%2d,%d,%d> " $r $g $b]
 		}
@@ -44,7 +41,7 @@ loop layer 0 8 {
 	set data [lrepeat 8 [lrepeat 8 {}]]
 	set cube [cube.get]
 	loop x 0 8 { loop y 0 8 {
-		lset data $(7 - $y) $x [lindex $cube $x $y $layer]
+		lset data $x $(7 - $y) [lindex $cube $x $y $layer]
 	}}
 
 	compare "Layer.a $layer" $data
@@ -61,7 +58,7 @@ loop panel 0 8 {
 	set data [lrepeat 8 [lrepeat 8 {}]]
 	set cube [cube.get]
 	loop x 0 8 { loop z 0 8 {
-		lset data $(7 - $z) $x [lindex $cube $x $panel $z]
+		lset data $x $(7 - $z) [lindex $cube $x $panel $z]
 	}}
 
 	compare "Panel.a $panel" $data
@@ -78,7 +75,7 @@ loop slice 0 8 {
 	set data [lrepeat 8 [lrepeat 8 {}]]
 	set cube [cube.get]
 	loop y 0 8 { loop z 0 8 {
-		lset data $(7 - $z) $y [lindex $cube $slice $y $z]
+		lset data $y $(7 - $z) [lindex $cube $slice $y $z]
 	}}
 
 	compare "Slice.a $slice" $data

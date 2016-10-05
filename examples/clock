@@ -17,7 +17,7 @@ proc ::Clock::Digit {digit xx yy} {
 	loop x 0 3 { loop y 0 5 {
 		set key $((4 - $y) * 3 + $x)
 		if {[lindex $::Clock::Digits($digit) $key]} {
-			lset ::Clock::Data $($yy + 4 - $y) $($xx + $x) {63 0 0}
+			lset ::Clock::Data $($xx + $x) $($yy + 4 - $y) {63 0 0}
 		}
 	}}
 }
@@ -30,6 +30,8 @@ proc Clock {} {
 		puts "$hour:$min"
 
 		cube.clear
+
+		cube.text -twosides "$hour:$min"
 
 		set ::Clock::Data [cube.plane -panel 0]
 

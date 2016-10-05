@@ -1,7 +1,7 @@
 
 proc pprint {grid {mask ""}} {} {
-	foreach line $grid {
-		foreach char $line {
+	foreach col $grid {
+		foreach char $col {
 			set d { }
 			if {$mask ne "" && $char eq $mask} {
 				set d "*"

@@ -706,15 +706,15 @@ jim_cube_plane(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 	{
 		// Get
 		Jim_Obj *data = Jim_NewListObj(j, NULL, 0);
-		Jim_Obj *led, *row;
+		Jim_Obj *led, *set;
 
 		switch (plane)
 		{
 		    case PLANE_PANEL:
-			for (z = 7; z >= 0; z--)
+			for (x = 0; x < 8; x++)
 			{
-			    row = Jim_NewListObj(j, NULL, 0);
-			    for (x = 0; x < 8; x++)
+			    set = Jim_NewListObj(j, NULL, 0);
+			    for (z = 7; z >= 0; z--)
 			    {
 				led = Jim_NewListObj(j, NULL, 0);
 
@@ -725,17 +725,17 @@ jim_cube_plane(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 				Jim_ListAppendElement(j, led,
 				    Jim_NewIntObj(j, xLED(x, index, z, BLUE)));
 
-				Jim_ListAppendElement(j, row, led);
+				Jim_ListAppendElement(j, set, led);
 			    }
-			    Jim_ListAppendElement(j, data, row);
+			    Jim_ListAppendElement(j, data, set);
 			}
 			break;
 
 		    case PLANE_SLICE:
-			for (z = 7; z >= 0; z--)
+			for (y = 0; y < 8; y++)
 			{
-			    row = Jim_NewListObj(j, NULL, 0);
-			    for (y = 0; y < 8; y++)
+			    set = Jim_NewListObj(j, NULL, 0);
+			    for (z = 7; z >= 0; z--)
 			    {
 				led = Jim_NewListObj(j, NULL, 0);
 
@@ -746,18 +746,18 @@ jim_cube_plane(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 				Jim_ListAppendElement(j, led,
 				    Jim_NewIntObj(j, xLED(index, y, z, BLUE)));
 
-				Jim_ListAppendElement(j, row, led);
+				Jim_ListAppendElement(j, set, led);
 			    }
-			    Jim_ListAppendElement(j, data, row);
+			    Jim_ListAppendElement(j, data, set);
 			}
 
 			break;
 
 		    case PLANE_LAYER:
-			for (y = 7; y >= 0; y--)
+			for (x = 0; x < 8; x++)
 			{
-			    row = Jim_NewListObj(j, NULL, 0);
-			    for (x = 0; x < 8; x++)
+			    set = Jim_NewListObj(j, NULL, 0);
+			    for (y = 7; y >= 0; y--)
 			    {
 				led = Jim_NewListObj(j, NULL, 0);
 
@@ -768,9 +768,9 @@ jim_cube_plane(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 				Jim_ListAppendElement(j, led,
 				    Jim_NewIntObj(j, xLED(x, y, index, BLUE)));
 
-				Jim_ListAppendElement(j, row, led);
+				Jim_ListAppendElement(j, set, led);
 			    }
-			    Jim_ListAppendElement(j, data, row);
+			    Jim_ListAppendElement(j, data, set);
 			}
 			break;
 		}
@@ -789,27 +789,27 @@ jim_cube_plane(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 
 	memset(grid, '\0', sizeof(grid));
 	
-	for (y = 0; y < 8; y++)
+	for (x = 0; x < 8; x++)
 	{
 		Jim_Obj *o;
 
-		if (Jim_ListIndex(j, argv[3], y, &o, JIM_ERRMSG) != JIM_OK)
+		if (Jim_ListIndex(j, argv[3], x, &o, JIM_ERRMSG) != JIM_OK)
 			return JIM_ERR;
 
-		// o points to a row's worth of data.
+		// o points to a column's worth of data.
 		if (Jim_ListLength(j, o) != 8)
 		{
 			Jim_SetResultFormatted(j,
-			    "Row %d is not a list of 8 elements.", x);
+			    "Column %d is not a list of 8 elements.", x);
 			return JIM_ERR;
 		}
 
-		for (x = 0; x < 8; x++)
+		for (y = 0; y < 8; y++)
 		{
 			Jim_Obj *led, *colour;
 			long r, g, b;
 
-			if (Jim_ListIndex(j, o, x, &led, JIM_ERRMSG)
+			if (Jim_ListIndex(j, o, y, &led, JIM_ERRMSG)
 			    != JIM_OK)
 				return JIM_ERR;
 
