@@ -16,6 +16,7 @@ set colours {
 	{63 0 0}
 	{0 63 0}
 	{0 0 63}
+	{63 63 63}
 }
 
 # x, y, z are the coordinates of the mouse.
