@@ -24,6 +24,7 @@ proc ::randomfall::ascend {x y} {
 		bump_colour -15
 		delay 10
 	}
+	cube.led $x $y $z 63 0 0
 }
 
 proc RandomFall {} {

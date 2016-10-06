@@ -58,6 +58,9 @@ void RandomFall() {
         mycolor=mycolor-15;
         getColor(mycolor, 4);
       }
+#ifdef PICUBE
+	LED(x3, y3, z, 63, 0, 0);
+#endif
     }
   }
   delay(200);
