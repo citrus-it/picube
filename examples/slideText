@@ -1,0 +1,35 @@
+
+proc SlideChar {char} {
+	set data [cube.textchar $char]
+
+	set c [cube.colour]
+
+	# Slide the character onto the back panel.
+
+	# Clear the panel
+	cube.slice 7 0 0 0
+
+	loop i 1 8 {
+		set panel [lrepeat 8 [lrepeat 8 {0 0 0}]]
+		loop x 0 $i { loop y 0 8 {
+			lset panel $(7 - ($i - $x)) $y [lindex $data $x $y]
+		}}
+		cube.plane -slice 7 $panel
+		delay 100
+	}
+
+	loop x 0 7 {
+		cube.translate -1 0 0
+		delay 100
+	}
+}
+
+proc SlideText {text} {
+	foreach char [split $text ""] {
+		SlideChar $char
+	}
+	cube.clear
+}
+
+if {!$interactive} { SlideText "Test" }
+
