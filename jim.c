@@ -653,10 +653,10 @@ jim_cube_textchar(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 	text_getchar(*str, &grid, red, green, blue);
 
 	data = Jim_NewListObj(j, NULL, 0);
-	for (y = 0; y < 8; y++)
+	for (x = 0; x < 8; x++)
 	{
-	    Jim_Obj *row = Jim_NewListObj(j, NULL, 0);
-	    for (x = 0; x < 8; x++)
+	    Jim_Obj *set = Jim_NewListObj(j, NULL, 0);
+	    for (y = 0; y < 8; y++)
 	    {
 		Jim_Obj *led = Jim_NewListObj(j, NULL, 0);
 
@@ -667,9 +667,9 @@ jim_cube_textchar(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 		Jim_ListAppendElement(j, led,
 		    Jim_NewIntObj(j, grid[x][y][BLUE]));
 
-		Jim_ListAppendElement(j, row, led);
+		Jim_ListAppendElement(j, set, led);
 	    }
-	    Jim_ListAppendElement(j, data, row);
+	    Jim_ListAppendElement(j, data, set);
 	}
 
 	Jim_SetResult(j, data);
@@ -756,7 +756,7 @@ jim_cube_plane(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 			break;
 
 		    case PLANE_SLICE:
-			for (y = 0; y < 8; y++)
+			for (y = 7; y >= 0; y--)
 			{
 			    set = Jim_NewListObj(j, NULL, 0);
 			    for (z = 7; z >= 0; z--)

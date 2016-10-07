@@ -75,7 +75,7 @@ loop slice 0 8 {
 	set data [lrepeat 8 [lrepeat 8 {}]]
 	set cube [cube.get]
 	loop y 0 8 { loop z 0 8 {
-		lset data $y $(7 - $z) [lindex $cube $slice $y $z]
+		lset data $(7 - $y) $(7 - $z) [lindex $cube $slice $y $z]
 	}}
 
 	compare "Slice.a $slice" $data

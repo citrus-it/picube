@@ -318,7 +318,7 @@ cube_plane(int index, enum planes plane, int buffer, uint8_t (*buf)[8][8][3])
 	    case PLANE_SLICE:
 		for (y = 0; y < 8; y++)
 		    for (z = 0; z < 8; z++)
-			setled(index, y, 7-z,
+			setled(index, 7-y, 7-z,
 			    (*buf)[y][z][RED],
 			    (*buf)[y][z][GREEN],
 			    (*buf)[y][z][BLUE]);
