@@ -14,10 +14,11 @@ set ::Clock::Digits {
 }
 
 proc ::Clock::Digit {digit xx yy} {
+	set c [cube.colour]
 	loop x 0 3 { loop y 0 5 {
 		set key $((4 - $y) * 3 + $x)
 		if {[lindex $::Clock::Digits($digit) $key]} {
-			lset ::Clock::Data $($xx + $x) $($yy + 4 - $y) {63 0 0}
+			lset ::Clock::Data $($xx + $x) $($yy + 4 - $y) $c
 		}
 	}}
 }
@@ -38,26 +39,26 @@ proc Clock {} {
 		# Add hour digits
 		::Clock::Digit [string index $hour 0] 0 1
 		::Clock::Digit [string index $hour 1] 4 1
-		cube.plane -panel 0 $::Clock::Data
+		cube.plane -slice 0 $::Clock::Data
 
 		# Add minute digits
 		set ::Clock::Data [cube.plane -slice 7]
 		::Clock::Digit [string index $min 0] 1 1
 		::Clock::Digit [string index $min 1] 5 1
-		cube.plane -slice 7 $::Clock::Data
+		cube.plane -panel 0 $::Clock::Data
 
 		set secs [clock format $now -format %S]
 		while {[clock format [clock seconds] -format %S] >= $secs} {
 			# Flash colon
-			cube.led 7 0 3 0 0 63
-			cube.led 7 0 5 0 0 63
+			cube.led 0 0 3 0 0 15
+			cube.led 0 0 5 0 0 15
 			delay 100
-			cube.led 7 0 3 0 0 0
-			cube.led 7 0 5 0 0 0
+			cube.led 0 0 3 0 0 0
+			cube.led 0 0 5 0 0 0
 			delay 900
 		}
 	}
 }
 
-if {!$interactive} { Clock }
+if {!$interactive} { cube.colour -intensity 2 green; Clock }
 
