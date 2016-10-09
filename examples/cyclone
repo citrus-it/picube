@@ -46,6 +46,8 @@ proc Cyclone {} {
 		if {$colour2 > 189} { incr colour2 -189 }
 		rotate_cyclone $colour1 $colour2
 	}
+	# Allow the cyclone to finish descending
+	loop x 0 8 { cube.translate 0 0 -1; delay 55 }
 }
 
 if {!$interactive} { Cyclone }
