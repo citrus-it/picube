@@ -8,8 +8,7 @@ Raspberry Pi Software for the SuperTech-IT 8x8x8 RGB LED Cube
 
 Download the [modified Raspbian image](http://picube.uk/files/picube-raspian-20161009.img.gz) and write it to an SD card.
 
-(The [INSTALLATION](INSTALLATION.md) file contains instructions for building
-this image by hand if you prefer)
+> (The [INSTALLATION](INSTALLATION.md) file contains instructions for building this image by hand if you prefer)
 
 ### Update the picube software to the latest version
 
@@ -31,6 +30,7 @@ pi@picube:~/picube$ make distclean install
 ```console
 pi@picube:~/picube$ cube examples/paneltest 5
 ```
+> In this example, panel 5 is tested.
 
 ## Start the interactive shell and play
 
