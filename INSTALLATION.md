@@ -12,10 +12,10 @@ and install it on your SD card. The minimal image is sufficient.
 ### (Optionally) update the distribution to the latest version
 
 ```console
-pi$ sudo apt-get update
-pi$ sudo apt-get dist-upgrade
-pi$ sudo apt-get clean
-pi$ sudo shutdown -r now
+pi@picube:~ $ sudo apt-get update
+pi@picube:~ $ sudo apt-get dist-upgrade
+pi@picube:~ $ sudo apt-get clean
+pi@picube:~ $ sudo shutdown -r now
 ```
 
 ### Install the real-time linux kernel
@@ -29,9 +29,9 @@ patch applied is available for all Raspberry Pi models at picube.uk and
 can be installed as follows.
 
 ```console
-pi$ wget http://picube.uk/files/raspberrypi-kernel-20161009.deb
-pi$ sudo dpkg -i raspberrypi-kernel-20161009.deb
-pi$ rm raspberrypi-kernel-20161009.deb
+pi@picube:~ $ wget http://picube.uk/files/raspberrypi-kernel-20161009.deb
+pi@picube:~ $ sudo dpkg -i raspberrypi-kernel-20161009.deb
+pi@picube:~ $ rm raspberrypi-kernel-20161009.deb
 ```
 
 (Alternatively you can build it yourself. There is a good write-up at
@@ -57,20 +57,20 @@ pi	-	rtprio		99
 ### Reboot the Pi
 
 ```console
-pi$ sudo shutdown -r now
+pi@picube:~ $ sudo shutdown -r now
 ```
 
 ### Install additional software
 
 ```console
-pi$ sudo apt-get install git
+pi@picube:~ $ sudo apt-get install git
 ```
 
 ### Clone this repository and build the software
 
 ```console
-pi$ git clone https://github.com/hummypkg/picube.git
-pi$ cd picube
-pi$ make install
+pi@picube:~ $ git clone https://github.com/hummypkg/picube.git
+pi@picube:~ $ cd picube
+pi@picube:~/picube $ make install
 ```
 
