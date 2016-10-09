@@ -282,7 +282,10 @@ jim_cube_colour(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 				c = Purple;
 			else
 			{
-				Jim_SetResultString(j, "unknown colour", -1);
+				Jim_SetResultString(j,
+				    "unknown colour (use red, gree, blue, "
+				    "black, white, orange, yellow, aqua, "
+				    "violet, purple)", -1);
 				return JIM_ERR;
 			}
 		}
