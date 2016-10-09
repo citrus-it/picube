@@ -2,7 +2,24 @@
 
 Raspberry Pi Software for the SuperTech-IT 8x8x8 RGB LED Cube
 
-## Installation
+## Quickest Installation
+
+### Install the custom Raspian image
+
+Download the [modified Raspbian image](http://picube.uk/files/picube-raspian-20161009.img.gz) and write it to an SD card.
+
+### Update the picube software
+
+Once booted, log in as the pi user (the password is 'raspberry') and update
+the piCube software:
+
+```console
+pi$ cd picube
+pi$ git pull
+pi$ make clean install
+```
+
+## Quick Installation
 
 ### Install Vanilla Raspbian on your Raspberry Pi
 
@@ -26,8 +43,9 @@ patch applied is available for all Raspberry Pi models at picube.uk and
 can be installed as follows.
 
 ```console
-pi$ wget http://picube.uk/files/rpi-rtlinux-4.4.22-rt30.tar.gz
-pi$ sudo tar -C / -zxf rpi-rtlinux-4.4.22-rt30.tar.gz
+pi$ wget http://picube.uk/files/raspberrypi-kernel-20161009.deb
+pi$ sudo dpkg -i raspberrypi-kernel-20161009.deb
+pi$ rm raspberrypi-kernel-20161009.deb
 ```
 
 (Alternatively you can build it yourself. There is a good write-up at
@@ -80,7 +98,7 @@ pi$ make install
 pi$ cube examples/paneltest 5
 ```
 
-### Start the interactive shell and play
+## Start the interactive shell and play
 
 ```console
 pi$ cube
