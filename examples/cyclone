@@ -16,11 +16,13 @@ set ::cyclone::coords {
 
 proc draw_cyclone {pos1 colour1 pos2 colour2} {
 	cube.colour $colour1
-	foreach {x y} [lrange $::cyclone::coords $pos1 $pos1+1] {
+	foreach el [lrange $::cyclone::coords $pos1 $pos1+1] {
+		lassign $el x y
 		cube.led $x $y 7
 	}
 	cube.colour $colour2
-	foreach {x y} [lrange $::cyclone::coords $pos2 $pos2+1] {
+	foreach el [lrange $::cyclone::coords $pos2 $pos2+1] {
+		lassign $el x y
 		cube.led $x $y 7
 	}
 }
