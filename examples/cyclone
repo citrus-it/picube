@@ -1,0 +1,52 @@
+
+# A jim version of the Cyclone animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+# These are the x,y coordinates of the cyclone LEDs in the top layer.
+# The first coordinate is repeated at the end of the list to simplify
+# handling the last position.
+set ::cyclone::coords {
+	{ 4 0 } { 3 0 } { 2 1 } { 1 1 } { 1 2 } { 0 3 } { 0 4 } { 1 5 }
+	{ 1 6 } { 2 6 } { 3 7 } { 4 7 } { 5 6 } { 6 6 } { 6 5 } { 7 4 }
+	{ 7 3 } { 6 2 } { 6 1 } { 5 1 } { 4 0 }
+}
+
+proc draw_cyclone {pos1 colour1 pos2 colour2} {
+	cube.colour $colour1
+	foreach {x y} [lrange $::cyclone::coords $pos1 $pos1+1] {
+		cube.led $x $y 7
+	}
+	cube.colour $colour2
+	foreach {x y} [lrange $::cyclone::coords $pos2 $pos2+1] {
+		cube.led $x $y 7
+	}
+}
+
+proc rotate_cyclone {colour1 colour2} {
+	loop pos1 0 20 {
+		set pos2 $($pos1 + 10)
+		if {$pos2 > 19} { incr pos2 -19 }
+
+		draw_cyclone $pos1 $colour1 $pos2 $colour2
+		delay 55
+
+		# Shift cube down by one
+		cube.translate 0 0 -1
+	}
+}
+
+proc Cyclone {} {
+	cube.clear
+	loop colour1 0 190 15 {
+		# Get a colour from the opposite side of the colour wheel
+		set colour2 $($colour1 + 95)
+		if {$colour2 > 189} { incr colour2 -189 }
+		rotate_cyclone $colour1 $colour2
+	}
+}
+
+if {!$interactive} { Cyclone }
+
