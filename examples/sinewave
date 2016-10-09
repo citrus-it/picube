@@ -30,7 +30,7 @@ proc sinewave {iter} {
 				cube.led $(7 - $x)	$(7 - $y)	$z
 			}}
 			cube.commit
-			delay 3
+			delay 8
 		}
 	}
 	cube.clear
