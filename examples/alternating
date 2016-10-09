@@ -1,34 +1,37 @@
 
-# Row of green, blue, green, blue...
-set green_blue_row [lrepeat 4 {0 63 0} {0 0 63}]
+# A simple animation that sets all of the cube LEDs to green and blue
+# and then swaps the colours.
 
-# Build a row the other way around:
-set blue_green_row [lreverse $green_blue_row]
+proc Alternating {{cycles 8}} {
 
-# Now create the panels:
-set blue_green_panel [lrepeat 4 $blue_green_row $green_blue_row]
-set green_blue_panel [lrepeat 4 $green_blue_row $blue_green_row]
+	# Row of green, blue, green, blue...
+	set green_blue_row [lrepeat 4 {0 63 0} {0 0 63}]
 
-# Set the cube.
+	# Build a row the other way around:
+	set blue_green_row [lreverse $green_blue_row]
 
-if {!$interactive} {
+	# Now create the panels:
+	set blue_green_panel [lrepeat 4 $blue_green_row $green_blue_row]
+	set green_blue_panel [lrepeat 4 $green_blue_row $blue_green_row]
 
-cube.clear
+	# Set the cube.
+	cube.clear
 
-loop iter 0 8 {
-	cube.begin
-	loop panel 0 8 2 { cube.plane -panel $panel $blue_green_panel }
-	loop panel 1 8 2 { cube.plane -panel $panel $green_blue_panel }
-	cube.commit
-	delay 300
-	cube.begin
-	loop panel 0 8 2 { cube.plane -panel $panel $green_blue_panel }
-	loop panel 1 8 2 { cube.plane -panel $panel $blue_green_panel }
-	cube.commit
-	delay 300
+	loop iter 0 $cycles {
+		cube.begin
+		loop panel 0 8 2 { cube.plane -panel $panel $blue_green_panel }
+		loop panel 1 8 2 { cube.plane -panel $panel $green_blue_panel }
+		cube.commit
+		delay 300
+		cube.begin
+		loop panel 0 8 2 { cube.plane -panel $panel $green_blue_panel }
+		loop panel 1 8 2 { cube.plane -panel $panel $blue_green_panel }
+		cube.commit
+		delay 300
+	}
+
+	cube.clear
 }
 
-cube.clear
-
-}
+if {!$interactive} { Alternating 10 }
 
