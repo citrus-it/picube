@@ -6,7 +6,7 @@ Jim_Interp *jim_init(void);
 struct anim
 {
 	char *name;
-	int args;
+	int argc;
 	void *func;
 	char *descr;
 };

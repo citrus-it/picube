@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <stdint.h>
+#include <signal.h>
+#include <pthread.h>
 #include "jimtcl/jim.h"
 #include "cube.h"
 #include "text.h"
@@ -15,6 +17,7 @@
 extern int scroll_rate;
 
 static int transaction = 0;
+static pthread_t anim_thread = 0;
 
 /*
  * Interface to delay() function implemented using nanosleep.
@@ -41,15 +44,72 @@ jim_delay(Jim_Interp *j, int argc, Jim_Obj *const *argv)
  * Show - see http://d2-webdesign.com/cube
  *
  * Individual animation files are in the anim/ directory.
+ *
+ * Animations are run in a thread to allow interruption via ^C
+ *
  */
 
 extern struct anim anims[];
+
+struct anim_thread_args {
+	int anim;
+	long arg[3];
+};
+
+static void *
+jim_cube_anim_thread(void *arg)
+{
+	struct anim_thread_args *args = (struct anim_thread_args *)arg;
+	struct anim *a = &(anims[args->anim]);
+
+	//printf("Thread started, %s(%d)\n", a->name, a->argc);
+
+	switch (a->argc)
+	{
+	    case 0:
+	    {
+		void (*func)(void) = a->func;
+		func();
+		break;
+	    }
+	    case 1:
+	    {
+		void (*func)(int) = a->func;
+		func(args->arg[0]);
+		break;
+	    }
+	    case 2:
+	    {
+		void (*func)(int, int) = a->func;
+		func(args->arg[0], args->arg[1]);
+		break;
+	    }
+	    case 3:
+	    {
+		void (*func)(int, int, int) = a->func;
+		func(args->arg[0], args->arg[1], args->arg[2]);
+		break;
+	    }
+	    default:
+		break;
+	}
+
+	//printf("Thread exiting.\n");
+	pthread_exit(NULL);
+}
+
+void
+jim_cube_stop_anim()
+{
+	if (anim_thread)
+		pthread_cancel(anim_thread);
+}
 
 static int
 jim_cube_anim(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 {
 	const char *cmd;
-	int i;
+	int i, sel;
 
 	if (argc == 1)
 	{
@@ -65,64 +125,72 @@ jim_cube_anim(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 
 	cmd = Jim_GetString(argv[1], NULL);
 
-	for (i = 0; anims[i].name; i++)
+	if (argc == 2 && !strcmp(cmd, "-commands"))
 	{
-		if (!strcasecmp(anims[i].name, cmd))
+		Jim_Obj *listObj = Jim_NewListObj(j, NULL, 0);
+
+		for (i = 0; anims[i].name; i++)
+			Jim_ListAppendElement(j, listObj,
+			    Jim_NewStringObj(j, anims[i].name, -1));
+
+		Jim_SetResult(j, listObj);
+
+		return JIM_OK;
+	}
+
+	for (sel = -1, i = 0; anims[i].name; i++)
+	{
+		if (!strncasecmp(anims[i].name, cmd, strlen(cmd)))
 		{
-			if (argc != anims[i].args + 2)
+			if (sel >= 0)
 			{
-				char msg[0x100];
-
-				sprintf(msg, "%s %s", anims[i].name,
-				    anims[i].descr ? anims[i].descr : "");
-				Jim_WrongNumArgs(j, 1, argv, msg);
-				return JIM_ERR;
-			}
-			switch (anims[i].args)
-			{
-			    case 0:
-			    {
-				void (*func)(void) = anims[i].func;
-				func();
-				return JIM_OK;
-			    }
-			    case 1:
-			    {
-				long arg;
-
-				Jim_GetLong(j, argv[2], &arg);
-				void (*func)(int) = anims[i].func;
-				func(arg);
-				return JIM_OK;
-			    }
-			    case 2:
-			    {
-				long arg1, arg2;
-
-				Jim_GetLong(j, argv[2], &arg1);
-				Jim_GetLong(j, argv[3], &arg2);
-				void (*func)(int, int) = anims[i].func;
-				func(arg1, arg2);
-				return JIM_OK;
-			    }
-			    case 3:
-			    {
-				long arg1, arg2, arg3;
-
-				Jim_GetLong(j, argv[2], &arg1);
-				Jim_GetLong(j, argv[3], &arg2);
-				Jim_GetLong(j, argv[4], &arg3);
-				void (*func)(int, int, int) = anims[i].func;
-				func(arg1, arg2, arg3);
-				return JIM_OK;
-			    }
-			    default:
 				Jim_SetResultString(j,
-				    "unhandled number of arguments", -1);
+				    "ambiguous animation name", -1);
 				return JIM_ERR;
 			}
+			sel = i;
 		}
 	}
+
+	if (sel >= 0)
+	{
+		struct anim_thread_args *args;
+		void *retval;
+
+		if (argc != anims[sel].argc + 2)
+		{
+			char msg[0x100];
+
+			sprintf(msg, "%s %s", anims[sel].name,
+			    anims[sel].descr ? anims[sel].descr : "");
+			Jim_WrongNumArgs(j, 1, argv, msg);
+			return JIM_ERR;
+		}
+
+		args = malloc(sizeof(*args));
+		args->anim = sel;
+		for (i = 0; i < anims[sel].argc; i++)
+			Jim_GetLong(j, argv[i + 2], &(args->arg[i]));
+
+		pthread_create(&anim_thread, NULL,
+		    jim_cube_anim_thread, (void *)args);
+
+		pthread_join(anim_thread, &retval);
+		anim_thread = 0;
+
+		//printf("Thread finished (%p).\n", retval);
+
+		if (retval == PTHREAD_CANCELED)
+		{
+			printf("Animation interrupted.\n");
+			cube_clear(0);
+		}
+
+		free(args);
+
+		return JIM_OK;
+	}
+
 	Jim_SetResultString(j, "unknown animation", -1);
 	return JIM_ERR;
 }
@@ -1168,6 +1236,32 @@ jim_cube_help(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 	return JIM_OK;
 }
 
+static jim_wide *sigloc;
+
+#define sig_to_bit(SIG) ((jim_wide)1 << (SIG))
+void
+jim_signal_handler(int sig)
+{
+	write(fileno(stdout), "Interrupt.\n", 11);
+	*sigloc |= sig_to_bit(sig);
+	jim_cube_stop_anim();
+}
+
+static void
+jim_signal_init(Jim_Interp *j)
+{
+	struct sigaction sa;
+
+	sigloc = &j->sigmask;
+	j->signal_level = 99;
+
+	memset(&sa, '\0', sizeof(sa));
+	sa.sa_handler = jim_signal_handler;
+	sa.sa_flags = 0;
+	sigemptyset(&sa.sa_mask);
+	sigaction(SIGINT, &sa, NULL);
+}
+
 static void
 Jim_SetGlobalVariableStrWithStr(Jim_Interp *j, char *var, char *val)
 {
@@ -1219,14 +1313,13 @@ jim_init()
 	Jim_CreateCommand(j, "cube.rotate", jim_cube_rotate, NULL, NULL);
 	Jim_CreateCommand(j, "cube.hw.debug", jim_cube_hwdebug, NULL, NULL);
 	Jim_CreateCommand(j, "cube.lookup", jim_cube_lookup, NULL, NULL);
-	Jim_EvalSource(j, NULL, 1, "\n"
-		"signal handle SIGINT\n"
-	);
+//	Jim_EvalSource(j, NULL, 1, "\n"
+//		"signal handle SIGINT\n"
+//	);
+
+	jim_signal_init(j);
 
 	Jim_initjimshInit(j);
-
-	// TBD - need to determine best way to do this.
-	j->signal_level = 99;
 
 #include "ext.h"
 
