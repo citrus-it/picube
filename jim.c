@@ -140,6 +140,12 @@ jim_cube_anim(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 
 	for (sel = -1, i = 0; anims[i].name; i++)
 	{
+		if (!strcasecmp(anims[i].name, cmd))
+		{
+			// Exact match.
+			sel = i;
+			break;
+		}
 		if (!strncasecmp(anims[i].name, cmd, strlen(cmd)))
 		{
 			if (sel >= 0)
