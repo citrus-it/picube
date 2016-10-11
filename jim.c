@@ -469,6 +469,7 @@ jim_cube_text(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 
 	cmd = Jim_GetString(argv[1], NULL);
 
+	mode = TEXTMODE_TWOWALLS;
 	if (*cmd == '-')
 	{
 		if (!strncmp(cmd, "-two", 4))
