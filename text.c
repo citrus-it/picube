@@ -193,6 +193,7 @@ void
 text_scroll(char *str, uint8_t red, uint8_t green, uint8_t blue,
     enum textmode mode)
 {
+	memset(text_buffer, '\0', sizeof(text_buffer));
 	switch (mode)
 	{
 	    case TEXTMODE_TWOWALLS:

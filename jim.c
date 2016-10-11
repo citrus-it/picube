@@ -39,184 +39,6 @@ jim_delay(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 	return JIM_OK;
 }
 
-/*
- * Interface to animations ported across from Doug Domke's Super Big
- * Show - see http://d2-webdesign.com/cube
- *
- * Individual animation files are in the anim/ directory.
- *
- * Animations are run in a thread to allow interruption via ^C
- *
- */
-
-extern struct anim anims[];
-
-struct anim_thread_args {
-	int anim;
-	long arg[3];
-};
-
-static void *
-jim_cube_anim_thread(void *arg)
-{
-	struct anim_thread_args *args = (struct anim_thread_args *)arg;
-	struct anim *a = &(anims[args->anim]);
-
-	//printf("Thread started, %s(%d)\n", a->name, a->argc);
-
-	switch (a->argc)
-	{
-	    case 0:
-	    {
-		void (*func)(void) = a->func;
-		func();
-		break;
-	    }
-	    case 1:
-	    {
-		void (*func)(int) = a->func;
-		func(args->arg[0]);
-		break;
-	    }
-	    case 2:
-	    {
-		void (*func)(int, int) = a->func;
-		func(args->arg[0], args->arg[1]);
-		break;
-	    }
-	    case 3:
-	    {
-		void (*func)(int, int, int) = a->func;
-		func(args->arg[0], args->arg[1], args->arg[2]);
-		break;
-	    }
-	    default:
-		break;
-	}
-
-	//printf("Thread exiting.\n");
-	pthread_exit(NULL);
-}
-
-void
-jim_cube_stop_anim()
-{
-	if (anim_thread)
-		pthread_cancel(anim_thread);
-}
-
-static int
-jim_cube_anim(Jim_Interp *j, int argc, Jim_Obj *const *argv)
-{
-	const char *cmd;
-	int i, sel;
-
-	if (argc == 1)
-	{
-		/* Display list of animations. */
-		printf("Available animations:\n");
-		for (i = 0; anims[i].name; i++)
-		{
-			printf("  %s %s\n", anims[i].name,
-			    anims[i].descr ? anims[i].descr : "");
-		}
-		return JIM_OK;
-	}
-
-	cmd = Jim_GetString(argv[1], NULL);
-
-	if (argc == 2 && !strcmp(cmd, "-commands"))
-	{
-		Jim_Obj *listObj = Jim_NewListObj(j, NULL, 0);
-
-		for (i = 0; anims[i].name; i++)
-			Jim_ListAppendElement(j, listObj,
-			    Jim_NewStringObj(j, anims[i].name, -1));
-
-		Jim_SetResult(j, listObj);
-
-		return JIM_OK;
-	}
-
-	for (sel = -1, i = 0; anims[i].name; i++)
-	{
-		if (!strcasecmp(anims[i].name, cmd))
-		{
-			// Exact match.
-			sel = i;
-			break;
-		}
-		if (!strncasecmp(anims[i].name, cmd, strlen(cmd)))
-		{
-			if (sel >= 0)
-			{
-				Jim_SetResultString(j,
-				    "ambiguous animation name", -1);
-				return JIM_ERR;
-			}
-			sel = i;
-		}
-	}
-
-	if (sel >= 0)
-	{
-		struct anim_thread_args *args;
-		void *retval;
-
-		if (argc != anims[sel].argc + 2)
-		{
-			char msg[0x100];
-
-			sprintf(msg, "%s %s", anims[sel].name,
-			    anims[sel].descr ? anims[sel].descr : "");
-			Jim_WrongNumArgs(j, 1, argv, msg);
-			return JIM_ERR;
-		}
-
-		args = malloc(sizeof(*args));
-		args->anim = sel;
-		for (i = 0; i < anims[sel].argc; i++)
-			Jim_GetLong(j, argv[i + 2], &(args->arg[i]));
-
-		pthread_create(&anim_thread, NULL,
-		    jim_cube_anim_thread, (void *)args);
-
-		pthread_join(anim_thread, &retval);
-		anim_thread = 0;
-
-		//printf("Thread finished (%p).\n", retval);
-
-		if (retval == PTHREAD_CANCELED)
-		{
-			printf("Animation interrupted.\n");
-			cube_clear(0);
-		}
-
-		free(args);
-
-		return JIM_OK;
-	}
-
-	Jim_SetResultString(j, "unknown animation", -1);
-	return JIM_ERR;
-}
-
-void
-JimSetArgv(Jim_Interp *jim, int argc, char *const argv[])
-{
-	int n;
-	Jim_Obj *listObj = Jim_NewListObj(jim, NULL, 0);
-
-	for (n = 0; n < argc; n++)
-	{
-		Jim_Obj *obj = Jim_NewStringObj(jim, argv[n], -1);
-		Jim_ListAppendElement(jim, listObj, obj);
-	}
-
-	Jim_SetVariableStr(jim, "argv", listObj);
-	Jim_SetVariableStr(jim, "argc", Jim_NewIntObj(jim, argc));
-}
-
 static void
 jim_load_colour(Jim_Interp *jim, long *red, long *green, long *blue)
 {
@@ -264,7 +86,6 @@ jim_load_colour(Jim_Interp *jim, long *red, long *green, long *blue)
 		return JIM_ERR; \
 	} \
     } while (0)
-
 
 #undef SYNTAX
 #define SYNTAX "[-get] [-intensity n] [<colour number> | <colour name> | <red green blue>]"
@@ -428,6 +249,261 @@ jim_cube_begin(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 	}
 
 	transaction = 1;
+
+	return JIM_OK;
+}
+
+/*
+ * Interface to animations ported across from Doug Domke's Super Big
+ * Show - see http://d2-webdesign.com/cube
+ *
+ * Individual animation files are in the anim/ directory.
+ *
+ * Animations are run in a thread to allow interruption via SIGINT (^C)
+ *
+ */
+
+extern struct anim anims[];
+
+struct anim_thread_args {
+	int anim;
+	long arg[3];
+};
+
+static void *
+jim_cube_anim_thread(void *arg)
+{
+	struct anim_thread_args *args = (struct anim_thread_args *)arg;
+	struct anim *a = &(anims[args->anim]);
+
+	//printf("Thread started, %s(%d)\n", a->name, a->argc);
+
+	switch (a->argc)
+	{
+	    case 0:
+	    {
+		void (*func)(void) = a->func;
+		func();
+		break;
+	    }
+	    case 1:
+	    {
+		void (*func)(int) = a->func;
+		func(args->arg[0]);
+		break;
+	    }
+	    case 2:
+	    {
+		void (*func)(int, int) = a->func;
+		func(args->arg[0], args->arg[1]);
+		break;
+	    }
+	    case 3:
+	    {
+		void (*func)(int, int, int) = a->func;
+		func(args->arg[0], args->arg[1], args->arg[2]);
+		break;
+	    }
+	    default:
+		break;
+	}
+
+	//printf("Thread exiting.\n");
+	pthread_exit(NULL);
+}
+
+void
+jim_cube_stop_anim()
+{
+	if (anim_thread)
+		pthread_cancel(anim_thread);
+}
+
+static int
+jim_cube_anim(Jim_Interp *j, int argc, Jim_Obj *const *argv)
+{
+	const char *cmd;
+	int i, sel;
+
+	if (argc == 1)
+	{
+		/* Display list of animations. */
+		printf("Available animations:\n");
+		for (i = 0; anims[i].name; i++)
+		{
+			printf("  %s %s\n", anims[i].name,
+			    anims[i].descr ? anims[i].descr : "");
+		}
+		return JIM_OK;
+	}
+
+	cmd = Jim_GetString(argv[1], NULL);
+
+	if (argc == 2 && !strcmp(cmd, "-commands"))
+	{
+		Jim_Obj *listObj = Jim_NewListObj(j, NULL, 0);
+
+		for (i = 0; anims[i].name; i++)
+			Jim_ListAppendElement(j, listObj,
+			    Jim_NewStringObj(j, anims[i].name, -1));
+
+		Jim_SetResult(j, listObj);
+
+		return JIM_OK;
+	}
+
+	for (sel = -1, i = 0; anims[i].name; i++)
+	{
+		if (!strcasecmp(anims[i].name, cmd))
+		{
+			// Exact match.
+			sel = i;
+			break;
+		}
+		if (!strncasecmp(anims[i].name, cmd, strlen(cmd)))
+		{
+			if (sel >= 0)
+			{
+				Jim_SetResultString(j,
+				    "ambiguous animation name", -1);
+				return JIM_ERR;
+			}
+			sel = i;
+		}
+	}
+
+	if (sel >= 0)
+	{
+		struct anim_thread_args args;
+		void *retval;
+
+		if (argc != anims[sel].argc + 2)
+		{
+			char msg[0x100];
+
+			sprintf(msg, "%s %s", anims[sel].name,
+			    anims[sel].descr ? anims[sel].descr : "");
+			Jim_WrongNumArgs(j, 1, argv, msg);
+			return JIM_ERR;
+		}
+
+		args.anim = sel;
+		for (i = 0; i < anims[sel].argc; i++)
+			Jim_GetLong(j, argv[i + 2], &(args.arg[i]));
+
+		pthread_create(&anim_thread, NULL,
+		    jim_cube_anim_thread, (void *)&args);
+
+		pthread_join(anim_thread, &retval);
+		anim_thread = 0;
+
+		//printf("Thread finished (%p).\n", retval);
+
+		if (retval == PTHREAD_CANCELED)
+		{
+			printf("Animation interrupted.\n");
+			cube_clear(0);
+		}
+
+		return JIM_OK;
+	}
+
+	Jim_SetResultString(j, "unknown animation", -1);
+	return JIM_ERR;
+}
+
+struct text_thread_args {
+	char *text;
+	uint8_t r, g, b;
+	enum textmode mode;
+};
+
+static void *
+jim_cube_text_thread(void *arg)
+{
+	struct text_thread_args *a = (struct text_thread_args *)arg;
+
+	text_scroll(a->text, a->r, a->g, a->b, a->mode);
+
+	pthread_exit(NULL);
+}
+
+static int
+jim_cube_text(Jim_Interp *j, int argc, Jim_Obj *const *argv)
+{
+	struct text_thread_args args;
+	enum textmode mode;
+	long r, g, b;
+	char buf[0x100];
+	const char *cmd;
+	void *retval;
+
+	if (argc == 2 && Jim_CompareStringImmediate(j, argv[1], "-commands"))
+	{
+		Jim_SetResultString(j, "-foursides -twosides -x -y -z", -1);
+		return JIM_OK;
+	}
+
+	if (argc < 2)
+	{
+		Jim_WrongNumArgs(j, 1, argv,
+		    "[-twosides|-foursides|-x|-y|-z] <text>");
+		return JIM_ERR;
+	}
+
+	cmd = Jim_GetString(argv[1], NULL);
+
+	if (*cmd == '-')
+	{
+		if (!strncmp(cmd, "-two", 4))
+			mode = TEXTMODE_TWOWALLS;
+		else if (!strncmp(cmd, "-four", 5))
+			mode = TEXTMODE_FOURWALLS;
+		else if (!strcmp(cmd, "-x"))
+			mode = TEXTMODE_THROUGHX;
+		else if (!strcmp(cmd, "-y"))
+			mode = TEXTMODE_THROUGHY;
+		else if (!strcmp(cmd, "-z"))
+			mode = TEXTMODE_THROUGHZ;
+		else
+		{
+			Jim_SetResultString(j, "unknown text mode", -1);
+			return JIM_ERR;
+		}
+		argc--, argv++;
+	}
+
+	// Build the string buffer.
+	*buf = '\0';
+	for (; argc > 1; argc--, argv++)
+	{
+		if (*buf)
+			strncat(buf, " ", sizeof(buf) - strlen(buf) - 1);
+		cmd = Jim_GetString(argv[1], NULL);
+		strncat(buf, cmd, sizeof(buf) - strlen(buf) - 1);
+	}
+
+	// Fetch the current colour.
+	jim_load_colour(j, &r, &g, &b);
+
+	// Invoke the correct string function in a background thread.
+	args.r = r;
+	args.g = g;
+	args.b = b;
+	args.text = buf;
+	args.mode = mode;
+
+	pthread_create(&anim_thread, NULL,
+	    jim_cube_text_thread, (void *)&args);
+
+	pthread_join(anim_thread, &retval);
+	anim_thread = 0;
+
+	if (retval == PTHREAD_CANCELED)
+	{
+		printf("Text animation interrupted.\n");
+		cube_clear(0);
+	}
 
 	return JIM_OK;
 }
@@ -1020,68 +1096,6 @@ jim_cube_rotate(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 }
 
 static int
-jim_cube_text(Jim_Interp *j, int argc, Jim_Obj *const *argv)
-{
-	enum textmode mode;
-	long r, g, b;
-	char buf[0x100];
-	const char *cmd;
-
-	if (argc == 2 && Jim_CompareStringImmediate(j, argv[1], "-commands"))
-	{
-		Jim_SetResultString(j, "-foursides -twosides -x -y -z", -1);
-		return JIM_OK;
-	}
-
-	if (argc < 2)
-	{
-		Jim_WrongNumArgs(j, 1, argv,
-		    "[-twosides|-foursides|-x|-y|-z] <text>");
-		return JIM_ERR;
-	}
-
-	cmd = Jim_GetString(argv[1], NULL);
-
-	if (*cmd == '-')
-	{
-		if (!strncmp(cmd, "-two", 4))
-			mode = TEXTMODE_TWOWALLS;
-		else if (!strncmp(cmd, "-four", 5))
-			mode = TEXTMODE_FOURWALLS;
-		else if (!strcmp(cmd, "-x"))
-			mode = TEXTMODE_THROUGHX;
-		else if (!strcmp(cmd, "-y"))
-			mode = TEXTMODE_THROUGHY;
-		else if (!strcmp(cmd, "-z"))
-			mode = TEXTMODE_THROUGHZ;
-		else
-		{
-			Jim_SetResultString(j, "unknown text mode", -1);
-			return JIM_ERR;
-		}
-		argc--, argv++;
-	}
-
-	// Build the string buffer.
-	*buf = '\0';
-	for (; argc > 1; argc--, argv++)
-	{
-		if (*buf)
-			strncat(buf, " ", sizeof(buf) - strlen(buf) - 1);
-		cmd = Jim_GetString(argv[1], NULL);
-		strncat(buf, cmd, sizeof(buf) - strlen(buf) - 1);
-	}
-
-	// Fetch the current colour.
-	jim_load_colour(j, &r, &g, &b);
-
-	// Invoke the correct string function.
-	text_scroll(buf, r, g, b, mode);
-
-	return JIM_OK;
-}
-
-static int
 jim_cube_lookup(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 {
 	const char *table;
@@ -1266,6 +1280,22 @@ jim_signal_init(Jim_Interp *j)
 	sa.sa_flags = 0;
 	sigemptyset(&sa.sa_mask);
 	sigaction(SIGINT, &sa, NULL);
+}
+
+void
+JimSetArgv(Jim_Interp *jim, int argc, char *const argv[])
+{
+	int n;
+	Jim_Obj *listObj = Jim_NewListObj(jim, NULL, 0);
+
+	for (n = 0; n < argc; n++)
+	{
+		Jim_Obj *obj = Jim_NewStringObj(jim, argv[n], -1);
+		Jim_ListAppendElement(jim, listObj, obj);
+	}
+
+	Jim_SetVariableStr(jim, "argv", listObj);
+	Jim_SetVariableStr(jim, "argc", Jim_NewIntObj(jim, argc));
 }
 
 static void
