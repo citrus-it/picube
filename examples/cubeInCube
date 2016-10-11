@@ -84,6 +84,7 @@ proc CubeInCube {} {
 		displayCube 6 1 1 1 0 12
 	}
 
+	cube.clear
 	bounceCube 4 1 1 1 127
 
 	cube.clear
