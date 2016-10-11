@@ -116,7 +116,7 @@ void CubeInCube(){
     displayCube(6,1,1,1,Blue);
     displayCube(6,1,1,1,Blue);
   }
-//  bounceCube(4,1,1,1,Blue);
+  bounceCube(4,1,1,1,Blue);
   clearCube();
   delay(500);
   // This is where the flashing occurs. 

@@ -5,13 +5,37 @@
 #  * Downloads of this template and upcoming versions, along with detailed
 #  * instructions, are available at: http://d2-webdesign.com/cube
 
+# The sprite rendering is significantly faster on newer models of the Pi
+# than on old ones, adjust here.
+# TODO: Adjust these values for different models.
+switch ${pi.code} {
+	3B	{ set ::displayCube::delay 50 }
+	2B	{ set ::displayCube::delay 10 }
+	default	{ set ::displayCube::delay 0 }
+}
 
 proc displayCube {side x y z {colour 0} {delay 10}} {
 	set s [sprite create $side $side $side]
 	$s outline $(127 + $colour)
 	$s place $x $y $z
 	$s draw -blank
-	delay $delay
+	delay $($delay + $::displayCube::delay)
+}
+
+proc bounceCube {side x y z {colour 0}} {
+	set s [sprite create $side $side $side]
+	$s place $x $y $z
+	$s motion 1 2 -1
+
+	loop i 0 66 {
+		incr colour 3
+		if {$colour > 189} { incr colour -189 }
+
+		$s outline $colour
+		$s bounce
+		delay 95
+	}
+	$s hide
 }
 
 proc CubeInCube {} {
@@ -59,6 +83,8 @@ proc CubeInCube {} {
 		displayCube 5 1 2 2 -20
 		displayCube 6 1 1 1 0 12
 	}
+
+	bounceCube 4 1 1 1 127
 
 	cube.clear
 	delay 500
