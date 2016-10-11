@@ -198,11 +198,11 @@ int Jim_InteractivePrompt(Jim_Interp *interp)
             Jim_HistorySave(history_file);
         }
 #endif
+        retcode = Jim_EvalObj(interp, scriptObjPtr);
+        Jim_DecrRefCount(interp, scriptObjPtr);
 #ifdef PICUBE
 	interp->sigmask = 0;
 #endif
-        retcode = Jim_EvalObj(interp, scriptObjPtr);
-        Jim_DecrRefCount(interp, scriptObjPtr);
 
         if (retcode == JIM_EXIT) {
             break;
