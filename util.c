@@ -124,6 +124,11 @@ pi_hardware_revision(void)
 		pi_modelname = "Pi Zero, 512MiB";
 		pi_modelcode = "Z";
 	}
+	else if (pi_revision < 0xa02083)
+	{
+		pi_modelname = "Pi 3 Model B, 1GiB";
+		pi_modelcode = "3B";
+	}
 	else if (pi_revision < 0xa22043)
 	{
 		pi_modelname = "Pi 2 Model B, 1GiB";
