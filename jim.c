@@ -175,6 +175,22 @@ jim_cube_colour(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 				c = Violet;
 			else if (!strcasecmp(cname, "purple"))
 				c = Purple;
+			else if (!strcasecmp(cname, "random"))
+			{
+				switch (random() % 9)
+				{
+				    case 0: c = Red; break;
+				    case 1: c = Green; break;
+				    case 2: c = Blue; break;
+				    case 3: c = White; break;
+				    case 4: c = Orange; break;
+				    case 5: c = Yellow; break;
+				    case 6: c = Aqua; break;
+				    case 7: c = Violet; break;
+				    case 8: c = Purple; break;
+				    default: c = Black; break;
+				}
+			}
 			else
 			{
 				Jim_SetResultString(j,
