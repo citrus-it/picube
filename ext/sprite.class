@@ -104,9 +104,9 @@ sprite method bounce {} {
 	if {$px <= 0 && $dx < 0} { set dx $(-$dx) }
 	if {$py <= 0 && $dy < 0} { set dy $(-$dy) }
 	if {$pz <= 0 && $dz < 0} { set dz $(-$dz) }
-	if {$px + $lx >= 7 && $dx > 0} { set dx $(-$dx) }
-	if {$py + $ly >= 7 && $dy > 0} { set dy $(-$dy) }
-	if {$pz + $lz >= 7 && $dz > 0} { set dz $(-$dz) }
+	if {$px + $lx > 7 && $dx > 0} { set dx $(-$dx) }
+	if {$py + $ly > 7 && $dy > 0} { set dy $(-$dy) }
+	if {$pz + $lz > 7 && $dz > 0} { set dz $(-$dz) }
 }
 
 # Test whether the next movement will put the sprite outside of a cube
