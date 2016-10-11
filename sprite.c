@@ -44,8 +44,16 @@ sprite_outline(sprite s, int colour)
 	  for (y = 0; y < s->myY; y++)
 	    for (z = 0; z < s->myZ; z++)
 	    {
-		if (x == 0 || x == s->myX-1 || y == 0 || y == s->myY-1 ||
-		    z == 0 || z == s->myZ-1)
+		int extremes = 0;
+
+		if (x == 0 || x == s->myX-1)
+			extremes++;
+		if (y == 0 || y == s->myY-1)
+			extremes++;
+		if (z == 0 || z == s->myZ-1)
+			extremes++;
+
+		if (extremes >= 2)
 			s->description[x][y][z] = colour;
 	    }
 }

@@ -35,8 +35,11 @@ sprite method outline {colour} {
 	$self fill black
 	set c [cube.colour -get {*}$colour]
 	loop x 0 $lx { loop y 0 $ly { loop z 0 $lz {
-		if {$x == 0 || $y == 0 || $z == 0 ||
-		    $x == $lx - 1 || $y == $ly - 1 || $z == $lz - 1} {
+		set extremes 0
+		if {$x == 0 || $x == $lx - 1} { incr extremes }
+		if {$y == 0 || $y == $ly  -1} { incr extremes }
+		if {$z == 0 || $z == $lz  -1} { incr extremes }
+		if {$extremes >= 2} {
 			lset data $x $y $z $c
 		}
 	}}}
