@@ -8,15 +8,13 @@ proc fast_column_scanner {panel} {
 		cube.colour {*}$colour
 		loop column 0 8 1 {
 			cube.column $panel $column
-			delay 90
+			delay 100
 			cube.column $panel $column 0 0 0
-			delay 10
 		}
 		loop column 7 -1 -1 {
 			cube.column $panel $column
-			delay 90
+			delay 100
 			cube.column $panel $column 0 0 0
-			delay 10
 		}
 	}
 	cube.clear
