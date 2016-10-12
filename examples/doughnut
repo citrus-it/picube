@@ -1,0 +1,37 @@
+
+# A jim version of the donut animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+proc Doughnut {{times 100}} {
+	bump_colour 0
+	set dangle 10
+	loop iter 0 $times {
+		bump_colour 1
+		# Build the doughnut in the buffer
+		cube.begin
+		loop z 0 8 { loop y 0 8 {
+			set d [cube.lookup -distance $z $y]
+			if {$d >= 2 && $d < 4} {
+				cube.led 3 $y $z
+			}
+		}}
+		cube.commit -nocopy
+
+		# Rotate it
+		loop i 0 5 {
+			cube.rotate -buffer $dangle
+			incr dangle 10
+			if {$dangle > 360} { incr dangle -360 }
+			delay 10
+		}
+	}
+	cube.clear
+}
+
+alias Donut Doughnut
+
+if {!$interactive} { Doughnut 100 }
+
