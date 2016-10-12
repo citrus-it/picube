@@ -15,7 +15,7 @@ proc ::Chaos::Init {} {
 		if {[rand 7] == 0} {
 			lset ::Chaos::data $x $y "0 [rand 3]"
 			# Show the lift
-			cube.led $x $y 0 {*}$colour
+			cube.led $x $y 0
 		} else {
 			# stopped on floor -1
 			lset ::Chaos::data $x $y "-1 0"
