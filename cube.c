@@ -484,6 +484,17 @@ cube_off(void)
 // time of around 8ms. On newer models this is lower so there is a delay at
 // then end of the pass to wait until 8ms after the pass start. A brighter
 // cube can be obtained on newer models by reducing or removing this delay.
+
+#define nanopause(x) \
+	clock_gettime(CLOCK_REALTIME, &ns); \
+	ns.tv_nsec += (x); \
+	while (ns.tv_nsec >= NSEC_PER_SEC) \
+	{ \
+		ns.tv_nsec -= NSEC_PER_SEC; \
+		ns.tv_sec++; \
+	} \
+	clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &ns, NULL)
+
 static void *
 cube_refresh(void *x)
 {
@@ -542,18 +553,13 @@ cube_refresh(void *x)
 			    // Turn the layer on for the BAM interval.
 			    // Starts at 10us and ends at 320us.
 			    gpio_write(layers[layer], LOW);
-
-			    clock_gettime(CLOCK_REALTIME, &ns);
-			    ns.tv_nsec += bam * 10 * 1000;
-			    while (ns.tv_nsec >= NSEC_PER_SEC)
-			    {
-				ns.tv_nsec -= NSEC_PER_SEC;
-				ns.tv_sec++;
-			    }
-			    clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME,
-				&ns, NULL);
-
+			    nanopause(bam * 10 * 1000);
 			    gpio_write(layers[layer], HIGH);
+
+			    // Allow short time for the layer to be definitely
+			    // off - avoids slight ghosting to the layer below.
+			    // particularly on the Pi 3.
+			    nanopause(100);
 			}
 		}
 
