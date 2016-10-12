@@ -1,0 +1,52 @@
+
+# A jim version of the RandomLights animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+proc ::RandomLights::backend {iter {blanks 6}} {
+	loop j 0 $iter {
+		cube.led [rand 8] [rand 8] [rand 8]
+		loop i 0 $blanks {
+			cube.led [rand 8] [rand 8] [rand 8] 0 0 0
+		}
+		delay 8
+	}
+}
+
+proc RandomLights {} {
+	loop k 0 12 {
+		cube.colour random
+		::RandomLights::backend 256
+	}
+
+	cube.clear
+	delay 250
+
+	bump_colour 0
+	loop k 0 35 {
+		bump_colour 5
+		::RandomLights::backend 70
+	}
+
+	# Blue / violet / purple area of the spectrum
+	set colour 170
+	loop k 0 40 {
+		if {[rand 2] > 0} {
+			incr colour 5
+			if {$colour > 189} { set colour 180 }
+		} else {
+			incr colour -5
+			if {$colour < 140} { set colour 150 }
+		}
+		cube.colour $colour
+
+		::RandomLights::backend 50
+	}
+
+	cube.clear
+}
+
+if {!$interactive} { RandomLights }
+
