@@ -1,11 +1,14 @@
 # Built-in animations not yet implemented in Jim
 
-angled2
+# Done, not tested.
+chaos
 atom
+
+# Todo
+angled2
 atomsmasher
 basketballdribble
 bouncer
-chaos
 donut
 fireworks
 fireworks2

@@ -1,0 +1,61 @@
+
+# A jim version of the atom animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+set ::Atom::columns {
+	{ 2 0 } { 3 0 } { 4 0 } { 5 0 } { 6 1 }
+	{ 7 2 } { 7 3 } { 7 4 } { 7 5 } { 6 6 }
+	{ 5 7 } { 4 7 } { 3 7 } { 2 7 } { 1 6 }
+	{ 0 5 } { 0 4 } { 0 3 } { 0 2 } { 1 1 }
+}
+
+set ::Atom::cache [lrepeat 20 [lrepeat 20 0]]
+
+# Build the cache table
+loop j 0 20 { loop k 0 20 {
+	set z $(int(3 * sin((($j - $k) * 12.56) / 20)))
+	lset ::Atom::cache $j $k $z
+}}
+
+
+proc ::Atom::iter {p i k jd} {
+	bump_colour 2
+	set j $($i - $jd)
+	if {$j < 0} { incr j 20 }
+	set z $(2 + $p + [lindex $::Atom::cache $j $k])
+	lassign [lindex $::Atom::columns $($j / 2)] x y
+	cube.led $x $y $z
+}
+
+proc ::Atom::Backend {k} {{p 0} {goingup 1}} {
+	if {$goingup} { incr p } else { incr p -1 }
+	if {$p < 1} { set goingup 1 }
+	if {$p > 2} { set goingup 0 }
+
+	loop i 0 20 {
+		cube.begin
+		loop x 0 20 3 {
+			if {$k <= $x} break
+			::Atom::iter $p $i $k $x
+		}
+		cube.commit
+		delay 40
+	}
+}
+
+proc Atom {} {
+	loop k 0 20 {
+		::Atom::Backend $k
+		bump_colour $($k * 8)
+	}
+	loop k 18 -1 -1 {
+		::Atom::Backend $k
+		bump_colour $k
+	}
+}
+
+if {!$interactive} { Atom }
+
