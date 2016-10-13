@@ -7,14 +7,14 @@ proc fast_column_scanner {panel} {
 	foreach colour $::coloursequence {
 		cube.colour {*}$colour
 		loop column 0 8 1 {
-			cube.column $panel $column
+			cube.column $column $panel
 			delay 100
-			cube.column $panel $column 0 0 0
+			cube.column $column $panel 0 0 0
 		}
 		loop column 7 -1 -1 {
-			cube.column $panel $column
+			cube.column $column $panel
 			delay 100
-			cube.column $panel $column 0 0 0
+			cube.column $column $panel 0 0 0
 		}
 	}
 	cube.clear
@@ -24,10 +24,10 @@ proc column_by_column {panel} {
 	puts "Column by column..."
 	loop column 0 8 {
 		foreach colour $::coloursequence {
-			cube.column $panel $column {*}$colour
+			cube.column $column panel {*}$colour
 			delay 500
 		}
-		cube.column $panel $column 0 0 0
+		cube.column $column $panel 0 0 0
 	}
 	cube.clear
 }

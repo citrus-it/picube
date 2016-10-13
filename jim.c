@@ -782,16 +782,16 @@ jim_cube_column(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 	if (argc != 3 && argc != 6)
 	{
 		Jim_WrongNumArgs(j, 1, argv,
-		    "panel column [red green blue]");
+		    "column panel [red green blue]");
 		return JIM_ERR;
 	}
 
 	HANDLE_COLOUR(6);
 
-	Jim_GetLong(j, argv[1], &panel);
-	Jim_GetLong(j, argv[2], &column);
+	Jim_GetLong(j, argv[1], &column);
+	Jim_GetLong(j, argv[2], &panel);
 
-	cube_column(panel, column, transaction, red, green, blue);
+	cube_column(column, panel, transaction, red, green, blue);
 
 	return JIM_OK;
 }

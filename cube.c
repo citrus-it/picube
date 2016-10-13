@@ -257,7 +257,7 @@ cube_row(int panel, int layer, int buffer,
 
 // Set an entire column.
 void
-cube_column(int panel, int col, int buffer,
+cube_column(int col, int panel, int buffer,
     uint8_t red, uint8_t green, uint8_t blue)
 {
 	int layer;
