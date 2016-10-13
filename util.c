@@ -12,6 +12,7 @@
 #include <limits.h>
 #include <sys/mman.h>
 #include <time.h>
+#include <fcntl.h>
 #include <errno.h>
 #include "util.h"
 
@@ -144,6 +145,26 @@ pi_hardware_revision(void)
 		pi_modelname = "Unknown";
 		pi_modelcode = "U";
 	}
+}
+
+int
+get_lock(char *name)
+{
+	int fd;
+
+	if ((fd = open(name, O_WRONLY | O_CREAT | O_TRUNC, 0644)) == -1)
+	{
+		perror("open");
+		return 0;
+	}
+
+	if (!lockf(fd, F_TLOCK, 0))
+		return 1;
+
+	perror("lock");
+
+	close(fd);
+	return 0;
 }
 
 void

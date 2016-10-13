@@ -86,6 +86,9 @@ main(int argc, char **argv)
 		return 0;
 	}
 
+	if (!get_lock("/tmp/.picube.lock"))
+		return -1;
+
 	/* Lock memory - requires root permission. */
 	if (mlockall(MCL_CURRENT|MCL_FUTURE) == -1)
 	{
