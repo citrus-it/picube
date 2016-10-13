@@ -20,7 +20,7 @@ loop i 0 40 {
 	}
 }
 
-proc cosine {iter} {
+proc Cosine {iter} {
 	loop count 0 $iter {
 		loop i 0 40 {
 			cube.colour $($i * 4)
@@ -40,5 +40,5 @@ proc cosine {iter} {
 	cube.clear
 }
 
-if {!$interactive} { cosine 10 }
+if {!$interactive} { Cosine 10 }
 
