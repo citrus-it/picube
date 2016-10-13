@@ -134,7 +134,7 @@ mouse method move {} {
 	}
 }
 
-proc mazeMice {{iter 410} {num 3}} {
+proc MazeMice {{num 3} {iter 410}} {
 	global colours
 
 	# Create the mice
@@ -153,5 +153,5 @@ proc mazeMice {{iter 410} {num 3}} {
 	cube.clear
 }
 
-if {!$interactive} { mazeMice 100 3 }
+if {!$interactive} { MazeMice 3 100 }
 
