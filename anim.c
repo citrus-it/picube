@@ -175,11 +175,11 @@ rotateCube(int times, int stepAngle)
 		myangle += rotation;
 
 		if (rotation > 0 && myangle > 6.28318)
-			myangle = 0;
+			myangle -= 6.28318;
 		if (rotation < 0 && myangle <= 0)
-			myangle = 6.28318;
+			myangle += 6.28318;
 		cube_rotate(myangle, 1);
-		delay(40);
+		delay(30);
 	}
 	cube_clear(0);
 }
