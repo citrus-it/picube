@@ -1282,6 +1282,7 @@ jim_signal_handler(int sig)
 	write(fileno(stdout), "Interrupt.\n", 11);
 	*sigloc |= sig_to_bit(sig);
 	jim_cube_stop_anim();
+	transaction = 0;
 }
 
 static void
