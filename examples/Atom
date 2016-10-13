@@ -20,13 +20,12 @@ loop j 0 20 { loop k 0 20 {
 	lset ::Atom::cache $j $k $z
 }}
 
-
 proc ::Atom::iter {p i k jd} {
 	bump_colour 2
 	set j $($i - $jd)
 	if {$j < 0} { incr j 20 }
 	set z $(2 + $p + [lindex $::Atom::cache $j $k])
-	lassign [lindex $::Atom::columns $($j / 2)] x y
+	lassign [lindex $::Atom::columns $j] x y
 	cube.led $x $y $z
 }
 
@@ -38,7 +37,7 @@ proc ::Atom::Backend {k} {{p 0} {goingup 1}} {
 	loop i 0 20 {
 		cube.begin
 		loop x 0 20 3 {
-			if {$k <= $x} break
+			if {$k < $x} break
 			::Atom::iter $p $i $k $x
 		}
 		cube.commit
@@ -47,6 +46,7 @@ proc ::Atom::Backend {k} {{p 0} {goingup 1}} {
 }
 
 proc Atom {} {
+	cube.colour red
 	loop k 0 20 {
 		::Atom::Backend $k
 		bump_colour $($k * 8)
