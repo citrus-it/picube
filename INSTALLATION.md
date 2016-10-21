@@ -26,12 +26,13 @@ the CPU becomes heavily loaded.
 A pre-compiled version of the Linux kernel with the
 [RT Preempt](https://rt.wiki.kernel.org/index.php/Main_Page)
 patch applied is available for all Raspberry Pi models at picube.uk and
-can be installed as follows.
+can be installed as follows. <i>NB: This version includes the fix for the
+[Dirty COW vulnerability](https://dirtycow.ninja/).</i>
 
 ```console
-pi@picube:~ $ wget http://picube.uk/files/raspberrypi-kernel-20161009.deb
-pi@picube:~ $ sudo dpkg -i raspberrypi-kernel-20161009.deb
-pi@picube:~ $ rm raspberrypi-kernel-20161009.deb
+pi@picube:~ $ wget http://picube.uk/files/raspberrypi-kernel-20161021.deb
+pi@picube:~ $ sudo dpkg -i raspberrypi-kernel-20161021.deb
+pi@picube:~ $ rm raspberrypi-kernel-20161021.deb
 ```
 
 (Alternatively you can build it yourself. There is a good write-up at
