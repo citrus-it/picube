@@ -274,7 +274,7 @@ cube_panel(int panel, int buffer, uint8_t red, uint8_t green, uint8_t blue)
 {
 	int col;
         for (col = 0; col < 8; col++)
-                cube_column(panel, col, buffer, red, green, blue);
+                cube_column(col, panel, buffer, red, green, blue);
 }
 
 // Set an entire layer.
@@ -292,7 +292,7 @@ cube_slice(int col, int buffer,  uint8_t red, uint8_t green, uint8_t blue)
 {
 	int panel;
         for (panel = 0; panel < 8; panel++)
-                cube_column(panel, col, buffer, red, green, blue);
+                cube_column(col, panel, buffer, red, green, blue);
 }
 
 // Set an entire cube plane based on passed buffer.
