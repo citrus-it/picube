@@ -6,7 +6,7 @@
 #  * instructions, are available at: http://d2-webdesign.com/cube
 
 
-proc lightone {} {
+proc Rain::lightone {} {
 	# light an LED in the top layer with a random colour
 	if {[rand 2]} { set r 63 } else { set r 0 }
 	if {[rand 2]} { set g 63 } else { set g 0 }
@@ -17,7 +17,7 @@ proc lightone {} {
 proc Rain {{times 100}} {
 	loop iter 0 $times {
 		# Light 5 random LEDs in the top layer.
-		loop x 0 5 lightone
+		loop x 0 5 Rain::lightone
 		# Wait 0.1 seconds
 		delay 100
 		# Shift the cube contents down (will clear the top layer)
