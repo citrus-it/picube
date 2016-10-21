@@ -1,0 +1,33 @@
+
+proc Matrix {{times 100}} {
+
+	# Matrix-green... Hmm..
+	cube.colour 5 40 0
+	cube.clear
+
+	loop iter 0 $times {
+		cube.begin -copy
+		loop x 0 8 {
+			if {[rand 2] == 0} {
+				cube.led $x 0 7
+				cube.led $x 7 7
+				cube.led 0 $x 7
+				cube.led 7 $x 7
+			}
+		}
+		
+		cube.commit
+		delay 80
+		# Shift the cube contents down (will clear the top layer)
+		cube.translate 0 0 -1
+	}
+	# Let the pattern finish falling.
+	loop x 0 6 {
+		cube.translate 0 0 -1
+		delay 100
+	}
+	cube.clear
+}
+
+if {!$interactive} { Matrix 100 }
+
