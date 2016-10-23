@@ -98,7 +98,7 @@ proc Flow {} {
 		}
 		cube.colour black
 		Flow::Inject
-		loop i 0 18 {
+		loop i 0 13 {
 			Flow::Iterate
 			delay 100
 		}
