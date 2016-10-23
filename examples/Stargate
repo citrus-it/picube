@@ -126,7 +126,7 @@ proc Stargate::Engage {} {
 	}
 	loop i 0 59 {
 		::Stargate::Sine $i
-		delay 7
+		delay 15 
 	}
 	loop i 0 7 {
 		::Stargate::Sine 48
@@ -165,7 +165,7 @@ proc Stargate {} {
 	cube.clear
 	::Stargate::Draw
 	sleep 5
-	::Stargate::Dial 4000
+	::Stargate::Dial 2500
 	sleep 1
 	loop i 0 5 {
 		cube.translate 0 1 0
