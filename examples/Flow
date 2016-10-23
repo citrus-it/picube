@@ -75,7 +75,7 @@ proc Flow {} {
 	loop i 0 100 {
 		Flow::Iterate
 		delay 100
-		bump_colour 10
+		bump_colour 15
 		Flow::Inject
 	}
 	cube.colour black
@@ -85,4 +85,6 @@ proc Flow {} {
 		delay 100
 	}
 }
+
+if {!$interactive} { Flow }
 
