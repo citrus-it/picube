@@ -1,0 +1,88 @@
+
+loop x 0 8 { loop y 0 8 {
+	set d $(int([cube.lookup -distance $x $y]))
+	lappend ::Flow::Circle$d [list $x $y]
+}}
+
+proc Flow::Circle {i} {
+	foreach c [set ::Flow::Circle$i] {
+		lassign $c x y
+		cube.led $x $y 7
+	}
+}
+
+proc Flow::Iterate {} {
+	cube.begin -copy
+	# Move the outside edges down
+
+	loop layer 6 -1 -1 {
+		cube.colour {*}[cube.getled 2 0 $($layer+1)]
+		loop i 2 6 {
+			cube.led $i 0 $layer
+			cube.led $i 7 $layer
+			cube.led 0 $i $layer
+			cube.led 7 $i $layer
+		}
+		cube.colour {*}[cube.getled 0 0 $($layer+1)]
+		cube.led 0 0 $layer
+		cube.led 0 1 $layer
+		cube.led 1 0 $layer
+
+		cube.led 6 0 $layer
+		cube.led 7 0 $layer
+		cube.led 7 1 $layer
+
+		cube.led 6 7 $layer
+		cube.led 7 7 $layer
+		cube.led 7 6 $layer
+
+		cube.led 0 6 $layer
+		cube.led 0 7 $layer
+		cube.led 1 7 $layer
+	}
+
+	# Spread out the top layer
+	loop circle 4 0 -1 {
+		# Get the colour of the next circle in
+		set last $($circle - 1)
+		lassign [lindex [set ::Flow::Circle$last] 0] x y
+		cube.colour {*}[cube.getled $x $y 7]
+		# Colour this circle
+		Flow::Circle $circle
+	}
+
+	# Move the central column up
+	loop layer 7 0 -1 {
+		set c [cube.getled 3 3 $($layer-1)]
+		cube.led 3 3 $layer {*}$c
+		cube.led 3 4 $layer {*}$c
+		cube.led 4 3 $layer {*}$c
+		cube.led 4 4 $layer {*}$c
+	}
+	cube.commit
+}
+
+proc Flow::Inject {} {
+	cube.led 3 3 0
+	cube.led 3 4 0
+	cube.led 4 3 0
+	cube.led 4 4 0
+}
+
+proc Flow {} {
+	cube.clear
+	bump_colour 0
+	loop i 0 100 {
+		Flow::Iterate
+		delay 100
+		bump_colour 10
+		Flow::Inject
+	}
+	cube.colour black
+	Flow::Inject
+	loop i 0 29 {
+		Flow::Iterate
+		delay 100
+	}
+}
+
