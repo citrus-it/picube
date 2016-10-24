@@ -6,7 +6,7 @@ Raspberry Pi Software for the SuperTech-IT 8x8x8 RGB LED Cube
 
 ### Install the custom Raspian image
 
-Download the [modified Raspbian image](http://picube.uk/files/picube-raspian-20161009.img.gz) and write it to an SD card.
+Download the [modified Raspbian image](http://picube.uk/files/picube-raspian-20161021.img.gz) and write it to an SD card.
 
 > (The [INSTALLATION](INSTALLATION.md) file contains instructions for building this image by hand if you prefer)
 
