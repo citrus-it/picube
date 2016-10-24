@@ -1,0 +1,19 @@
+
+
+proc Heart {iter} {
+	loop p 0 $iter {
+		loop x 1 6 {
+			cube.colour -intensity $x red
+			cube.plane -panel 0 [cube.textchar )]
+			delay 150
+		}
+		loop x 5 0 -1 {
+			cube.colour -intensity $x red
+			cube.plane -panel 0 [cube.textchar )]
+			delay 150
+		}
+	}
+}
+
+if {!$interactive} { Heart 20 }
+
