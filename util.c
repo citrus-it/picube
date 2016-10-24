@@ -161,7 +161,8 @@ get_lock(char *name)
 	if (!lockf(fd, F_TLOCK, 0))
 		return 1;
 
-	perror("lock");
+	fprintf(stderr,
+	    "Could not get lock - is another copy already running?\n");
 
 	close(fd);
 	return 0;
