@@ -69,10 +69,10 @@ proc Flow::Inject {} {
 	cube.led 4 4 0
 }
 
-proc Flow2 {} {
-	cube.clear
-	bump_colour 0
-	loop i 0 100 {
+proc Flow::Run {in {out 17}} {
+	incr in
+	incr out
+	loop i 0 $in {
 		Flow::Iterate
 		delay 100
 		bump_colour 15
@@ -80,7 +80,7 @@ proc Flow2 {} {
 	}
 	cube.colour black
 	Flow::Inject
-	loop i 0 18 {
+	loop i 0 $out {
 		Flow::Iterate
 		delay 100
 	}
@@ -90,19 +90,15 @@ proc Flow {} {
 	cube.clear
 	bump_colour 0
 	loop p 0 10 {
-		loop i 0 16 {
-			Flow::Iterate
-			delay 100
-			bump_colour 15
-			Flow::Inject
-		}
-		cube.colour black
-		Flow::Inject
-		loop i 0 13 {
-			Flow::Iterate
-			delay 100
-		}
+		::Flow::Run 1 4
 	}
+	loop p 0 10 {
+		::Flow::Run 3 3
+	}
+	loop p 0 8 {
+		::Flow::Run 15 12
+	}
+	::Flow::Run 80
 }
 
 if {!$interactive} { Flow }
