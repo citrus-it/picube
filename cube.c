@@ -242,6 +242,39 @@ cube_fill(int buffer, uint8_t r, uint8_t g, uint8_t b)
 		cube_panel(panel, buffer, r, g, b);
 }
 
+// Fade the cube contents.
+void
+cube_fade(int buffer, int amount)
+{
+	uint8_t r, g, b, x, y, z;
+
+	for (x = 0; x < 8; x++)
+	  for (y = 0; y < 8; y++)
+	    for (z = 0; z < 8; z++)
+	    {
+		if (buffer)
+		{
+			r = buffer_xLED(x, y, z, RED);
+			g = buffer_xLED(x, y, z, GREEN);
+			b = buffer_xLED(x, y, z, BLUE);
+			r >>= amount;
+			g >>= amount;
+			b >>= amount;
+			buffer_LED(x, y, z, r, g, b);
+		}
+		else
+		{
+			r = xLED(x, y, z, RED);
+			g = xLED(x, y, z, GREEN);
+			b = xLED(x, y, z, BLUE);
+			r >>= amount;
+			g >>= amount;
+			b >>= amount;
+			LED(x, y, z, r, g, b);
+		}
+	    }
+}
+
 // Set an entire row.
 void
 cube_row(int panel, int layer, int buffer,

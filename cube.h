@@ -20,6 +20,7 @@ void cube_colour(int, uint8_t *, uint8_t *, uint8_t *, int);
 
 void cube_clear(int);
 void cube_fill(int, uint8_t, uint8_t, uint8_t);
+void cube_fade(int, int);
 void cube_row(int, int, int, uint8_t, uint8_t, uint8_t);
 void cube_column(int, int, int, uint8_t, uint8_t, uint8_t);
 void cube_panel(int, int, uint8_t, uint8_t, uint8_t);

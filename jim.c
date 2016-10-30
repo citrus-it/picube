@@ -1037,6 +1037,24 @@ jim_cube_plane(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 }
 
 static int
+jim_cube_fade(Jim_Interp *j, int argc, Jim_Obj *const *argv)
+{
+	long amount;
+
+	if (argc != 2)
+	{
+		Jim_WrongNumArgs(j, 1, argv, "amount");
+		return JIM_ERR;
+	}
+
+	Jim_GetLong(j, argv[1], &amount);
+
+	cube_fade(transaction, amount);
+
+	return JIM_OK;
+}
+
+static int
 jim_cube_row(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 {
 	long panel, layer;
@@ -1367,6 +1385,7 @@ jim_init()
 	Jim_CreateCommand(j, "cube.rotate", jim_cube_rotate, NULL, NULL);
 	Jim_CreateCommand(j, "cube.hw.debug", jim_cube_hwdebug, NULL, NULL);
 	Jim_CreateCommand(j, "cube.lookup", jim_cube_lookup, NULL, NULL);
+	Jim_CreateCommand(j, "cube.fade", jim_cube_fade, NULL, NULL);
 //	Jim_EvalSource(j, NULL, 1, "\n"
 //		"signal handle SIGINT\n"
 //	);

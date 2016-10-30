@@ -1,0 +1,141 @@
+
+set Halloween::ghost1 {
+ {	{0 0 0} {0 0 0} {33 63 63} {33 63 63}
+	{33 63 63} {33 63 63} {33 63 63} {33 63 63}
+ } {
+	{0 0 0} {33 63 63} {33 63 63} {33 63 63}
+	{33 63 63} {33 63 63} {33 63 63} {0 0 0}
+ } {
+	{33 63 63} {33 63 63} {63 0 0} {33 63 63}
+	{33 63 63} {63 0 0} {33 63 63} {33 63 63}
+ } {
+	{33 63 63} {33 63 63} {33 63 63} {33 63 63}
+	{33 63 63} {63 0 0} {33 63 63} {0 0 0}
+ } {
+	{33 63 63} {33 63 63} {33 63 63} {33 63 63}
+	{33 63 63} {63 0 0} {33 63 63} {0 0 0}
+ } {
+	{33 63 63} {33 63 63} {63 0 0} {33 63 63}
+	{33 63 63} {63 0 0} {33 63 63} {33 63 63}
+ } {
+	{0 0 0} {33 63 63} {33 63 63} {33 63 63}
+	{33 63 63} {33 63 63} {33 63 63} {0 0 0}
+ } {
+	{0 0 0} {0 0 0} {33 63 63} {33 63 63}
+	{33 63 63} {33 63 63} {33 63 63} {33 63 63}
+}}
+
+set Halloween::ghost2 {{{0 0 0} {0 0 0} {33 63 63} {33 63 63} {33 63 63} {33 63 63} {33 63 63} {33 63 63}} {{0 0 0} {33 63 63} {0 0 0} {0 0 0} {0 0 0} {0 0 0} {0 0 0} {0 0 0}} {{33 63 63} {0 0 0} {63 0 0} {0 0 0} {0 0 0} {63 0 0} {0 0 0} {33 63 63}} {{33 63 63} {0 0 0} {0 0 0} {0 0 0} {0 0 0} {63 0 0} {0 0 0} {0 0 0}} {{33 63 63} {0 0 0} {0 0 0} {0 0 0} {0 0 0} {63 0 0} {0 0 0} {0 0 0}} {{33 63 63} {0 0 0} {63 0 0} {0 0 0} {0 0 0} {63 0 0} {0 0 0} {33 63 63}} {{0 0 0} {33 63 63} {0 0 0} {0 0 0} {0 0 0} {0 0 0} {0 0 0} {0 0 0}} {{0 0 0} {0 0 0} {33 63 63} {33 63 63} {33 63 63} {33 63 63} {33 63 63} {33 63 63}}}
+
+set Halloween::eyes { 2 5  5 5 }
+set Halloween::mouth { 2 2 3 2 4 2 5 2 }
+set Halloween::face "$::Halloween::eyes $::Halloween::mouth"
+
+proc Halloween::ZoomGhost {iter} {
+	loop i 0 $iter {
+		loop p 7 -1 -1 {
+			cube.begin
+			cube.plane -panel $p $::Halloween::ghost2
+			if {$p < 6} { cube.fade $p } else { cube.fade 5 }
+			cube.commit
+			delay 100
+		}
+		loop p 0 8 {
+			cube.begin
+			cube.plane -panel $p $::Halloween::ghost2
+			if {$p < 6} { cube.fade $p } else { cube.fade 5 }
+			cube.commit
+			delay 100
+		}
+	}
+}
+
+proc Halloween::RotateGhost {iter} {
+	cube.begin
+	cube.plane -panel 3 $::Halloween::ghost2
+	cube.plane -panel 4 $::Halloween::ghost2
+	cube.commit -nocopy
+	bump_colour 0
+	loop i 0 $iter {
+		loop d 0 360 15 {
+			cube.rotate -buffer $d
+			bump_colour 1
+			cube.begin -preserve
+			foreach {x y} $::Halloween::face {
+				cube.led $x 3 $y
+				cube.led $x 4 $y
+			}
+			cube.commit -nocopy
+			delay 50
+		}
+	}
+	cube.rotate -buffer 90
+}
+
+# Build distance table
+set Pumpkin::distance [lrepeat 8 [lrepeat 8 [lrepeat 8 0]]]
+loop x 0 8 { loop y 0 8 { loop z 0 8 {
+	set p $(sqrt(pow($x - 3.5, 2) + pow($y - 3.5, 2) + pow($z - 3.5, 2)))
+	lset ::Pumpkin::distance $x $y $z $p
+}}}
+
+proc Pumpkin::Draw {size} {
+	cube.begin
+	loop x 0 8 { loop y 0 8 { loop z 0 8 {
+		if {[lindex $::Pumpkin::distance $x $y $z] < $size} {
+			cube.led $x $y $z
+		}
+	}}}
+	cube.commit
+}
+
+proc Pumpkin::Colour {} {{c 0}} {
+	if {$c} {
+		cube.colour 62 10 0
+		set c 0
+	} else {
+		cube.colour orange
+		set c 1
+	}
+}
+
+proc Pumpkin::Pulse {{times 10}} {
+	loop c 0 $times {
+		# Expand
+		loop i 0 5 {
+			::Pumpkin::Colour
+			::Pumpkin::Draw $i
+			delay 100
+		}
+		# Contract
+		loop i 4 -1 -1 {
+			::Pumpkin::Colour
+			::Pumpkin::Draw $i
+			delay 100 
+		}
+	}
+}
+
+proc Halloween {{iter 50}} {
+	::Halloween::RotateGhost $iter
+	loop i 0 6 {
+		cube.fade 1
+		cube.translate 0 1 0
+		delay 200
+	}
+	::Halloween::ZoomGhost $iter
+	loop i 0 4 {
+		cube.translate 0 -1 0
+		delay 200
+	}
+	::Pumpkin::Pulse $iter
+
+	cube.colour 62 10 0
+	::Pumpkin::Draw 4
+	delay 2000
+	loop i 0 6 {
+		cube.fade 1
+		delay 500
+	}
+}
+
