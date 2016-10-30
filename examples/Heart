@@ -1,19 +1,25 @@
 
 
 proc Heart {iter} {
+	set panel 0
+	set dir 1
 	loop p 0 $iter {
 		loop x 1 6 {
 			cube.colour -intensity $x red
-			cube.plane -panel 0 [cube.textchar )]
+			cube.plane -panel $panel [cube.textchar )]
 			delay 150
 		}
 		loop x 5 0 -1 {
 			cube.colour -intensity $x red
-			cube.plane -panel 0 [cube.textchar )]
+			cube.plane -panel $panel [cube.textchar )]
 			delay 150
 		}
+		cube.panel $panel 0 0 0
+		incr panel $dir
+		if {$panel >= 7} { set dir -1 }
+		if {$panel <= 0} { set dir 1 }
 	}
 }
 
-if {!$interactive} { Heart 20 }
+if {!$interactive} { Heart 15 }
 
