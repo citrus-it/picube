@@ -1,0 +1,9 @@
+NAME		cube.fade
+SYNTAX		cube.fade [amount]
+DESCRIPTION	Fade the cube contents by reducing LED intensity by the
+		provided amount. Amount can range from 1 to 5 and each
+		value will halve the brightness.
+RETURN VALUE	None
+EXAMPLES	Fade the cube to a quarter current brightness:
+			cube.fade 2
+		See examples/Halloween for a real-world example.
