@@ -50,6 +50,18 @@ proc Halloween::ZoomGhost {iter} {
 	}
 }
 
+proc Halloween::GhostSlide {iter} {
+	loop i 0 $iter {
+		loop p 7 -1 -1 {
+			cube.begin
+			cube.plane -panel $p $::Halloween::ghost2
+			if {$p < 6} { cube.fade $p } else { cube.fade 5 }
+			cube.commit
+			delay 100
+		}
+	}
+}
+
 proc Halloween::RotateGhost {iter} {
 	cube.begin
 	cube.plane -panel 3 $::Halloween::ghost2
@@ -137,5 +149,6 @@ proc Halloween {{iter 50}} {
 		cube.fade 1
 		delay 500
 	}
+	::Halloween::GhostSlide 20
 }
 

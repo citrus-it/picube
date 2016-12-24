@@ -1,0 +1,12 @@
+NAME		cube.sphere
+SYNTAX		cube.sphere <x> <y> <z> <diameter> [red green blue]
+DESCRIPTION	Draw a sphere, centered at x,y,z with given diameter.
+		If the optional red, green and blue arguments are provided
+		then that colour is used, otherwise the current working
+		colour is used.
+RETURN VALUE	None
+EXAMPLES	Draw a sphere with diameter 6 at 4,4,4
+			cube.sphere 4 4 4 6
+		Draw a blue sphere with diameter 8 at 3,3,3
+			cube.sphere 3 3 3 8 0 0 63
+SEE ALSO	cube.colour

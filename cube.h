@@ -28,6 +28,7 @@ void cube_layer(int, int, uint8_t, uint8_t, uint8_t);
 void cube_slice(int, int, uint8_t, uint8_t, uint8_t);
 
 void cube_plane(int, enum planes, int, uint8_t (*)[8][8][3]);
+void cube_sphere(int, int, int, uint8_t, uint8_t, uint8_t, int, int);
 void cube_rotate(float, int);
 void cube_translate(int, int, int);
 

@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 #include <errno.h>
 #include "gpio.h"
 #include "cube.h"
@@ -366,6 +367,32 @@ cube_plane(int index, enum planes plane, int buffer, uint8_t (*buf)[8][8][3])
 			    (*buf)[x][y][BLUE]);
 		break;
 	}
+}
+
+// Draw a sphere centered at x,y,z with diameter d
+void
+cube_sphere(int x, int y, int z, uint8_t r, uint8_t g, uint8_t b,
+    int d, int buffer)
+{
+	int xx, yy, zz;
+	double radius = (double)d / 2;
+
+	for (xx = 0; xx < 8; xx++)
+	    for (yy = 0; yy < 8; yy++)
+		for (zz = 0; zz < 8; zz++)
+		{
+			double polar = sqrt(
+				pow(xx - x, 2) +
+				pow(yy - y, 2) +
+				pow(zz - z, 2)
+			);
+
+			if (polar < radius)
+				if (buffer)
+					buffer_LED(xx, yy, zz, r, g, b);
+				else
+					LED(xx, yy, zz, r, g, b);
+		}
 }
 
 // Translate (shift) the cube contents

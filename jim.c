@@ -797,6 +797,30 @@ jim_cube_column(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 }
 
 static int
+jim_cube_sphere(Jim_Interp *j, int argc, Jim_Obj *const *argv)
+{
+	long x, y, z, diameter;
+
+	if (argc != 5 && argc != 8)
+	{
+		Jim_WrongNumArgs(j, 1, argv,
+		    "x y z diameter [red green blue]");
+		return JIM_ERR;
+	}
+
+	HANDLE_COLOUR(8);
+
+	Jim_GetLong(j, argv[1], &x);
+	Jim_GetLong(j, argv[2], &y);
+	Jim_GetLong(j, argv[3], &z);
+	Jim_GetLong(j, argv[4], &diameter);
+
+	cube_sphere(x, y, z, red, green, blue, diameter, transaction);
+
+	return JIM_OK;
+}
+
+static int
 jim_cube_textchar(Jim_Interp *j, int argc, Jim_Obj *const *argv)
 {
 	uint8_t grid[8][8][3];
@@ -1375,6 +1399,7 @@ jim_init()
 	Jim_CreateCommand(j, "cube.slice", jim_cube_slice, NULL, NULL);
 	Jim_CreateCommand(j, "cube.row", jim_cube_row, NULL, NULL);
 	Jim_CreateCommand(j, "cube.column", jim_cube_column, NULL, NULL);
+	Jim_CreateCommand(j, "cube.sphere", jim_cube_sphere, NULL, NULL);
 	Jim_CreateCommand(j, "cube.plane", jim_cube_plane, NULL, NULL);
 	Jim_CreateCommand(j, "cube.colour", jim_cube_colour, NULL, NULL);
 	Jim_CreateCommand(j, "cube.scrollrate", jim_cube_scrollrate, NULL,NULL);
