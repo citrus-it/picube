@@ -1,0 +1,22 @@
+
+# Build distance table
+set ::Pumpkin::distance [lrepeat 8 [lrepeat 8 [lrepeat 8 0]]]
+loop x 0 8 { loop y 0 8 { loop z 0 8 {
+	set p $(sqrt(pow($x - 3.5, 2) + pow($y - 3.5, 2) + pow($z - 3.5, 2)))
+	lset ::Pumpkin::distance $x $y $z $p
+}}}
+
+proc ::Pumpkin::draw {size} {
+	cube.begin
+	loop x 0 8 { loop y 0 8 { loop z 0 8 {
+		if {[lindex $::Pumpkin::distance $x $y $z] < $size} {
+			cube.led $x $y $z
+		}
+	}}}
+	cube.commit
+}
+
+proc Pumpkin {} {
+	cube.colour 62 10 0
+}
+

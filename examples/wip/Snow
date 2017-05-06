@@ -1,0 +1,32 @@
+
+# A jim version of the rain animation.
+# Derived from the animation of the same name within the
+#  * 8 x 8 x 8 Cube Application Template, Version 7.0  © 2014 by Doug Domke
+#  * Downloads of this template and upcoming versions, along with detailed
+#  * instructions, are available at: http://d2-webdesign.com/cube
+
+
+proc Rain::lightone {} {
+	# light an LED in the top layer with a random colour
+	cube.led [rand 8] [rand 8] 7 33 63 63
+}
+
+proc Rain {{times 20} {snow 0}} {
+	loop iter 0 $times {
+		# Light 5 random LEDs in the top layer.
+		loop x 0 5 Rain::lightone
+		# Wait 0.1 seconds
+		delay 200
+		# Shift the cube contents down (will clear the top layer)
+		cube.translate 0 0 -1
+		loop layer 0 $snow {
+			cube.layer $layer
+		}
+	}
+}
+cube.colour 33 63 63
+loop i 0 8 {
+	Rain 20 $i
+}
+
+

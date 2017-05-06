@@ -9,6 +9,7 @@ proc Sun {{on 1}} {
 }
 
 proc Snowman {} {
+	cube.clear
 	cube.colour 33 63 63
 	cube.sphere 2 3 6 3
 	cube.sphere 2 3 2 5
@@ -87,7 +88,7 @@ proc Tree {} {
 	# Sparkle
 	cube.colour 33 63 63
 	set history {}
-	while {1} {
+	loop k 0 1000 {
 		set x [rand 0 8]
 		set y [rand 0 8]
 		set z [rand 0 8]
@@ -109,7 +110,7 @@ proc Tree {} {
 }
 
 proc Christmas {} {
-	cube.clear
+	Tree
 	Snowman
 }
 
