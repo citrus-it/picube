@@ -74,4 +74,3 @@ pi@picube:~ $ git clone https://github.com/hummypkg/picube.git
 pi@picube:~ $ cd picube
 pi@picube:~/picube $ make install
 ```
-
