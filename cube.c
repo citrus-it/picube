@@ -348,7 +348,7 @@ cube_plane(int index, enum planes plane, int buffer, uint8_t (*buf)[8][8][3])
 			    (*buf)[x][z][GREEN],
 			    (*buf)[x][z][BLUE]);
 		break;
-	    
+
 	    case PLANE_SLICE:
 		for (y = 0; y < 8; y++)
 		    for (z = 0; z < 8; z++)
@@ -573,10 +573,10 @@ cube_refresh(void *x)
 		__atomic_load(&exiting, &ex, __ATOMIC_RELAXED);
 		if (ex)
 			break;
-		
+
 		// Make the canary sing.
 		__atomic_store(&canary, &true, __ATOMIC_RELAXED);
-		
+
 		for (bam = 1; bam < 0x40; bam <<= 1)
 		{
 			gpio_write(GPIO_CLOCK, LOW);

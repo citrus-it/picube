@@ -2,7 +2,7 @@
 
 Raspberry Pi Software for the SuperTech-IT 8x8x8 RGB LED Cube
 
-## Quick Start 
+## Quick Start
 
 ### Install the custom Raspian image
 
@@ -50,7 +50,7 @@ Welcome to cube shell (Jim 0.77).
 The shell is an embedded
 [Jim Tcl](http://jim.tcl.tk/fossil/doc/trunk/Tcl_shipped.html) interpreter
 which can be used to write programs to control the cube. There are also a
-number of built-in animations which have been ported from 
+number of built-in animations which have been ported from
 [Doug Domke's Cube Application Template](http://d2-webdesign.com/cube)
 
 ### Run some example animation scripts
@@ -61,7 +61,7 @@ pi@picube:~/picube$ cube examples/cyclone
 pi@picube:~/picube$ cube examples/grower
 ```
 
-This is the Super Big Show from 
+This is the Super Big Show from
 [Doug Domke's Cube Application Template](http://d2-webdesign.com/cube)
 
 ```console
