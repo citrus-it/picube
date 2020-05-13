@@ -542,7 +542,7 @@ cube_off(void)
 //
 // On a Raspberry Pi 1, revision 1, ? is around 3ms resulting in a cycle
 // time of around 8ms. On newer models this is lower so there is a delay at
-// then end of the pass to wait until 8ms after the pass start. A brighter
+// the end of the pass to wait until 8ms after the pass start. A brighter
 // cube can be obtained on newer models by reducing or removing this delay.
 
 #define nanopause(x) \
