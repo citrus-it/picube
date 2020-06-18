@@ -6,6 +6,7 @@
 #include <time.h>
 #include <math.h>
 #include <errno.h>
+#include <pthread.h>
 #include "gpio.h"
 #include "cube.h"
 #include "tables.h"

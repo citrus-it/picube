@@ -37,8 +37,8 @@
 
 int gpio_init(void);
 void gpio_set_mode(unsigned, unsigned);
-inline void gpio_toggle_high(unsigned);
-inline void gpio_write(unsigned, unsigned);
-inline void gpio_clear_bank0(unsigned bits);
-inline void gpio_set_bank0(unsigned bits);
+void gpio_toggle_high(unsigned);
+void gpio_write(unsigned, unsigned);
+void gpio_clear_bank0(unsigned bits);
+void gpio_set_bank0(unsigned bits);
 

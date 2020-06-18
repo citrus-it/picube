@@ -40,7 +40,7 @@ gpio_toggle_high(unsigned gpio)
 		*(gpio_region + GPCLR0 + PI_BANK(gpio)) = PI_BIT(gpio);
 }
 #else
-inline void
+void
 gpio_write(unsigned gpio, unsigned level)
 {
 	if (level == 0)
@@ -49,7 +49,7 @@ gpio_write(unsigned gpio, unsigned level)
 		*(gpio_region + GPSET0) = PI_BIT(gpio);
 }
 
-inline void
+void
 gpio_toggle_high(unsigned gpio)
 {
 		*(gpio_region + GPSET0) = PI_BIT(gpio);
@@ -57,14 +57,14 @@ gpio_toggle_high(unsigned gpio)
 }
 #endif
 
-inline void
+void
 gpio_clear_bank0(unsigned bits)
 {
 	*(gpio_region + GPCLR0) = bits;
 }
 
 // Only works for pins in bank 0
-inline void
+void
 gpio_set_bank0(unsigned bits)
 {
 	*(gpio_region + GPSET0) = bits;

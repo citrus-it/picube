@@ -10,6 +10,7 @@
 #include <sys/mman.h>
 #include "jim.h"
 #include "cube.h"
+#include "util.h"
 
 #ifdef BENCHMARK
 extern uint16_t cyclems;

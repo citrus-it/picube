@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <stdint.h>
+#include <unistd.h>
 #include "cube.h"
+#include "util.h"
 
 volatile uint8_t canary = 0;
 

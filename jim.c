@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <signal.h>
 #include <pthread.h>
+#include <unistd.h>
 #include "jimtcl/jim.h"
 #include "cube.h"
 #include "text.h"

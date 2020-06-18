@@ -19,6 +19,7 @@
 #include "cube.h"
 #include "tables.h"
 #include "text.h"
+#include "util.h"
 #include "include/font.h"
 
 // 46 columns (30 around the cube,
